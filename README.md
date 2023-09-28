@@ -14,3 +14,11 @@ This is a simple tool that could be helpful in your everyday development workflo
 - UUID generate
 - Timestamp generate
 - Mock server
+
+## Screenshots
+
+<div>
+<img src="./screenshots/1.png" alt="1" style="height:300px;width:300px">
+<img src="./screenshots/2.png" alt="2"  style="height:300px;width:300px">
+<img src="./screenshots/3.png" alt="3"  style="height:300px;width:300px">
+</div>
