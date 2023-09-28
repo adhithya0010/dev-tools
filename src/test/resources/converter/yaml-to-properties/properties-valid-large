@@ -1,0 +1,8 @@
+menu.popup.menuitem[0].onclick=CreateDoc()
+menu.popup.menuitem[0].value=New
+menu.popup.menuitem[1].onclick=OpenDoc()
+menu.popup.menuitem[1].value=Open
+menu.popup.menuitem[2].onclick=SaveDoc()
+menu.popup.menuitem[2].value=Save
+menu.value=File
+menu.id=file

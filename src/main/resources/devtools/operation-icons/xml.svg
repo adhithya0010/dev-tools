@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.09 36.09">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #999;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #000;
+        stroke-width: .05px;
+      }
+
+      .cls-2 {
+        fill: #ccc;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        fill: #333;
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 11.04px;
+        stroke: #333;
+        stroke-width: .25px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <g>
+        <polygon class="cls-1" points="26.02 6.06 26.02 36.06 .02 36.06 .02 .06 20.02 .06 20.02 6.06 26.02 6.06"/>
+        <polygon class="cls-2" points="26.02 6.06 20.02 6.06 20.02 .06 26.02 6.06"/>
+      </g>
+      <text class="cls-3" transform="translate(3.75 20.78) scale(.94 1)"><tspan x="0" y="0">XML</tspan></text>
+    </g>
+  </g>
+</svg>
