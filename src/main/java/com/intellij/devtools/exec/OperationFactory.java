@@ -64,6 +64,6 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllMiscOperations() {
-    return List.of(new MockServer(), new LinesSort(), new DuplicateRemover());
+    return List.of(new MockServer(), new LinesSort(), new DuplicateRemover(), new TextDiff());
   }
 }

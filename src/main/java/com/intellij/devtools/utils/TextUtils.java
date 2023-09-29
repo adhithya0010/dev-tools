@@ -48,10 +48,6 @@ public class TextUtils {
             .collect(Collectors.joining("\n"));
   }
 
-  public static String findDifference(String original, String changed) {
-    return StringUtils.difference(original, changed);
-  }
-
   static class EscapeUnescape {
     private final UnaryOperator<String> escaper;
     private final UnaryOperator<String> unescaper;
