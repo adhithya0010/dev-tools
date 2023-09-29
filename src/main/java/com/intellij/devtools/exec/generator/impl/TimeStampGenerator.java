@@ -50,13 +50,18 @@ public class TimeStampGenerator extends Generator {
     Map<String, Object> parameterResult = getParameterResult();
     ZoneId zoneId = ZoneId.of((String) parameterResult.get("timezone"));
     ZoneId defaultZoneId = ZoneId.systemDefault();
-    LocalDateTime dateTime = LocalDateTime.of((Integer) parameterResult.get("year"),
-        (Integer) parameterResult.get("month"), (Integer) parameterResult.get("day"),
-        (Integer) parameterResult.get("hour"), (Integer) parameterResult.get("minute"),
-        (Integer) parameterResult.get("second"), (Integer) parameterResult.get("nano"));
+    LocalDateTime dateTime =
+        LocalDateTime.of(
+            (Integer) parameterResult.get("year"),
+            (Integer) parameterResult.get("month"),
+            (Integer) parameterResult.get("day"),
+            (Integer) parameterResult.get("hour"),
+            (Integer) parameterResult.get("minute"),
+            (Integer) parameterResult.get("second"),
+            (Integer) parameterResult.get("nano"));
     ZonedDateTime zonedDateTime = dateTime.atZone(zoneId);
-    DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(
-        (String) parameterResult.get("timeFormat"));
+    DateTimeFormatter timeFormat =
+        DateTimeFormatter.ofPattern((String) parameterResult.get("timeFormat"));
     String formattedTime = zonedDateTime.format(timeFormat);
     String millis = String.valueOf(zonedDateTime.toInstant().toEpochMilli());
 
@@ -76,96 +81,111 @@ public class TimeStampGenerator extends Generator {
   public List<ParameterGroup> getParameterGroups() {
     ZoneId zoneId = ZoneId.systemDefault();
 
-    Parameter timeFormat = Parameter.builder()
-        .name("timeFormat")
-        .label("Time Format")
-        .type(Type.TEXT)
-        .defaultValue(DEFAULT_TIME_FORMAT)
-        .build();
-    Parameter timeZone = Parameter.builder()
-        .name("timezone")
-        .label("Timezone")
-        .type(Type.TEXT)
-        .defaultValue(zoneId.toString())
-        .build();
+    Parameter timeFormat =
+        Parameter.builder()
+            .name("timeFormat")
+            .label("Time Format")
+            .type(Type.TEXT)
+            .defaultValue(DEFAULT_TIME_FORMAT)
+            .build();
+    Parameter timeZone =
+        Parameter.builder()
+            .name("timezone")
+            .label("Timezone")
+            .type(Type.TEXT)
+            .defaultValue(zoneId.toString())
+            .build();
 
     LocalDateTime localDateTime = LocalDateTime.now(zoneId);
 
-    Parameter day = Parameter.builder()
-        .name("day")
-        .label("Day")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getDayOfMonth()))
-        .minValue(1)
-        .maxValue(31)
-        .build();
-    Parameter month = Parameter.builder()
-        .name("month")
-        .label("Month")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getMonthValue()))
-        .minValue(1)
-        .maxValue(12)
-        .build();
-    Parameter year = Parameter.builder()
-        .name("year")
-        .label("Year")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getYear()))
-        .minValue(1970)
-        .maxValue(4000)
-        .build();
-    Parameter hour = Parameter.builder()
-        .name("hour")
-        .label("Hour")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getHour()))
-        .minValue(0)
-        .maxValue(23)
-        .build();
-    Parameter minute = Parameter.builder()
-        .name("minute")
-        .label("Minute")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getMinute()))
-        .minValue(0)
-        .maxValue(59)
-        .build();
-    Parameter second = Parameter.builder()
-        .name("second")
-        .label("Second")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.getSecond()))
-        .minValue(0)
-        .maxValue(59)
-        .build();
+    Parameter day =
+        Parameter.builder()
+            .name("day")
+            .label("Day")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getDayOfMonth()))
+            .minValue(1)
+            .maxValue(31)
+            .build();
+    Parameter month =
+        Parameter.builder()
+            .name("month")
+            .label("Month")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getMonthValue()))
+            .minValue(1)
+            .maxValue(12)
+            .build();
+    Parameter year =
+        Parameter.builder()
+            .name("year")
+            .label("Year")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getYear()))
+            .minValue(1970)
+            .maxValue(4000)
+            .build();
+    Parameter hour =
+        Parameter.builder()
+            .name("hour")
+            .label("Hour")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getHour()))
+            .minValue(0)
+            .maxValue(23)
+            .build();
+    Parameter minute =
+        Parameter.builder()
+            .name("minute")
+            .label("Minute")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getMinute()))
+            .minValue(0)
+            .maxValue(59)
+            .build();
+    Parameter second =
+        Parameter.builder()
+            .name("second")
+            .label("Second")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.getSecond()))
+            .minValue(0)
+            .maxValue(59)
+            .build();
 
-    Parameter nano = Parameter.builder()
-        .name("nano")
-        .label("Nano")
-        .type(Type.NUMBER)
-        .defaultValue(String.valueOf(localDateTime.get(ChronoField.NANO_OF_SECOND)))
-        .minValue(0)
-        .maxValue(Long.MAX_VALUE)
-        .build();
+    Parameter nano =
+        Parameter.builder()
+            .name("nano")
+            .label("Nano")
+            .type(Type.NUMBER)
+            .defaultValue(String.valueOf(localDateTime.get(ChronoField.NANO_OF_SECOND)))
+            .minValue(0)
+            .maxValue(Long.MAX_VALUE)
+            .build();
 
     List<ParameterGroup> parameterGroups = new ArrayList<>();
     parameterGroups.add(ParameterGroup.builder().parameters(List.of(timeFormat)).build());
     parameterGroups.add(ParameterGroup.builder().parameters(List.of(timeZone)).build());
     parameterGroups.add(ParameterGroup.builder().parameters(List.of(day, month, year)).build());
-    parameterGroups.add(ParameterGroup.builder().parameters(List.of(hour, minute, second, nano)).build());
+    parameterGroups.add(
+        ParameterGroup.builder().parameters(List.of(hour, minute, second, nano)).build());
     return parameterGroups;
   }
 
   private String formatResult(Map<String, String> values) {
-    return values.entrySet().stream().reduce(new StringJoiner("\n"), (sj, entry) -> {
-      sj.add(String.format("%-20s\t:\t%-2s", entry.getKey(), entry.getValue()));
-      return sj;
-    }, (sj1, sj2) -> {
-      StringJoiner sj = new StringJoiner("\n");
-      sj.add(sj1.toString());
-      sj.add(sj2.toString());
-      return sj;
-    }).toString();
+    return values.entrySet().stream()
+        .reduce(
+            new StringJoiner("\n"),
+            (sj, entry) -> {
+              sj.add(String.format("%-20s\t:\t%-2s", entry.getKey(), entry.getValue()));
+              return sj;
+            },
+            (sj1, sj2) -> {
+              StringJoiner sj = new StringJoiner("\n");
+              sj.add(sj1.toString());
+              sj.add(sj2.toString());
+              return sj;
+            })
+        .toString();
   }
 }

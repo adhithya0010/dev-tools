@@ -15,8 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TreeModelUtils {
 
-  private TreeModelUtils() {
-  }
+  private TreeModelUtils() {}
 
   public static DefaultMutableTreeNode toTreeNode(List<Operation> operations) {
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(null);

@@ -68,11 +68,10 @@ public abstract class Converter extends Operation {
     configureComponents();
     configureLayouts();
     configureListeners();
-    parameterMap = Optional.ofNullable(getParameterGroups())
-        .orElseGet(ArrayList::new)
-        .stream()
-        .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-        .collect(Collectors.groupingBy(Parameter::getName));
+    parameterMap =
+        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
+            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
+            .collect(Collectors.groupingBy(Parameter::getName));
   }
 
   protected abstract String convertTo(String data);
@@ -92,11 +91,13 @@ public abstract class Converter extends Operation {
     fromTextArea.setText(fromText);
     toTextArea.setText(toText);
     for (Component panel : parametersPanel.getComponents()) {
-      if(panel instanceof JPanel) {
+      if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
         Component component = components[1];
         String name = component.getName();
-        ComponentUtils.setValue(component, parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
+        ComponentUtils.setValue(
+            component,
+            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
       }
     }
   }
@@ -144,7 +145,7 @@ public abstract class Converter extends Operation {
     ComponentUtils.removeAllChildren(this);
 
     setLayout(new GridLayoutManager(3, 1));
-    if(isParametersAdded) {
+    if (isParametersAdded) {
       add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     }
     add(fromPanel, buildGridConstraint(1, 0, FILL_BOTH));
@@ -171,16 +172,20 @@ public abstract class Converter extends Operation {
     JPanel toContentPanel = new JPanel();
 
     fromContentPanel.setLayout(new GridLayoutManager(2, 1));
-    fromContentPanel.add(fromHeaderPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
-    fromContentPanel.add(ComponentUtils.attachScroll(fromTextArea), buildGridConstraint(1, 0, 1, 1,
-        FILL_BOTH, CAN_SHRINK_AND_GROW
-    ));
+    fromContentPanel.add(
+        fromHeaderPanel,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    fromContentPanel.add(
+        ComponentUtils.attachScroll(fromTextArea),
+        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     toContentPanel.setLayout(new GridLayoutManager(2, 1));
-    toContentPanel.add(toHeaderPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
-    toContentPanel.add(ComponentUtils.attachScroll(toTextArea), buildGridConstraint(1, 0, 1, 1,
-        FILL_BOTH, CAN_SHRINK_AND_GROW
-    ));
+    toContentPanel.add(
+        toHeaderPanel,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    toContentPanel.add(
+        ComponentUtils.attachScroll(toTextArea),
+        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     fromPanel.setLayout(new GridBagLayout());
     toPanel.setLayout(new GridBagLayout());
@@ -206,9 +211,10 @@ public abstract class Converter extends Operation {
         });
 
     toCopyButton.addActionListener(evt -> ClipboardUtils.copy(toTextArea.getText()));
-    toPasteButton.addActionListener(evt -> {
-      ClipboardUtils.paste().ifPresent(toTextArea::setText);
-    });
+    toPasteButton.addActionListener(
+        evt -> {
+          ClipboardUtils.paste().ifPresent(toTextArea::setText);
+        });
   }
 
   private Void convertFrom(DocumentEvent e) {

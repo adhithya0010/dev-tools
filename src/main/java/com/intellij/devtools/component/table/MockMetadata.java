@@ -14,8 +14,13 @@ public class MockMetadata {
   public String responseBody;
   public boolean isSelected;
 
-  public MockMetadata(String path, int portValue, HttpMethod httpMethod, String responseCode,
-      String responseHeaders, String responseBody) {
+  public MockMetadata(
+      String path,
+      int portValue,
+      HttpMethod httpMethod,
+      String responseCode,
+      String responseHeaders,
+      String responseBody) {
     this.httpMethod = httpMethod;
     this.responseCode = responseCode;
     this.responseHeaders = responseHeaders;
@@ -28,10 +33,6 @@ public class MockMetadata {
 
   @Override
   public String toString() {
-    return "ServerMeta{" +
-        "id='" + id + '\'' +
-        ", path='" + path + '\'' +
-        ", port=" + port +
-        '}';
+    return "ServerMeta{" + "id='" + id + '\'' + ", path='" + path + '\'' + ", port=" + port + '}';
   }
 }

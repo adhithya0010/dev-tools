@@ -7,11 +7,10 @@ import pl.jalokim.propertiestojson.util.PropertiesToJsonConverter;
 
 public class PropertiesUtils {
 
-  private PropertiesUtils() {
-  }
+  private PropertiesUtils() {}
 
   public static String toJson(String propertiesText) {
-    if(StringUtils.isEmpty(propertiesText)) {
+    if (StringUtils.isEmpty(propertiesText)) {
       return "";
     }
     try {
@@ -31,7 +30,7 @@ public class PropertiesUtils {
   }
 
   public static String toYaml(String propertiesText) {
-    if(StringUtils.isEmpty(propertiesText)) {
+    if (StringUtils.isEmpty(propertiesText)) {
       return "";
     }
     try {

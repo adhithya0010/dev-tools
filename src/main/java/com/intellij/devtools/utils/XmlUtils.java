@@ -22,8 +22,7 @@ import org.xml.sax.SAXException;
 
 public class XmlUtils {
 
-  private XmlUtils() {
-  }
+  private XmlUtils() {}
 
   private static final Transformer TRANSFORMER;
   private static final DocumentBuilder DOCUMENT_BUILDER;
@@ -48,8 +47,10 @@ public class XmlUtils {
       // or prohibit the use of all protocols by external entities:
       factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      // or disable entity expansion but keep in mind that this doesn't prevent fetching external entities
-      // and this solution is not correct for OpenJDK < 13 due to a bug: https://bugs.openjdk.java.net/browse/JDK-8206132
+      // or disable entity expansion but keep in mind that this doesn't prevent fetching external
+      // entities
+      // and this solution is not correct for OpenJDK < 13 due to a bug:
+      // https://bugs.openjdk.java.net/browse/JDK-8206132
       factory.setExpandEntityReferences(false);
       DOCUMENT_BUILDER = factory.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
@@ -58,7 +59,7 @@ public class XmlUtils {
   }
 
   public static String minify(String xmlString) {
-    if(StringUtils.isEmpty(xmlString)) {
+    if (StringUtils.isEmpty(xmlString)) {
       return null;
     }
     try {
@@ -73,7 +74,7 @@ public class XmlUtils {
   }
 
   public static String prettify(String xmlString) {
-    if(StringUtils.isEmpty(xmlString)) {
+    if (StringUtils.isEmpty(xmlString)) {
       return null;
     }
     try {
@@ -87,8 +88,7 @@ public class XmlUtils {
     }
   }
 
-  private static Document toDocument(String xmlString)
-      throws SAXException, IOException {
+  private static Document toDocument(String xmlString) throws SAXException, IOException {
     InputSource src = new InputSource(new StringReader(xmlString));
     return DOCUMENT_BUILDER.parse(src);
   }

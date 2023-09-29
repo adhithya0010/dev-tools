@@ -13,29 +13,30 @@ public class RemoteRobotExtension implements AfterTestExecutionCallback, Paramet
   private RemoteRobot remoteRobot;
 
   public RemoteRobotExtension() {
-//    if (System.getProperty("debug-retrofit").equals("enable")) {
-//      HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(
-//          HttpLoggingInterceptor.Level.BODY);
-//      OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-//      remoteRobot = new RemoteRobot(url, client);
-//    } else {
-      remoteRobot = new RemoteRobot(url);
-//    }
+    //    if (System.getProperty("debug-retrofit").equals("enable")) {
+    //      HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(
+    //          HttpLoggingInterceptor.Level.BODY);
+    //      OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+    //      remoteRobot = new RemoteRobot(url, client);
+    //    } else {
+    remoteRobot = new RemoteRobot(url);
+    //    }
   }
 
   @Override
-  public boolean supportsParameter(ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
+  public boolean supportsParameter(
+      ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
     return parameterContext.getParameter().getType().equals(RemoteRobot.class);
   }
 
   @Override
-  public Object resolveParameter(ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
+  public Object resolveParameter(
+      ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
     return remoteRobot;
   }
 
   @Override
-  public void afterTestExecution(ExtensionContext context) throws Exception {
-  }
+  public void afterTestExecution(ExtensionContext context) throws Exception {}
 }

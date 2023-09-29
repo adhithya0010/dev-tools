@@ -65,6 +65,15 @@ tasks {
         enabled = false
     }
 
+    spotless {
+        java {
+            importOrder()
+            removeUnusedImports()
+            googleJavaFormat("1.17.0")
+            formatAnnotations()
+        }
+    }
+
     runIdeForUiTests {
 //        systemProperty("robot-server.port", "8082") // default port 8580
         systemProperty("ide.test.execution", "true");

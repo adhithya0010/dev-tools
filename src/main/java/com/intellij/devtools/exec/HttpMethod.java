@@ -2,8 +2,7 @@ package com.intellij.devtools.exec;
 
 public enum HttpMethod {
   POST("Post"),
-  GET("Get")
-  ;
+  GET("Get");
 
   private final String value;
 

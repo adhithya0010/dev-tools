@@ -53,9 +53,13 @@ public class DevToolsPanel extends JPanel {
     contentPanel.setLayout(new GridLayoutManager(1, 1));
 
     this.setLayout(new GridLayoutManager(2, 1));
-    this.add(headerPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
-    this.add(contentPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW
-    ));
+    this.add(
+        headerPanel,
+        GridConstraintUtils.buildGridConstraint(
+            0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    this.add(
+        contentPanel,
+        GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     this.setPreferredSize(new Dimension(825, 1000));
   }
@@ -64,7 +68,7 @@ public class DevToolsPanel extends JPanel {
     AtomicReference<DefaultMutableTreeNode> previousSelection = new AtomicReference<>();
     operationGroupComboBox.addActionListener(
         (ActionEvent evt) -> {
-          if(Objects.nonNull(previousSelection.get())) {
+          if (Objects.nonNull(previousSelection.get())) {
             DefaultMutableTreeNode previousNode = previousSelection.get();
             if (previousNode.isLeaf() && previousNode.getUserObject() instanceof Operation) {
               Operation operation = (Operation) previousNode.getUserObject();
@@ -73,7 +77,8 @@ public class DevToolsPanel extends JPanel {
           }
           DefaultMutableTreeNode treeNode =
               (DefaultMutableTreeNode) operationGroupComboBox.getSelectedItem();
-          if (Objects.nonNull(treeNode) && treeNode.isLeaf()
+          if (Objects.nonNull(treeNode)
+              && treeNode.isLeaf()
               && treeNode.getUserObject() instanceof Operation) {
             Operation operation = (Operation) treeNode.getUserObject();
             operation.reset();

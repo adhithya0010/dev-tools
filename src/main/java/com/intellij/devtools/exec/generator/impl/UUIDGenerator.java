@@ -44,7 +44,7 @@ public class UUIDGenerator extends Generator {
     Map<String, Object> parameterResult = getParameterResult();
     int count = (int) parameterResult.get(COUNT_PARAMETER_NAME);
     StringJoiner sj = new StringJoiner("\n");
-    while(count-- > 0) {
+    while (count-- > 0) {
       sj.add(UUID.randomUUID().toString());
     }
     return sj.toString();
@@ -52,14 +52,15 @@ public class UUIDGenerator extends Generator {
 
   @Override
   public List<ParameterGroup> getParameterGroups() {
-    Parameter countParameter = Parameter.builder()
-        .name(COUNT_PARAMETER_NAME)
-        .label("Count")
-        .type(Type.NUMBER)
-        .defaultValue("1")
-        .minValue(1)
-        .maxValue(Long.MAX_VALUE)
-        .build();
+    Parameter countParameter =
+        Parameter.builder()
+            .name(COUNT_PARAMETER_NAME)
+            .label("Count")
+            .type(Type.NUMBER)
+            .defaultValue("1")
+            .minValue(1)
+            .maxValue(Long.MAX_VALUE)
+            .build();
     return List.of(ParameterGroup.builder().parameters(List.of(countParameter)).build());
   }
 }

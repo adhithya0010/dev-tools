@@ -6,8 +6,7 @@ import java.util.Objects;
 
 public class Base64Utils {
 
-  private Base64Utils() {
-  }
+  private Base64Utils() {}
 
   public static String encode(String data) {
     if (Objects.nonNull(data)) {

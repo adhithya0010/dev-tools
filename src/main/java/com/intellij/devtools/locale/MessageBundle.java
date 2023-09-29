@@ -17,23 +17,26 @@ public class MessageBundle extends DynamicBundle {
   }
 
   private static String getPathToBundle() {
-//    if(Boolean.parseBoolean(System.getProperty("ide.test.execution"))) {
-//      return "locale/test_messages";
-//    } else {
-//      return "locale/messages";
-//    }
+    //    if(Boolean.parseBoolean(System.getProperty("ide.test.execution"))) {
+    //      return "locale/test_messages";
+    //    } else {
+    //      return "locale/messages";
+    //    }
     return "locale/messages";
   }
 
   @Override
-  protected ResourceBundle findBundle(@NotNull String pathToBundle, @NotNull ClassLoader baseLoader,
+  protected ResourceBundle findBundle(
+      @NotNull String pathToBundle,
+      @NotNull ClassLoader baseLoader,
       @NotNull ResourceBundle.Control control) {
     ResourceBundle base = super.findBundle(pathToBundle, baseLoader, control);
     Locale ideLocale = DynamicBundle.getLocale();
     if (!ideLocale.equals(Locale.ENGLISH)) {
       // load your bundle from baseName_<language>.properties, e.g. "baseName_zh.properties"
       String localizedPath = pathToBundle + "_" + ideLocale.getLanguage();
-      ResourceBundle localeBundle = super.findBundle(localizedPath, MessageBundle.class.getClassLoader(), control);
+      ResourceBundle localeBundle =
+          super.findBundle(localizedPath, MessageBundle.class.getClassLoader(), control);
       if (localeBundle != null && !base.equals(localeBundle)) {
         setParent(localeBundle, base);
         return localeBundle;
@@ -56,12 +59,13 @@ public class MessageBundle extends DynamicBundle {
     }
   }
 
-  public static String get(@PropertyKey(resourceBundle = "locale.messages") String key, Object... params) {
+  public static String get(
+      @PropertyKey(resourceBundle = "locale.messages") String key, Object... params) {
     return getBundle().messageOrDefault(key, key, params);
   }
 
   public static MessageBundle getBundle() {
-    if(bundle == null) {
+    if (bundle == null) {
       bundle = new MessageBundle();
     }
     return bundle;

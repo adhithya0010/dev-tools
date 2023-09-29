@@ -22,8 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class JsonUtils {
 
-  private JsonUtils() {
-  }
+  private JsonUtils() {}
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
@@ -35,7 +34,7 @@ public class JsonUtils {
   }
 
   public static String minify(String data) {
-    if(StringUtils.isEmpty(data)) {
+    if (StringUtils.isEmpty(data)) {
       return null;
     }
     try {
@@ -48,7 +47,7 @@ public class JsonUtils {
   }
 
   public static String prettify(String data) {
-    if(StringUtils.isEmpty(data)) {
+    if (StringUtils.isEmpty(data)) {
       return null;
     }
     try {
@@ -61,7 +60,7 @@ public class JsonUtils {
   }
 
   public static String toYaml(String data) {
-    if(StringUtils.isEmpty(data)) {
+    if (StringUtils.isEmpty(data)) {
       return "";
     }
     try {
@@ -74,7 +73,7 @@ public class JsonUtils {
   }
 
   public static String toProperties(String data) {
-    if(StringUtils.isEmpty(data)) {
+    if (StringUtils.isEmpty(data)) {
       return "";
     }
     try {

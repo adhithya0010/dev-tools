@@ -15,14 +15,14 @@ public class BaseUITest {
   @BeforeAll
   public static void initializeAll(RemoteRobot remoteRobot) {
     ProjectSteps projectSteps = ProjectSteps.getInstance(remoteRobot);
-//    projectSteps.createNewJavaProject();
-//    ToolPanelSteps.getInstance(remoteRobot).openDevToolsPanel();
+    //    projectSteps.createNewJavaProject();
+    //    ToolPanelSteps.getInstance(remoteRobot).openDevToolsPanel();
   }
 
   @AfterAll
   public static void cleanUpTest(RemoteRobot remoteRobot) {
     ProjectSteps projectSteps = ProjectSteps.getInstance(remoteRobot);
-//    projectSteps.closeProject();
+    //    projectSteps.closeProject();
   }
 
   @BeforeEach

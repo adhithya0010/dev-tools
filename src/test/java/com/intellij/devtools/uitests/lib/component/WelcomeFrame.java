@@ -21,18 +21,20 @@ public class WelcomeFrame extends CommonContainerFixture {
 
   private RemoteRobot remoteRobot;
 
-  public WelcomeFrame(
-      @NotNull RemoteRobot remoteRobot,
-      @NotNull RemoteComponent remoteComponent) {
+  public WelcomeFrame(@NotNull RemoteRobot remoteRobot, @NotNull RemoteComponent remoteComponent) {
     super(remoteRobot, remoteComponent);
     this.remoteRobot = remoteRobot;
   }
 
   public ActionLinkFixture getCreateNewProjectLink() {
-    return actionLink(byXpath(NEW_PROJECT_LINK.getDescription(), NEW_PROJECT_LINK.getXPath()), NEW_PROJECT_LINK.getDuration());
+    return actionLink(
+        byXpath(NEW_PROJECT_LINK.getDescription(), NEW_PROJECT_LINK.getXPath()),
+        NEW_PROJECT_LINK.getDuration());
   }
 
   public JButtonFixture getCreateNewProjectButtonLink() {
-    return button(byXpath(CREATE_PROJECT_LINK.getDescription(), CREATE_PROJECT_LINK.getXPath()), Duration.of(3, ChronoUnit.SECONDS));
+    return button(
+        byXpath(CREATE_PROJECT_LINK.getDescription(), CREATE_PROJECT_LINK.getXPath()),
+        Duration.of(3, ChronoUnit.SECONDS));
   }
 }

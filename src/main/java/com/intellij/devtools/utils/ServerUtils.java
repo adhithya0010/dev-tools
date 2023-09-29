@@ -1,8 +1,8 @@
 package com.intellij.devtools.utils;
 
+import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.component.table.MockMetadata;
 import com.intellij.devtools.exec.HttpMethod;
-import com.intellij.devtools.component.table.InvocationsModel;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -16,22 +16,30 @@ public class ServerUtils {
   private static final Map<String, MockMetadata> serverMetaMap = new HashMap<>();
   private static final Map<Integer, Server> serverMap = new HashMap<>();
 
-  private ServerUtils() {
-  }
+  private ServerUtils() {}
 
-  public static MockMetadata startServer(InvocationsModel invocationsModel, String path, String port, HttpMethod httpMethod,
-      String responseCode, String responseHeaders, String responseBody) {
+  public static MockMetadata startServer(
+      InvocationsModel invocationsModel,
+      String path,
+      String port,
+      HttpMethod httpMethod,
+      String responseCode,
+      String responseHeaders,
+      String responseBody) {
     int portValue = Integer.parseInt(port);
     int statusValue = Integer.parseInt(responseCode);
-    MockMetadata mockMetadata = new MockMetadata(path, portValue, httpMethod, responseCode, responseHeaders, responseBody);
+    MockMetadata mockMetadata =
+        new MockMetadata(path, portValue, httpMethod, responseCode, responseHeaders, responseBody);
 
     serverMetaMap.put(mockMetadata.id, mockMetadata);
     serverMap.computeIfAbsent(portValue, Server::new);
 
     Server server = serverMap.get(portValue);
     server.createContext(
-        mockMetadata.id, path, new HttpRequestHandler(invocationsModel, httpMethod, statusValue, responseHeaders,
-            responseBody));
+        mockMetadata.id,
+        path,
+        new HttpRequestHandler(
+            invocationsModel, httpMethod, statusValue, responseHeaders, responseBody));
     return mockMetadata;
   }
 
@@ -39,7 +47,7 @@ public class ServerUtils {
     MockMetadata mockMetadata = serverMetaMap.get(id);
     Server server = serverMap.get(mockMetadata.port);
     server.removeContext(id);
-    if(server.isServerEmpty()) {
+    if (server.isServerEmpty()) {
       server.shutdown();
       serverMap.remove(mockMetadata.port);
       serverMetaMap.remove(id);

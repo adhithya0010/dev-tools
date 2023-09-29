@@ -17,6 +17,8 @@ public class Parameter {
   private long maxValue;
 
   public enum Type {
-    TEXT, NUMBER, SELECT;
+    TEXT,
+    NUMBER,
+    SELECT;
   }
 }

@@ -61,15 +61,14 @@ public class TextEscaper extends Converter {
 
   @Override
   public List<ParameterGroup> getParameterGroups() {
-    Parameter typeParameter = Parameter.builder()
-        .name("type")
-        .label("Type")
-        .type(Type.SELECT)
-        .values(Arrays.asList("Java", "HTML", "CSV", "XML", "Javascript"))
-        .defaultValue("Java")
-        .build();
-    return List.of(ParameterGroup.builder()
-            .parameters(List.of(typeParameter))
-        .build());
+    Parameter typeParameter =
+        Parameter.builder()
+            .name("type")
+            .label("Type")
+            .type(Type.SELECT)
+            .values(Arrays.asList("Java", "HTML", "CSV", "XML", "Javascript"))
+            .defaultValue("Java")
+            .build();
+    return List.of(ParameterGroup.builder().parameters(List.of(typeParameter)).build());
   }
 }

@@ -19,7 +19,8 @@ public class JsonMinifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataText(FileUtils.getData(PRETTIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(MINIFIED_SMALL_VALID), formatterSteps.getResultText());
+    Assertions.assertEquals(
+        FileUtils.getData(MINIFIED_SMALL_VALID), formatterSteps.getResultText());
   }
 
   @Test
@@ -28,7 +29,9 @@ public class JsonMinifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataTextViaPasteKeyboardShortcut(FileUtils.getData(PRETTIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(MINIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyKeyboardShortcut());
+    Assertions.assertEquals(
+        FileUtils.getData(MINIFIED_SMALL_VALID),
+        formatterSteps.getResultTextByCopyKeyboardShortcut());
   }
 
   @Test
@@ -37,7 +40,8 @@ public class JsonMinifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataTextViaPasteButton(FileUtils.getData(PRETTIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(MINIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyButton());
+    Assertions.assertEquals(
+        FileUtils.getData(MINIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyButton());
   }
 
   @Test

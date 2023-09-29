@@ -13,15 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public class StripeButtonFixture extends ComponentFixture {
 
   public StripeButtonFixture(
-      @NotNull RemoteRobot remoteRobot,
-      @NotNull RemoteComponent remoteComponent) {
+      @NotNull RemoteRobot remoteRobot, @NotNull RemoteComponent remoteComponent) {
     super(remoteRobot, remoteComponent);
   }
 
   // //div[@text='Dev Tools']
   public static Locator byTitle(String title) {
-    return byXpath(String.format("title %s", title),
-        String.format("//div[@text='%s']", title));
+    return byXpath(String.format("title %s", title), String.format("//div[@text='%s']", title));
   }
-
 }

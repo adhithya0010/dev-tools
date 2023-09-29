@@ -20,7 +20,7 @@ public class TreeComboBox extends ComboBox<DefaultMutableTreeNode> {
   @Override
   public void setSelectedItem(Object anObject) {
     if (anObject instanceof DefaultMutableTreeNode) {
-      Object userObject = ((DefaultMutableTreeNode)anObject).getUserObject();
+      Object userObject = ((DefaultMutableTreeNode) anObject).getUserObject();
       if (!(userObject instanceof Operation)) {
         this.showPopup = true;
         return;

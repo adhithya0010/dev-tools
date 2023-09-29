@@ -5,10 +5,10 @@ import java.awt.GridBagConstraints;
 
 public class GridConstraintUtils {
 
-  private GridConstraintUtils() {
-  }
+  private GridConstraintUtils() {}
 
-  public static final int CAN_SHRINK_AND_GROW = GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_CAN_SHRINK;
+  public static final int CAN_SHRINK_AND_GROW =
+      GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_CAN_SHRINK;
 
   public static GridConstraints buildGridConstraint(int row, int column, int fill) {
     GridConstraints gc = new GridConstraints();
@@ -18,15 +18,13 @@ public class GridConstraintUtils {
     return gc;
   }
 
-  public static GridConstraints buildGridConstraint(int row, int column, int rowSpan, int colSpan,
-      int fill,
-      int sizePolicy) {
+  public static GridConstraints buildGridConstraint(
+      int row, int column, int rowSpan, int colSpan, int fill, int sizePolicy) {
     return buildGridConstraint(row, column, rowSpan, colSpan, fill, sizePolicy, sizePolicy);
   }
 
-  public static GridConstraints buildGridConstraint(int row, int column, int rowSpan, int colSpan,
-      int fill,
-      int vSizePolicy, int hSizePolicy) {
+  public static GridConstraints buildGridConstraint(
+      int row, int column, int rowSpan, int colSpan, int fill, int vSizePolicy, int hSizePolicy) {
     GridConstraints gc = new GridConstraints();
     gc.setRow(row);
     gc.setColumn(column);
@@ -46,7 +44,8 @@ public class GridConstraintUtils {
     return gbc;
   }
 
-  public static GridBagConstraints buildGridBagConstraint(int gridx, int gridy, double weightx, double weighty, int fill) {
+  public static GridBagConstraints buildGridBagConstraint(
+      int gridx, int gridy, double weightx, double weighty, int fill) {
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = gridx;
     gbc.gridy = gridy;
