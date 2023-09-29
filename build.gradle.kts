@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.intellij.devtools"
-version = "1.0"
+version = "1.1"
 val channel: String = "default"
 
 repositories {

@@ -14,6 +14,9 @@ This is a simple tool that could be helpful in your everyday development workflo
 - UUID generate
 - Timestamp generate
 - Mock server
+- Sort lines 
+- Remove duplicate lines 
+- Text diff
 
 ## Screenshots
 
