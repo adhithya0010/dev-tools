@@ -8,7 +8,9 @@ public abstract class Operation extends JBPanel<Operation> implements BaseNode, 
 
   public abstract OperationGroup getOperationGroup();
 
-  public abstract void reset();
+  public void reset() {
+
+  }
 
   public void persistState() {
 
