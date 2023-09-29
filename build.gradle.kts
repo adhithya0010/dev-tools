@@ -34,6 +34,7 @@ dependencies {
 dependencies {
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.apache.commons:commons-text:1.10.0")
     implementation("pl.jalokim.propertiestojson:java-properties-to-json:5.3.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
     implementation("com.graphql-java:graphql-java:21.1")

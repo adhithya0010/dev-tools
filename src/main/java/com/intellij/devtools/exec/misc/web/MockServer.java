@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package com.intellij.devtools.exec.misc;
+package com.intellij.devtools.exec.misc.web;
 
 import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.component.table.MockMetadata;
@@ -226,7 +226,7 @@ public class MockServer extends Operation {
 
   @Override
   public OperationCategory getOperationCategory() {
-    return null;
+    return OperationCategory.WEB;
   }
 
   @Override
