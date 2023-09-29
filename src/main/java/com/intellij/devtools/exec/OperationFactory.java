@@ -46,7 +46,10 @@ public class OperationFactory {
 
   public List<Operation> getAllConverters() {
     return List.of(
-        new JsonPropertiesConverter(), new JsonYamlConverter(), new YamlPropertiesConverter(), new TextEscaper());
+        new JsonPropertiesConverter(),
+        new JsonYamlConverter(),
+        new YamlPropertiesConverter(),
+        new TextEscaper());
   }
 
   public List<Operation> getAllEncoders() {
@@ -55,8 +58,12 @@ public class OperationFactory {
 
   public List<Operation> getAllFormatters() {
     return List.of(
-        new JsonPrettifier(), new JsonMinifier(), new XmlPrettifier(), new XmlMinifier(), new GraphqlPrettifier(), new GraphqlMinifier()
-    );
+        new JsonPrettifier(),
+        new JsonMinifier(),
+        new XmlPrettifier(),
+        new XmlMinifier(),
+        new GraphqlPrettifier(),
+        new GraphqlMinifier());
   }
 
   public List<Operation> getAllGenerators() {

@@ -22,8 +22,7 @@ import javax.swing.text.JTextComponent;
 
 public class ComponentUtils {
 
-  private ComponentUtils() {
-  }
+  private ComponentUtils() {}
 
   public static void refreshComponent(JComponent jComponent) {
     jComponent.revalidate();
@@ -40,7 +39,9 @@ public class ComponentUtils {
 
   public static JScrollPane attachScroll(JComponent jComponent) {
     return new JBScrollPane(
-        jComponent, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jComponent,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
   }
 
   public static DocumentListener getDocumentChangeListener(
@@ -54,26 +55,26 @@ public class ComponentUtils {
   }
 
   public static Object getValue(Component component) {
-    if(component instanceof JTextField) {
+    if (component instanceof JTextField) {
       return ((JTextField) component).getText();
     }
-    if(component instanceof JComboBox) {
+    if (component instanceof JComboBox) {
       return ((JComboBox<?>) component).getSelectedItem();
     }
-    if(component instanceof JSpinner) {
-      return ((Double)(((JSpinner) component).getValue())).intValue();
+    if (component instanceof JSpinner) {
+      return ((Double) (((JSpinner) component).getValue())).intValue();
     }
     return null;
   }
 
   public static void setValue(Component component, Object value) {
-    if(Objects.isNull(component) || Objects.isNull(value)) {
+    if (Objects.isNull(component) || Objects.isNull(value)) {
       return;
     }
-    if(component instanceof JTextField) {
+    if (component instanceof JTextField) {
       ((JTextField) component).setText((String) value);
     }
-    if(component instanceof JComboBox) {
+    if (component instanceof JComboBox) {
       ((JComboBox<?>) component).setSelectedItem(value);
     }
   }
@@ -85,7 +86,12 @@ public class ComponentUtils {
         component = new JTextField();
         break;
       case NUMBER:
-        SpinnerModel spinnerNumberModel = new SpinnerNumberModel(Integer.parseInt(parameter.getDefaultValue()), parameter.getMinValue(), parameter.getMaxValue(), 1);
+        SpinnerModel spinnerNumberModel =
+            new SpinnerNumberModel(
+                Integer.parseInt(parameter.getDefaultValue()),
+                parameter.getMinValue(),
+                parameter.getMaxValue(),
+                1);
         component = new JSpinner(spinnerNumberModel);
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor((JSpinner) component, "#");
         ((JSpinner) component).setEditor(editor);

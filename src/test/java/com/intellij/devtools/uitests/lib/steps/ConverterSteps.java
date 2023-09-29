@@ -25,24 +25,30 @@ public class ConverterSteps {
   }
 
   public void inputFromTextByKeyboard(String text) {
-    step("input from text via keyboard", () -> {
-      TextAreaFixture textArea = getTextArea("from-text-area");
-      textArea.inputTextViaKeyboard(text);
-    });
+    step(
+        "input from text via keyboard",
+        () -> {
+          TextAreaFixture textArea = getTextArea("from-text-area");
+          textArea.inputTextViaKeyboard(text);
+        });
   }
 
   public void inputFromTextByShortcut(String text) {
-    step("input from text via shortcut", () -> {
-      TextAreaFixture textArea = getTextArea("from-text-area");
-      textArea.inputTextViaPasteShortcut(text);
-    });
+    step(
+        "input from text via shortcut",
+        () -> {
+          TextAreaFixture textArea = getTextArea("from-text-area");
+          textArea.inputTextViaPasteShortcut(text);
+        });
   }
 
   public void inputFromTextByButton(String text) {
-    step("input from text via button", () -> {
-      ClipboardUtils.copy(text);
-      clickFromPasteButton();
-    });
+    step(
+        "input from text via button",
+        () -> {
+          ClipboardUtils.copy(text);
+          clickFromPasteButton();
+        });
   }
 
   public String getFromTextUsingObject() {
@@ -60,24 +66,30 @@ public class ConverterSteps {
   }
 
   public void inputToTextByKeyboard(String text) {
-    step("input from text via keyboard", () -> {
-      TextAreaFixture textArea = getTextArea("to-text-area");
-      textArea.inputTextViaKeyboard(text);
-    });
+    step(
+        "input from text via keyboard",
+        () -> {
+          TextAreaFixture textArea = getTextArea("to-text-area");
+          textArea.inputTextViaKeyboard(text);
+        });
   }
 
   public void inputToTextByShortcut(String text) {
-    step("input from text via shortcut", () -> {
-      TextAreaFixture textArea = getTextArea("to-text-area");
-      textArea.inputTextViaPasteShortcut(text);
-    });
+    step(
+        "input from text via shortcut",
+        () -> {
+          TextAreaFixture textArea = getTextArea("to-text-area");
+          textArea.inputTextViaPasteShortcut(text);
+        });
   }
 
   public void inputToTextByButton(String text) {
-    step("input from text via button", () -> {
-      ClipboardUtils.copy(text);
-      clickToPasteButton();
-    });
+    step(
+        "input from text via button",
+        () -> {
+          ClipboardUtils.copy(text);
+          clickToPasteButton();
+        });
   }
 
   public String getToTextUsingObject() {
@@ -119,6 +131,7 @@ public class ConverterSteps {
   }
 
   private JButtonFixture getButtonByName(String name) {
-    return remoteRobot.find(JButtonFixture.class, byXpath(String.format("//div[@name='%s']", name)));
+    return remoteRobot.find(
+        JButtonFixture.class, byXpath(String.format("//div[@name='%s']", name)));
   }
 }

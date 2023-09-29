@@ -54,11 +54,10 @@ public abstract class Generator extends Operation {
     configureComponents();
     configureLayout();
     configureListeners();
-    parameterMap = Optional.ofNullable(getParameterGroups())
-        .orElseGet(ArrayList::new)
-        .stream()
-        .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-        .collect(Collectors.groupingBy(Parameter::getName));
+    parameterMap =
+        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
+            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
+            .collect(Collectors.groupingBy(Parameter::getName));
   }
 
   protected Map<String, Object> getParameterResult() {
@@ -71,14 +70,16 @@ public abstract class Generator extends Operation {
   public void restoreState() {
     resultTextArea.setText(resultText);
     for (Component panel : parametersPanel.getComponents()) {
-      if(panel instanceof JPanel) {
+      if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
         Component component = components[1];
-        if(component instanceof Spacer) {
+        if (component instanceof Spacer) {
           continue;
         }
         String name = component.getName();
-        ComponentUtils.setValue(component, parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
+        ComponentUtils.setValue(
+            component,
+            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
       }
     }
   }
@@ -109,17 +110,21 @@ public abstract class Generator extends Operation {
     buttonsPanel.add(clearButton);
 
     headerPanel.setLayout(new GridLayoutManager(1, 2));
-    headerPanel.add(new JLabel("Generate"), buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_CAN_GROW));
+    headerPanel.add(
+        new JLabel("Generate"),
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_CAN_GROW));
     headerPanel.add(buttonsPanel, buildGridConstraint(0, 1, 1, 1, FILL_NONE, SIZEPOLICY_FIXED));
 
     resultsPanel.setLayout(new GridBagLayout());
     resultsPanel.add(resultTextArea, buildGridBagConstraint(0, 0, 1.0, 1.0, 1));
 
     setLayout(new GridLayoutManager(4, 1));
-    if(isParametersAdded) {
+    if (isParametersAdded) {
       add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     }
-    add(headerPanel,  buildGridConstraint(1, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    add(
+        headerPanel,
+        buildGridConstraint(1, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     add(resultsPanel, buildGridConstraint(2, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
     add(new Spacer(), buildGridConstraint(3, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
   }
@@ -132,8 +137,9 @@ public abstract class Generator extends Operation {
         });
     copyButton.addActionListener(
         (evt) -> {
-          String copyText = Optional.ofNullable(resultTextArea.getSelectedText())
-              .orElseGet(resultTextArea::getText);
+          String copyText =
+              Optional.ofNullable(resultTextArea.getSelectedText())
+                  .orElseGet(resultTextArea::getText);
           ClipboardUtils.copy(copyText);
         });
     generateAndCopyButton.addActionListener(

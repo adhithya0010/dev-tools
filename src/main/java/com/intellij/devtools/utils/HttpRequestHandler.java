@@ -1,9 +1,9 @@
 package com.intellij.devtools.utils;
 
+import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.exec.HttpMethod;
 import com.intellij.devtools.exec.Invocation;
 import com.intellij.devtools.exec.Invocation.InvocationBuilder;
-import com.intellij.devtools.component.table.InvocationsModel;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -29,8 +29,12 @@ public class HttpRequestHandler implements HttpHandler {
   private final String responseHeaders;
   private final String responseBody;
 
-  public HttpRequestHandler(InvocationsModel invocationsModel, HttpMethod method, int responseCode,
-      String responseHeaders, String responseBody) {
+  public HttpRequestHandler(
+      InvocationsModel invocationsModel,
+      HttpMethod method,
+      int responseCode,
+      String responseHeaders,
+      String responseBody) {
     this.invocationsModel = invocationsModel;
     this.method = method;
     this.responseCode = responseCode;
@@ -42,21 +46,22 @@ public class HttpRequestHandler implements HttpHandler {
   @Override
   public void handle(HttpExchange exchange) throws IOException {
 
-    InvocationBuilder invocationBuilder = Invocation.builder()
-        .time(Instant.now())
-        .path(exchange.getRequestURI().getPath())
-        .httpMethod(HttpMethod.fromString(exchange.getRequestMethod()))
-        .requestHeaders(toString(exchange.getRequestHeaders()));
+    InvocationBuilder invocationBuilder =
+        Invocation.builder()
+            .time(Instant.now())
+            .path(exchange.getRequestURI().getPath())
+            .httpMethod(HttpMethod.fromString(exchange.getRequestMethod()))
+            .requestHeaders(toString(exchange.getRequestHeaders()));
 
     if (!method.getValue().equalsIgnoreCase(exchange.getRequestMethod())) {
-      invocationBuilder.responseCode(400)
-              .responseBody(OPERATION_NOT_SUPPORTED);
+      invocationBuilder.responseCode(400).responseBody(OPERATION_NOT_SUPPORTED);
       exchange.sendResponseHeaders(400, OPERATION_NOT_SUPPORTED.length());
       try (OutputStream os = exchange.getResponseBody()) {
         os.write(OPERATION_NOT_SUPPORTED.getBytes(StandardCharsets.UTF_8));
       }
     } else {
-      invocationBuilder.responseCode(responseCode)
+      invocationBuilder
+          .responseCode(responseCode)
           .responseHeaders(responseHeaders)
           .responseBody(responseBody);
       exchange.getResponseHeaders().putAll(headers);
@@ -83,9 +88,10 @@ public class HttpRequestHandler implements HttpHandler {
 
   private static String toString(Headers headers) {
     StringJoiner sj = new StringJoiner("\n");
-    headers.forEach((key, values) -> {
-      sj.add(key + ":" + values.get(0));
-    });
+    headers.forEach(
+        (key, values) -> {
+          sj.add(key + ":" + values.get(0));
+        });
     return sj.toString();
   }
 }

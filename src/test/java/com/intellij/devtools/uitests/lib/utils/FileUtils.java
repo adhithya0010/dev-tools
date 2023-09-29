@@ -10,15 +10,14 @@ import java.util.Objects;
 
 public class FileUtils {
 
-  private FileUtils() {
-  }
+  private FileUtils() {}
 
   public static String getData(String filePath) {
     URL fileUrl = FileUtils.class.getClassLoader().getResource(filePath);
     try {
-      if(Objects.nonNull(fileUrl)) {
+      if (Objects.nonNull(fileUrl)) {
         File file = new File(fileUrl.toURI());
-        if(file.exists()) {
+        if (file.exists()) {
           byte[] bytes = Files.readAllBytes(Path.of(file.toURI()));
           return new String(bytes);
         }
@@ -28,5 +27,4 @@ public class FileUtils {
     }
     throw new RuntimeException("File Not found");
   }
-
 }

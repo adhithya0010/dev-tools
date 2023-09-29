@@ -11,8 +11,7 @@ import java.util.Optional;
 
 public class ClipboardUtils {
 
-  private ClipboardUtils() {
-  }
+  private ClipboardUtils() {}
 
   public static void copy(String data) {
     StringSelection stringSelection = new StringSelection(data);

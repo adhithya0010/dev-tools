@@ -17,8 +17,7 @@ public class IdeaFrame extends CommonContainerFixture {
 
   private RemoteRobot remoteRobot;
 
-  public IdeaFrame(@NotNull RemoteRobot remoteRobot,
-      @NotNull RemoteComponent remoteComponent) {
+  public IdeaFrame(@NotNull RemoteRobot remoteRobot, @NotNull RemoteComponent remoteComponent) {
     super(remoteRobot, remoteComponent);
     this.remoteRobot = remoteRobot;
   }

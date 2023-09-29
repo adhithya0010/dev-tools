@@ -14,8 +14,8 @@ public class TextAreaFixture {
   private final Keyboard keyboard;
 
   private TextAreaFixture(RemoteRobot remoteRobot, String name) {
-    this.textArea = remoteRobot.find(JTextAreaFixture.class,
-        byXpath(String.format("//div[@name='%s']", name)));
+    this.textArea =
+        remoteRobot.find(JTextAreaFixture.class, byXpath(String.format("//div[@name='%s']", name)));
     this.keyboard = new Keyboard(remoteRobot);
   }
 

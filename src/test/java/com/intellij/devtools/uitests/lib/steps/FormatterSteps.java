@@ -26,24 +26,30 @@ public class FormatterSteps {
   }
 
   public void inputDataText(String text) {
-    step("input text via keyboard", () -> {
-      TextAreaFixture textArea = getDataTextArea();
-      textArea.inputTextViaKeyboard(text);
-    });
+    step(
+        "input text via keyboard",
+        () -> {
+          TextAreaFixture textArea = getDataTextArea();
+          textArea.inputTextViaKeyboard(text);
+        });
   }
 
   public void inputDataTextViaPasteKeyboardShortcut(String text) {
-    step("input text via keyboard", () -> {
-      TextAreaFixture textArea = getDataTextArea();
-      textArea.inputTextViaPasteShortcut(text);
-    });
+    step(
+        "input text via keyboard",
+        () -> {
+          TextAreaFixture textArea = getDataTextArea();
+          textArea.inputTextViaPasteShortcut(text);
+        });
   }
 
   public void inputDataTextViaPasteButton(String text) {
-    step("input text via paste button", () -> {
-      ClipboardUtils.copy(text);
-      getPasteButton().click();
-    });
+    step(
+        "input text via paste button",
+        () -> {
+          ClipboardUtils.copy(text);
+          getPasteButton().click();
+        });
   }
 
   public String getResultText() {
@@ -70,12 +76,12 @@ public class FormatterSteps {
   }
 
   private JButtonFixture getPasteButton() {
-    return remoteRobot.find(JButtonFixture.class,
-        byXpath(String.format("//div[@text='%s']", "Paste")));
+    return remoteRobot.find(
+        JButtonFixture.class, byXpath(String.format("//div[@text='%s']", "Paste")));
   }
 
   private JButtonFixture getCopyButton() {
-    return remoteRobot.find(JButtonFixture.class,
-        byXpath(String.format("//div[@text='%s']", "Copy")));
+    return remoteRobot.find(
+        JButtonFixture.class, byXpath(String.format("//div[@text='%s']", "Copy")));
   }
 }

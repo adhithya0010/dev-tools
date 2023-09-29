@@ -7,7 +7,10 @@ import java.time.Duration;
 import java.util.Optional;
 
 public enum Actions {
-  NEW_PROJECT_LINK("New Project", "//div[(@class='MainButton' and @text='New Project') or (@accessiblename='New Project' and @class='JButton')]", THREE_SECONDS),
+  NEW_PROJECT_LINK(
+      "New Project",
+      "//div[(@class='MainButton' and @text='New Project') or (@accessiblename='New Project' and @class='JButton')]",
+      THREE_SECONDS),
   CREATE_PROJECT_LINK("Create", "//div[@text.key='button.create']", THREE_SECONDS),
   ;
 

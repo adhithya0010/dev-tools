@@ -2,9 +2,7 @@ package com.intellij.devtools.uitests.lib.steps;
 
 public class GeneratorSteps {
 
-  public void clickGenerate() {
-
-  }
+  public void clickGenerate() {}
 
   public String clickCopy() {
     return null;
@@ -17,5 +15,4 @@ public class GeneratorSteps {
   public String getGeneratedText() {
     return null;
   }
-
 }

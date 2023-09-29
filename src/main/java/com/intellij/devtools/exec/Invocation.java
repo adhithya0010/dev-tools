@@ -1,6 +1,5 @@
 package com.intellij.devtools.exec;
 
-import com.intellij.devtools.exec.HttpMethod;
 import java.time.Instant;
 import lombok.Builder;
 

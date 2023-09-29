@@ -6,8 +6,7 @@ public enum Durations {
   THREE_SECONDS(Duration.ofSeconds(3)),
   FIVE_SECONDS(Duration.ofSeconds(5)),
   TEN_SECONDS(Duration.ofSeconds(10)),
-  DEFAULT(Duration.ofSeconds(5))
-  ;
+  DEFAULT(Duration.ofSeconds(5));
   private final java.time.Duration duration;
 
   Durations(java.time.Duration duration) {

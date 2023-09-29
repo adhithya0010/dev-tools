@@ -96,13 +96,15 @@ public class MockServer extends Operation {
     this.responseCodeTextField = new JTextField();
     this.methodComboBox = new ComboBox(HttpMethod.values());
     this.methodComboBox.setSelectedItem(HttpMethod.GET);
-    this.methodComboBox.setRenderer(new DefaultListCellRenderer() {
-      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        this.setText(((HttpMethod)value).getValue());
-        return this;
-      }
-    });
+    this.methodComboBox.setRenderer(
+        new DefaultListCellRenderer() {
+          public Component getListCellRendererComponent(
+              JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            this.setText(((HttpMethod) value).getValue());
+            return this;
+          }
+        });
     this.responseHeadersTextArea = new JTextArea();
     this.responseBodyTextArea = new JTextArea();
     this.responseBodyTextArea.setBorder(Borders.empty(4));
@@ -126,7 +128,9 @@ public class MockServer extends Operation {
     PromptSupport.setPrompt("Path to mock /test/abc", this.pathTextField);
     PromptSupport.setPrompt("Port for the mock server", this.portTextField);
     PromptSupport.setPrompt("Response status code value", this.responseCodeTextField);
-    PromptSupport.setPrompt("Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json", this.responseHeadersTextArea);
+    PromptSupport.setPrompt(
+        "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json",
+        this.responseHeadersTextArea);
     PromptSupport.setPrompt("Response body data", this.responseBodyTextArea);
   }
 
@@ -146,72 +150,126 @@ public class MockServer extends Operation {
 
   private JPanel encloseForVertical(JComponent component) {
     JPanel jPanel = new JPanel(new GridLayoutManager(2, 1));
-    jPanel.add(this.encloseForLeft(component), GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 3));
+    jPanel.add(
+        this.encloseForLeft(component),
+        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 3));
     jPanel.add(new Spacer(), GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
     return jPanel;
   }
 
   private void configureLayout() {
     this.parameterPanel.setLayout(new GridLayoutManager(7, 2));
-    this.parameterPanel.add(this.encloseForVertical(this.parametersLabel), GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
-    this.parameterPanel.add(this.encloseForRight(this.startServerButton), GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 1, 3, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.pathLabel), GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 1, 0));
-    this.parameterPanel.add(this.pathTextField, GridConstraintUtils.buildGridConstraint(1, 1, 1, 1, 1, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.portLabel), GridConstraintUtils.buildGridConstraint(2, 0, 1, 1, 1, 0));
-    this.parameterPanel.add(this.portTextField, GridConstraintUtils.buildGridConstraint(2, 1, 1, 1, 1, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.responseCodeLabel), GridConstraintUtils.buildGridConstraint(3, 0, 1, 1, 1, 0));
-    this.parameterPanel.add(this.responseCodeTextField, GridConstraintUtils.buildGridConstraint(3, 1, 1, 1, 1, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.methodLabel), GridConstraintUtils.buildGridConstraint(4, 0, 1, 1, 1, 3, 3));
-    this.parameterPanel.add(this.methodComboBox, GridConstraintUtils.buildGridConstraint(4, 1, 1, 1, 1, 3, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.responseHeadersLabel), GridConstraintUtils.buildGridConstraint(5, 0, 1, 1, 3, 3, 3));
-    this.parameterPanel.add(new JScrollPane(this.responseHeadersTextArea), GridConstraintUtils.buildGridConstraint(5, 1, 1, 1, 1, 3, 3));
-    this.parameterPanel.add(this.encloseForVertical(this.responseBodyLabel), GridConstraintUtils.buildGridConstraint(6, 0, 1, 1, 3, 3, 3));
-    this.parameterPanel.add(new JScrollPane(this.responseBodyTextArea), GridConstraintUtils.buildGridConstraint(6, 1, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.parametersLabel),
+        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.encloseForRight(this.startServerButton),
+        GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.pathLabel),
+        GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 1, 0));
+    this.parameterPanel.add(
+        this.pathTextField, GridConstraintUtils.buildGridConstraint(1, 1, 1, 1, 1, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.portLabel),
+        GridConstraintUtils.buildGridConstraint(2, 0, 1, 1, 1, 0));
+    this.parameterPanel.add(
+        this.portTextField, GridConstraintUtils.buildGridConstraint(2, 1, 1, 1, 1, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.responseCodeLabel),
+        GridConstraintUtils.buildGridConstraint(3, 0, 1, 1, 1, 0));
+    this.parameterPanel.add(
+        this.responseCodeTextField, GridConstraintUtils.buildGridConstraint(3, 1, 1, 1, 1, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.methodLabel),
+        GridConstraintUtils.buildGridConstraint(4, 0, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.methodComboBox, GridConstraintUtils.buildGridConstraint(4, 1, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.responseHeadersLabel),
+        GridConstraintUtils.buildGridConstraint(5, 0, 1, 1, 3, 3, 3));
+    this.parameterPanel.add(
+        new JScrollPane(this.responseHeadersTextArea),
+        GridConstraintUtils.buildGridConstraint(5, 1, 1, 1, 1, 3, 3));
+    this.parameterPanel.add(
+        this.encloseForVertical(this.responseBodyLabel),
+        GridConstraintUtils.buildGridConstraint(6, 0, 1, 1, 3, 3, 3));
+    this.parameterPanel.add(
+        new JScrollPane(this.responseBodyTextArea),
+        GridConstraintUtils.buildGridConstraint(6, 1, 1, 1, 1, 3, 3));
     this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 2));
-    this.runningServersHeaderPanel.add(this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
-    this.runningServersHeaderPanel.add(this.stopServerButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
+    this.runningServersHeaderPanel.add(
+        this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
+    this.runningServersHeaderPanel.add(
+        this.stopServerButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
     this.runningServersContentPanel.setLayout(new GridLayoutManager(1, 1));
-    this.runningServersContentPanel.add(new JScrollPane(this.runningServersTable), GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 3, 3));
+    this.runningServersContentPanel.add(
+        new JScrollPane(this.runningServersTable),
+        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 3, 3));
     this.runningServersPanel.setLayout(new GridLayoutManager(2, 1));
-    this.runningServersPanel.add(this.runningServersHeaderPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 0));
-    this.runningServersPanel.add(this.runningServersContentPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
+    this.runningServersPanel.add(
+        this.runningServersHeaderPanel,
+        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 0));
+    this.runningServersPanel.add(
+        this.runningServersContentPanel,
+        GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
     this.historyHeadersPanel.setLayout(new GridLayoutManager(1, 2));
-    this.historyHeadersPanel.add(this.invocationsLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
-    this.historyHeadersPanel.add(this.clearHistoryButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
+    this.historyHeadersPanel.add(
+        this.invocationsLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
+    this.historyHeadersPanel.add(
+        this.clearHistoryButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
     this.historyContentPanel.setLayout(new GridLayoutManager(1, 1));
-    this.historyContentPanel.add(new JScrollPane(this.historyTable), GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 3, 3));
+    this.historyContentPanel.add(
+        new JScrollPane(this.historyTable),
+        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 3, 3));
     this.historyPanel.setLayout(new GridLayoutManager(2, 1));
-    this.historyPanel.add(this.historyHeadersPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 0));
-    this.historyPanel.add(this.historyContentPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
+    this.historyPanel.add(
+        this.historyHeadersPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 0));
+    this.historyPanel.add(
+        this.historyContentPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
     this.setLayout(new GridLayoutManager(3, 1));
     this.add(this.parameterPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0));
-    this.add(this.runningServersPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
+    this.add(
+        this.runningServersPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
     this.add(this.historyPanel, GridConstraintUtils.buildGridConstraint(2, 0, 1, 1, 3, 3, 3));
   }
 
   private void configureListeners() {
-    this.startServerButton.addActionListener((evt) -> {
-      String path = this.pathTextField.getText();
-      String port = this.portTextField.getText();
-      String responseCode = this.responseCodeTextField.getText();
-      HttpMethod httpMethod = (HttpMethod)this.methodComboBox.getSelectedItem();
-      String responseHeaders = this.responseHeadersTextArea.getText();
-      String responseBody = this.responseBodyTextArea.getText();
-      MockMetadata mockMetadata = ServerUtils.startServer(this.invocationsTableModel, path, port, httpMethod, responseCode, responseHeaders, responseBody);
-      this.runningServersTableModel.addRow(mockMetadata);
-    });
-    this.stopServerButton.addActionListener((evt) -> {
-      List<MockMetadata> selectedMockMetadata = this.runningServersTableModel.getSelectedServerMetas();
-      selectedMockMetadata.forEach((mockMetadata) -> {
-        ServerUtils.stopServer(mockMetadata.id);
-        this.runningServersTableModel.removeRow(mockMetadata);
-      });
-      runningServersTableModel.removeSelectedRows();
-    });
+    this.startServerButton.addActionListener(
+        (evt) -> {
+          String path = this.pathTextField.getText();
+          String port = this.portTextField.getText();
+          String responseCode = this.responseCodeTextField.getText();
+          HttpMethod httpMethod = (HttpMethod) this.methodComboBox.getSelectedItem();
+          String responseHeaders = this.responseHeadersTextArea.getText();
+          String responseBody = this.responseBodyTextArea.getText();
+          MockMetadata mockMetadata =
+              ServerUtils.startServer(
+                  this.invocationsTableModel,
+                  path,
+                  port,
+                  httpMethod,
+                  responseCode,
+                  responseHeaders,
+                  responseBody);
+          this.runningServersTableModel.addRow(mockMetadata);
+        });
+    this.stopServerButton.addActionListener(
+        (evt) -> {
+          List<MockMetadata> selectedMockMetadata =
+              this.runningServersTableModel.getSelectedServerMetas();
+          selectedMockMetadata.forEach(
+              (mockMetadata) -> {
+                ServerUtils.stopServer(mockMetadata.id);
+                this.runningServersTableModel.removeRow(mockMetadata);
+              });
+          runningServersTableModel.removeSelectedRows();
+        });
 
-    clearHistoryButton.addActionListener((evt) -> {
-      invocationsTableModel.clear();
-    });
+    clearHistoryButton.addActionListener(
+        (evt) -> {
+          invocationsTableModel.clear();
+        });
   }
 
   @Override

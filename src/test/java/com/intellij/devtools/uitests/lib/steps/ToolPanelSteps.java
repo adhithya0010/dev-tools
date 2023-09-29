@@ -13,8 +13,8 @@ import com.intellij.remoterobot.utils.Keyboard;
 
 public class ToolPanelSteps {
 
-  final private RemoteRobot remoteRobot;
-  final private Keyboard keyboard;
+  private final RemoteRobot remoteRobot;
+  private final Keyboard keyboard;
 
   private ToolPanelSteps(RemoteRobot remoteRobot) {
     this.remoteRobot = remoteRobot;
@@ -24,32 +24,49 @@ public class ToolPanelSteps {
   private static ToolPanelSteps INSTANCE = null;
 
   public static ToolPanelSteps getInstance(RemoteRobot remoteRobot) {
-    if(INSTANCE == null) {
+    if (INSTANCE == null) {
       INSTANCE = new ToolPanelSteps(remoteRobot);
     }
     return INSTANCE;
   }
 
   public void openDevToolsPanel() {
-    step("Open Dev Tools Panel", () -> {
-      ComponentFixture stripeButtonFixture = remoteRobot.find(ComponentFixture.class, StripeButtonFixture.byTitle("Dev Tools"), THREE_SECONDS.getDuration());
-      stripeButtonFixture.click();
-    });
+    step(
+        "Open Dev Tools Panel",
+        () -> {
+          ComponentFixture stripeButtonFixture =
+              remoteRobot.find(
+                  ComponentFixture.class,
+                  StripeButtonFixture.byTitle("Dev Tools"),
+                  THREE_SECONDS.getDuration());
+          stripeButtonFixture.click();
+        });
   }
 
   public void clickCommandComboBox() {
-    step("click command combo box", () -> {
-      ComboBoxFixture comboBoxFixture = remoteRobot.find(ComboBoxFixture.class,
-          byXpath("//div[@class='TreeComboBox']"), THREE_SECONDS.getDuration());
-      comboBoxFixture.click();
-    });
+    step(
+        "click command combo box",
+        () -> {
+          ComboBoxFixture comboBoxFixture =
+              remoteRobot.find(
+                  ComboBoxFixture.class,
+                  byXpath("//div[@class='TreeComboBox']"),
+                  THREE_SECONDS.getDuration());
+          comboBoxFixture.click();
+        });
   }
 
   public void clickResetButtonIfPresent() {
-    step("click reset button if present", () -> {
-      StripeButtonFixture resetButtonFixture = remoteRobot.find(StripeButtonFixture.class, StripeButtonFixture.byTitle("Reset"), THREE_SECONDS.getDuration());
-      resetButtonFixture.click();
-    });
+    step(
+        "click reset button if present",
+        () -> {
+          StripeButtonFixture resetButtonFixture =
+              remoteRobot.find(
+                  StripeButtonFixture.class,
+                  StripeButtonFixture.byTitle("Reset"),
+                  THREE_SECONDS.getDuration());
+          resetButtonFixture.click();
+        });
   }
 
   public void selectJsonPrettify() {
@@ -103,9 +120,12 @@ public class ToolPanelSteps {
   }
 
   private void selectCommand(int index) {
-    step(String.format("Select command at index %d", index), () -> {
-      JListFixture jListFixture = remoteRobot.find(JListFixture.class, byXpath("//div[@class='JList']"));
-      jListFixture.clickItemAtIndex(index);
-    });
+    step(
+        String.format("Select command at index %d", index),
+        () -> {
+          JListFixture jListFixture =
+              remoteRobot.find(JListFixture.class, byXpath("//div[@class='JList']"));
+          jListFixture.clickItemAtIndex(index);
+        });
   }
 }

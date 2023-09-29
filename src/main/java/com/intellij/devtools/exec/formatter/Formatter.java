@@ -65,11 +65,10 @@ public abstract class Formatter extends Operation {
     configureComponents();
     configureLayout();
     configureListeners();
-    parameterMap = Optional.ofNullable(getParameterGroups())
-        .orElseGet(ArrayList::new)
-        .stream()
-        .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-        .collect(Collectors.groupingBy(Parameter::getName));
+    parameterMap =
+        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
+            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
+            .collect(Collectors.groupingBy(Parameter::getName));
   }
 
   @Override
@@ -77,11 +76,13 @@ public abstract class Formatter extends Operation {
     dataTextArea.setText(dataText);
     resultTextArea.setText(resultText);
     for (Component panel : parametersPanel.getComponents()) {
-      if(panel instanceof JPanel) {
+      if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
         Component component = components[1];
         String name = component.getName();
-        ComponentUtils.setValue(component, parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
+        ComponentUtils.setValue(
+            component,
+            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
       }
     }
   }
@@ -117,33 +118,34 @@ public abstract class Formatter extends Operation {
   }
 
   private void configureParameters() {
-//    List<Parameter> parameters = getParameterGroups();
-//    if(CollectionUtils.isEmpty(parameters)) {
-//      parametersPanel.setVisible(false);
-//      return;
-//    }
-//    parametersPanel.setLayout(new GridLayoutManager(parameters.size(), 1));
-//    AtomicInteger i = new AtomicInteger(0);
-//    parameters.forEach(parameter -> {
-//      JPanel row = new JPanel(new GridBagLayout());
-//      Optional<JComponent> component = ComponentUtils.toComponent(parameter);
-//      if(component.isPresent()) {
-//        JLabel label = new JLabel(parameter.getLabel());
-//        JComponent value = component.get();
-//        value.setName(parameter.getName());
-//        row.add(label, buildGridBagConstraint(0, 0, FILL_NONE));
-//        row.add(value, buildGridBagConstraint(1, 0, 1.0, 1.0, FILL_HORIZONTAL));
-//        parametersPanel.add(row, buildGridConstraint(i.getAndIncrement(), 0, FILL_HORIZONTAL));
-//        this.isParametersAdded = true;
-//      }
-//    });
-//    parametersPanel.setVisible(true);
+    //    List<Parameter> parameters = getParameterGroups();
+    //    if(CollectionUtils.isEmpty(parameters)) {
+    //      parametersPanel.setVisible(false);
+    //      return;
+    //    }
+    //    parametersPanel.setLayout(new GridLayoutManager(parameters.size(), 1));
+    //    AtomicInteger i = new AtomicInteger(0);
+    //    parameters.forEach(parameter -> {
+    //      JPanel row = new JPanel(new GridBagLayout());
+    //      Optional<JComponent> component = ComponentUtils.toComponent(parameter);
+    //      if(component.isPresent()) {
+    //        JLabel label = new JLabel(parameter.getLabel());
+    //        JComponent value = component.get();
+    //        value.setName(parameter.getName());
+    //        row.add(label, buildGridBagConstraint(0, 0, FILL_NONE));
+    //        row.add(value, buildGridBagConstraint(1, 0, 1.0, 1.0, FILL_HORIZONTAL));
+    //        parametersPanel.add(row, buildGridConstraint(i.getAndIncrement(), 0,
+    // FILL_HORIZONTAL));
+    //        this.isParametersAdded = true;
+    //      }
+    //    });
+    //    parametersPanel.setVisible(true);
   }
 
   private void configureLayout() {
 
     setLayout(new GridLayoutManager(3, 1));
-    if(isParametersAdded) {
+    if (isParametersAdded) {
       add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     }
     this.add(dataPanel, buildGridConstraint(1, 0, FILL_BOTH));
@@ -159,9 +161,11 @@ public abstract class Formatter extends Operation {
 
     JPanel dataContentPanel = new JPanel();
     dataContentPanel.setLayout(new GridLayoutManager(2, 1));
-    dataContentPanel.add(dataHeaderPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
-    dataContentPanel.add(dataScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW
-    ));
+    dataContentPanel.add(
+        dataHeaderPanel,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    dataContentPanel.add(
+        dataScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     resultHeaderPanel.setLayout(new BorderLayout());
     resultHeaderPanel.add(new JLabel("Result"), BorderLayout.WEST);
@@ -169,9 +173,11 @@ public abstract class Formatter extends Operation {
 
     JPanel resultContentPanel = new JPanel();
     resultContentPanel.setLayout(new GridLayoutManager(2, 1));
-    resultContentPanel.add(resultHeaderPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
-    resultContentPanel.add(resultScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW
-    ));
+    resultContentPanel.add(
+        resultHeaderPanel,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
+    resultContentPanel.add(
+        resultScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     dataPanel.setLayout(new GridBagLayout());
     resultsPanel.setLayout(new GridBagLayout());

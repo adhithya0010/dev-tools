@@ -19,7 +19,8 @@ public class XmlPrettifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataText(FileUtils.getData(MINIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(PRETTIFIED_SMALL_VALID), formatterSteps.getResultText());
+    Assertions.assertEquals(
+        FileUtils.getData(PRETTIFIED_SMALL_VALID), formatterSteps.getResultText());
   }
 
   @Test
@@ -28,7 +29,8 @@ public class XmlPrettifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataTextViaPasteButton(FileUtils.getData(MINIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(PRETTIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyButton());
+    Assertions.assertEquals(
+        FileUtils.getData(PRETTIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyButton());
   }
 
   @Test
@@ -37,7 +39,9 @@ public class XmlPrettifyTest extends BaseUITest {
     ToolPanelSteps.getInstance(getRemoteRobot()).clickResetButtonIfPresent();
     FormatterSteps formatterSteps = FormatterSteps.getInstance(getRemoteRobot());
     formatterSteps.inputDataTextViaPasteKeyboardShortcut(FileUtils.getData(MINIFIED_SMALL_VALID));
-    Assertions.assertEquals(FileUtils.getData(PRETTIFIED_SMALL_VALID), formatterSteps.getResultTextByCopyKeyboardShortcut());
+    Assertions.assertEquals(
+        FileUtils.getData(PRETTIFIED_SMALL_VALID),
+        formatterSteps.getResultTextByCopyKeyboardShortcut());
   }
 
   @Test
