@@ -4,7 +4,7 @@ import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.utils.GraphqlUtils;
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class GraphqlPrettifier extends Formatter {
 

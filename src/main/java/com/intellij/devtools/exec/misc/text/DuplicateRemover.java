@@ -1,8 +1,12 @@
 package com.intellij.devtools.exec.misc.text;
 
-import static com.intellij.devtools.utils.GridConstraintUtils.*;
+import static com.intellij.devtools.utils.GridConstraintUtils.CAN_SHRINK_AND_GROW;
 import static com.intellij.devtools.utils.GridConstraintUtils.buildGridBagConstraint;
-import static com.intellij.uiDesigner.core.GridConstraints.*;
+import static com.intellij.devtools.utils.GridConstraintUtils.buildGridConstraint;
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
+import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
+import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
@@ -12,9 +16,17 @@ import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.TextUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 
