@@ -1,7 +1,7 @@
 package com.intellij.devtools.exec.misc.text;
 
-import static com.intellij.devtools.utils.GridConstraintUtils.*;
-import static com.intellij.uiDesigner.core.GridConstraints.*;
+import static com.intellij.devtools.utils.GridConstraintUtils.buildGridConstraint;
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
 
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
@@ -14,7 +14,7 @@ import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class TextDiff extends Operation {
 
