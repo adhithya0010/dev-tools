@@ -14,7 +14,10 @@ import com.intellij.devtools.exec.formatter.impl.xml.XmlMinifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlPrettifier;
 import com.intellij.devtools.exec.generator.impl.TimeStampGenerator;
 import com.intellij.devtools.exec.generator.impl.UUIDGenerator;
-import com.intellij.devtools.exec.misc.MockServer;
+import com.intellij.devtools.exec.misc.text.DuplicateRemover;
+import com.intellij.devtools.exec.misc.text.LinesSort;
+import com.intellij.devtools.exec.misc.text.TextDiff;
+import com.intellij.devtools.exec.misc.web.MockServer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +64,6 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllMiscOperations() {
-    return List.of(new MockServer());
+    return List.of(new MockServer(), new LinesSort(), new DuplicateRemover());
   }
 }

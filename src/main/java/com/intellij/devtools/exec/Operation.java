@@ -1,8 +1,8 @@
 package com.intellij.devtools.exec;
 
-import javax.swing.JPanel;
+import com.intellij.ui.components.JBPanel;
 
-public abstract class Operation extends JPanel implements BaseNode, Parameterized {
+public abstract class Operation extends JBPanel<Operation> implements BaseNode, Parameterized {
 
   public abstract OperationCategory getOperationCategory();
 

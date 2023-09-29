@@ -8,7 +8,9 @@ public enum OperationCategory implements BaseNode {
   XML("Xml"),
   GRAPHQL("Graphql"),
   BASE_64("Base64"),
-  URL("Url");
+  URL("Url"),
+  WEB("Web"),
+  TEXT("Text");
 
   private final String categoryName;
   private final Icon icon;

@@ -1,10 +1,17 @@
 package com.intellij.devtools.utils;
 
+
+import com.intellij.diff.DiffContentFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import java.util.stream.Collectors;
+
 
 public class TextUtils {
 
@@ -15,10 +22,10 @@ public class TextUtils {
 
   static {
     ESCAPER.put("csv", new EscapeUnescape(StringEscapeUtils::unescapeCsv, StringEscapeUtils::escapeCsv));
-    ESCAPER.put("html", new EscapeUnescape(StringEscapeUtils::escapeHtml, StringEscapeUtils::unescapeHtml));
+    ESCAPER.put("html", new EscapeUnescape(StringEscapeUtils::escapeHtml4, StringEscapeUtils::unescapeHtml4));
     ESCAPER.put("java", new EscapeUnescape(StringEscapeUtils::escapeJava, StringEscapeUtils::unescapeJava));
-    ESCAPER.put("javascript", new EscapeUnescape(StringEscapeUtils::escapeJavaScript, StringEscapeUtils::unescapeJavaScript));
-    ESCAPER.put("xml", new EscapeUnescape(StringEscapeUtils::escapeXml, StringEscapeUtils::unescapeXml));
+    ESCAPER.put("javascript", new EscapeUnescape(StringEscapeUtils::escapeEcmaScript, StringEscapeUtils::unescapeEcmaScript));
+    ESCAPER.put("xml", new EscapeUnescape(StringEscapeUtils::escapeXml11, StringEscapeUtils::unescapeXml));
   }
 
   public static String escapeText(String data, String type) {
@@ -27,6 +34,22 @@ public class TextUtils {
 
   public static String unescapeText(String data, String type) {
     return ESCAPER.get(StringUtils.lowerCase(type)).unescape(data);
+  }
+
+  public static String sortLines(String data) {
+    return Arrays.stream(data.split("\n"))
+            .sorted()
+            .collect(Collectors.joining("\n"));
+  }
+
+  public static String removeDuplicates(String data) {
+    return Arrays.stream(data.split("\n"))
+            .distinct()
+            .collect(Collectors.joining("\n"));
+  }
+
+  public static String findDifference(String original, String changed) {
+    return StringUtils.difference(original, changed);
   }
 
   static class EscapeUnescape {
