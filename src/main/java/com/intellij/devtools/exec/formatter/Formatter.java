@@ -211,13 +211,9 @@ public abstract class Formatter extends Operation {
           @Override
           public void documentChanged(
               com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
-            runInEDThread(
-                () -> {
-                  resultTextField.setText(null);
-                  String formattedData = format(dataTextField.getText());
-                  resultTextField.setText(formattedData);
-                },
-                resultTextField);
+            resultTextField.setText(null);
+            String formattedData = format(dataTextField.getText());
+            resultTextField.setText(formattedData);
           }
         });
 
