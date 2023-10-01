@@ -10,7 +10,7 @@ import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.devtools.utils.PropertiesUtils;
 import com.intellij.json.JsonLanguage;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.lang.properties.PropertiesLanguage;
 import javax.swing.Icon;
 
 public class JsonPropertiesConverter extends Converter {
@@ -57,7 +57,7 @@ public class JsonPropertiesConverter extends Converter {
 
   @Override
   protected Language getToLanguage() {
-    return PlainTextLanguage.INSTANCE;
+    return PropertiesLanguage.INSTANCE;
   }
 
   @Override

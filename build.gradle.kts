@@ -20,7 +20,11 @@ repositories {
 intellij {
     version.set("2023.2")
     type.set("IC") // Target IDE Platform
-    plugins.set(listOf(/* Plugin Dependencies */))
+    plugins.set(listOf(
+            "com.intellij.properties",
+            "org.jetbrains.plugins.yaml",
+            "com.intellij.lang.jsgraphql:4.0.1"
+    ))
 }
 
 dependencies {

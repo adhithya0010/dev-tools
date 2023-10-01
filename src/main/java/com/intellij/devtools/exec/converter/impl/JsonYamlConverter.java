@@ -10,8 +10,8 @@ import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.devtools.utils.YamlUtils;
 import com.intellij.json.JsonLanguage;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import javax.swing.Icon;
+import org.jetbrains.yaml.YAMLLanguage;
 
 public class JsonYamlConverter extends Converter {
 
@@ -62,6 +62,6 @@ public class JsonYamlConverter extends Converter {
 
   @Override
   protected Language getToLanguage() {
-    return PlainTextLanguage.INSTANCE;
+    return YAMLLanguage.INSTANCE;
   }
 }

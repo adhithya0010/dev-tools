@@ -9,8 +9,9 @@ import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.PropertiesUtils;
 import com.intellij.devtools.utils.YamlUtils;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.lang.properties.PropertiesLanguage;
 import javax.swing.Icon;
+import org.jetbrains.yaml.YAMLLanguage;
 
 public class YamlPropertiesConverter extends Converter {
 
@@ -56,11 +57,11 @@ public class YamlPropertiesConverter extends Converter {
 
   @Override
   protected Language getFromLanguage() {
-    return PlainTextLanguage.INSTANCE;
+    return YAMLLanguage.INSTANCE;
   }
 
   @Override
   protected Language getToLanguage() {
-    return PlainTextLanguage.INSTANCE;
+    return PropertiesLanguage.INSTANCE;
   }
 }
