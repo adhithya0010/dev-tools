@@ -8,6 +8,8 @@ import com.intellij.devtools.exec.converter.Converter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.PropertiesUtils;
 import com.intellij.devtools.utils.YamlUtils;
+import com.intellij.lang.Language;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import javax.swing.Icon;
 
 public class YamlPropertiesConverter extends Converter {
@@ -50,5 +52,15 @@ public class YamlPropertiesConverter extends Converter {
   @Override
   protected String getToLabel() {
     return "Properties";
+  }
+
+  @Override
+  protected Language getFromLanguage() {
+    return PlainTextLanguage.INSTANCE;
+  }
+
+  @Override
+  protected Language getToLanguage() {
+    return PlainTextLanguage.INSTANCE;
   }
 }

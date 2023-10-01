@@ -7,6 +7,8 @@ import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.JsonUtils;
+import com.intellij.json.json5.Json5Language;
+import com.intellij.lang.Language;
 import javax.swing.Icon;
 
 public class JsonPrettifier extends Formatter {
@@ -38,5 +40,10 @@ public class JsonPrettifier extends Formatter {
   @Override
   protected String format(String rawData) {
     return JsonUtils.prettify(rawData);
+  }
+
+  @Override
+  protected Language getLanguage() {
+    return Json5Language.INSTANCE;
   }
 }

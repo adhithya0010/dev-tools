@@ -7,6 +7,8 @@ import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.XmlUtils;
+import com.intellij.lang.Language;
+import com.intellij.lang.xml.XMLLanguage;
 import javax.swing.Icon;
 
 public class XmlMinifier extends Formatter {
@@ -38,5 +40,10 @@ public class XmlMinifier extends Formatter {
   @Override
   protected String format(String rawData) {
     return XmlUtils.minify(rawData);
+  }
+
+  @Override
+  protected Language getLanguage() {
+    return XMLLanguage.INSTANCE;
   }
 }

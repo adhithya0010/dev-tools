@@ -1,8 +1,10 @@
 package com.intellij.devtools.utils;
 
-import com.intellij.devtools.component.listener.DocumentChangeListener;
 import com.intellij.devtools.exec.Parameter;
+import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.EditorTextField;
 import com.intellij.ui.components.JBScrollPane;
 import java.awt.Component;
 import java.util.Objects;
@@ -16,9 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class ComponentUtils {
 
@@ -37,6 +38,10 @@ public class ComponentUtils {
     jTextComponent.setText(null);
   }
 
+  public static void resetTextField(EditorTextField jTextComponent) {
+    jTextComponent.setText(null);
+  }
+
   public static JScrollPane attachScroll(JComponent jComponent) {
     return new JBScrollPane(
         jComponent,
@@ -46,10 +51,10 @@ public class ComponentUtils {
 
   public static DocumentListener getDocumentChangeListener(
       Function<DocumentEvent, Void> handleChangeFunction) {
-    return new DocumentChangeListener() {
+    return new DocumentListener() {
       @Override
-      public void handleChange(DocumentEvent e) {
-        handleChangeFunction.apply(e);
+      public void documentChanged(@NotNull DocumentEvent event) {
+        handleChangeFunction.apply(event);
       }
     };
   }

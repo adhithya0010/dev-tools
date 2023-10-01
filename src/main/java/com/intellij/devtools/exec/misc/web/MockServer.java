@@ -5,6 +5,11 @@
 
 package com.intellij.devtools.exec.misc.web;
 
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
+
+import com.intellij.devtools.component.editortextfield.customization.LinesCustomization;
+import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.component.table.MockMetadata;
 import com.intellij.devtools.component.table.RunningServersModel;
@@ -13,14 +18,18 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.GridConstraintUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.devtools.utils.ServerUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.table.JBTable;
+import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.intellij.util.ui.JBUI.Borders;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -33,9 +42,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import org.jdesktop.swingx.prompt.PromptSupport;
 
 public class MockServer extends Operation {
   private JPanel parameterPanel;
@@ -54,12 +60,12 @@ public class MockServer extends Operation {
   private JLabel responseBodyLabel;
   private JLabel runningServersLabel;
   private JLabel invocationsLabel;
-  private JTextField pathTextField;
-  private JTextField portTextField;
-  private JTextField responseCodeTextField;
+  private EditorTextField pathTextField;
+  private EditorTextField portTextField;
+  private EditorTextField responseCodeTextField;
   private JComboBox<HttpMethod> methodComboBox;
-  private JTextArea responseHeadersTextArea;
-  private JTextArea responseBodyTextArea;
+  private EditorTextField responseHeadersTextField;
+  private EditorTextField responseBodyTextField;
   private JButton startServerButton;
   private JButton stopServerButton;
   private JButton clearHistoryButton;
@@ -91,9 +97,15 @@ public class MockServer extends Operation {
     this.responseBodyLabel = new JLabel("Response Body");
     this.runningServersLabel = new JLabel("Live Mocks");
     this.invocationsLabel = new JLabel("Invocations");
-    this.pathTextField = new JTextField();
-    this.portTextField = new JTextField();
-    this.responseCodeTextField = new JTextField();
+    this.pathTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    this.portTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    this.responseCodeTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
     this.methodComboBox = new ComboBox(HttpMethod.values());
     this.methodComboBox.setSelectedItem(HttpMethod.GET);
     this.methodComboBox.setRenderer(
@@ -105,15 +117,18 @@ public class MockServer extends Operation {
             return this;
           }
         });
-    this.responseHeadersTextArea = new JTextArea();
-    this.responseBodyTextArea = new JTextArea();
-    this.responseBodyTextArea.setBorder(Borders.empty(4));
-    this.responseHeadersTextArea.setRows(5);
-    this.responseHeadersTextArea.setColumns(50);
-    this.responseHeadersTextArea.setLineWrap(true);
-    this.responseBodyTextArea.setRows(10);
-    this.responseBodyTextArea.setColumns(50);
-    this.responseBodyTextArea.setLineWrap(true);
+    this.responseHeadersTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
+    this.responseBodyTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
     this.startServerButton = new JButton("Mock", Actions.Execute);
     this.stopServerButton = new JButton("Destroy", Actions.Suspend);
     this.clearHistoryButton = new JButton("Clear", Diff.Remove);
@@ -125,13 +140,12 @@ public class MockServer extends Operation {
     this.historyTable = new JBTable(this.invocationsTableModel);
     this.historyTable.setRowSelectionAllowed(false);
     this.historyTable.setCellSelectionEnabled(false);
-    PromptSupport.setPrompt("Path to mock /test/abc", this.pathTextField);
-    PromptSupport.setPrompt("Port for the mock server", this.portTextField);
-    PromptSupport.setPrompt("Response status code value", this.responseCodeTextField);
-    PromptSupport.setPrompt(
-        "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json",
-        this.responseHeadersTextArea);
-    PromptSupport.setPrompt("Response body data", this.responseBodyTextArea);
+    this.pathTextField.setPlaceholder("Path to mock /test/abc");
+    this.portTextField.setPlaceholder("Port for the mock server");
+    this.responseCodeTextField.setPlaceholder("Response status code value");
+    this.responseHeadersTextField.setPlaceholder(
+        "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json");
+    this.responseBodyTextField.setPlaceholder("Response body data");
   }
 
   private JPanel encloseForRight(JComponent component) {
@@ -161,42 +175,48 @@ public class MockServer extends Operation {
     this.parameterPanel.setLayout(new GridLayoutManager(7, 2));
     this.parameterPanel.add(
         this.encloseForVertical(this.parametersLabel),
-        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
+        GridConstraintUtils.buildGridConstraint(
+            0, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
         this.encloseForRight(this.startServerButton),
-        GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 1, 3, 3));
+        GridConstraintUtils.buildGridConstraint(0, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.pathLabel),
-        GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 1, 0));
+        GridConstraintUtils.buildGridConstraint(
+            1, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        this.pathTextField, GridConstraintUtils.buildGridConstraint(1, 1, 1, 1, 1, 3));
+        this.pathTextField, GridConstraintUtils.buildGridConstraint(1, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.portLabel),
-        GridConstraintUtils.buildGridConstraint(2, 0, 1, 1, 1, 0));
+        GridConstraintUtils.buildGridConstraint(
+            2, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        this.portTextField, GridConstraintUtils.buildGridConstraint(2, 1, 1, 1, 1, 3));
+        this.portTextField, GridConstraintUtils.buildGridConstraint(2, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.responseCodeLabel),
-        GridConstraintUtils.buildGridConstraint(3, 0, 1, 1, 1, 0));
+        GridConstraintUtils.buildGridConstraint(
+            3, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        this.responseCodeTextField, GridConstraintUtils.buildGridConstraint(3, 1, 1, 1, 1, 3));
+        this.responseCodeTextField, GridConstraintUtils.buildGridConstraint(3, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.methodLabel),
-        GridConstraintUtils.buildGridConstraint(4, 0, 1, 1, 1, 3, 3));
+        GridConstraintUtils.buildGridConstraint(
+            4, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        this.methodComboBox, GridConstraintUtils.buildGridConstraint(4, 1, 1, 1, 1, 3, 3));
+        this.methodComboBox, GridConstraintUtils.buildGridConstraint(4, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.responseHeadersLabel),
-        GridConstraintUtils.buildGridConstraint(5, 0, 1, 1, 3, 3, 3));
+        GridConstraintUtils.buildGridConstraint(
+            5, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        new JScrollPane(this.responseHeadersTextArea),
-        GridConstraintUtils.buildGridConstraint(5, 1, 1, 1, 1, 3, 3));
+        this.responseHeadersTextField,
+        GridConstraintUtils.buildGridConstraint(5, 1, FILL_HORIZONTAL));
     this.parameterPanel.add(
         this.encloseForVertical(this.responseBodyLabel),
-        GridConstraintUtils.buildGridConstraint(6, 0, 1, 1, 3, 3, 3));
+        GridConstraintUtils.buildGridConstraint(
+            6, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
     this.parameterPanel.add(
-        new JScrollPane(this.responseBodyTextArea),
-        GridConstraintUtils.buildGridConstraint(6, 1, 1, 1, 1, 3, 3));
+        this.responseBodyTextField, GridConstraintUtils.buildGridConstraint(6, 1, FILL_HORIZONTAL));
     this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 2));
     this.runningServersHeaderPanel.add(
         this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
@@ -241,8 +261,8 @@ public class MockServer extends Operation {
           String port = this.portTextField.getText();
           String responseCode = this.responseCodeTextField.getText();
           HttpMethod httpMethod = (HttpMethod) this.methodComboBox.getSelectedItem();
-          String responseHeaders = this.responseHeadersTextArea.getText();
-          String responseBody = this.responseBodyTextArea.getText();
+          String responseHeaders = this.responseHeadersTextField.getText();
+          String responseBody = this.responseBodyTextField.getText();
           MockMetadata mockMetadata =
               ServerUtils.startServer(
                   this.invocationsTableModel,

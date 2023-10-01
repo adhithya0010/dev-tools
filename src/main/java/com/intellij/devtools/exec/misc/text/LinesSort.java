@@ -13,22 +13,24 @@ import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.devtools.utils.TextUtils;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Document;
 
 public class LinesSort extends Operation {
 
@@ -44,11 +46,8 @@ public class LinesSort extends Operation {
   private final JLabel dataLabel = new JLabel("Input");
   private final JLabel resultsLabel = new JLabel("Results");
 
-  private JComponent dataScrollPane;
-  private JComponent resultScrollPane;
-
-  private final JTextArea dataTextArea = new JTextArea();
-  private final JTextArea resultTextArea = new JTextArea();
+  private EditorTextField dataTextField;
+  private EditorTextField resultTextField;
 
   private final JButton pasteButton = new JButton("Paste", AllIcons.Actions.MenuPaste);
   private final JButton copyButton = new JButton("Copy", AllIcons.Actions.Copy);
@@ -64,15 +63,15 @@ public class LinesSort extends Operation {
   }
 
   private void configureComponents() {
-    dataTextArea.setLineWrap(true);
-    dataTextArea.setName("data-text-area");
+    dataTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    resultTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
 
-    resultTextArea.setLineWrap(true);
-    resultTextArea.setEditable(false);
-    resultTextArea.setName("result-text-area");
-
-    dataScrollPane = ComponentUtils.attachScroll(dataTextArea);
-    resultScrollPane = ComponentUtils.attachScroll(resultTextArea);
+    dataTextField.setName("data-text-area");
+    resultTextField.setName("result-text-area");
 
     clearButton.setText("Reset");
     clearButton.setIcon(AllIcons.Actions.Refresh);
@@ -99,7 +98,7 @@ public class LinesSort extends Operation {
         dataHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     dataContentPanel.add(
-        dataScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        dataTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     resultHeaderPanel.setLayout(new BorderLayout());
     resultHeaderPanel.add(resultsLabel, BorderLayout.WEST);
@@ -111,7 +110,7 @@ public class LinesSort extends Operation {
         resultHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     resultContentPanel.add(
-        resultScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        resultTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     dataPanel.setLayout(new GridBagLayout());
     resultsPanel.setLayout(new GridBagLayout());
@@ -120,26 +119,25 @@ public class LinesSort extends Operation {
   }
 
   private void configureListeners() {
-    Document document = dataTextArea.getDocument();
-    document.addDocumentListener(
+    dataTextField.addDocumentListener(
         ComponentUtils.getDocumentChangeListener(
             (DocumentEvent e) -> {
               runInEDThread(
                   () -> {
-                    ComponentUtils.resetTextField(resultTextArea);
-                    resultTextArea.setText(TextUtils.sortLines(dataTextArea.getText()));
+                    ComponentUtils.resetTextField(resultTextField);
+                    resultTextField.setText(TextUtils.sortLines(dataTextField.getText()));
                   });
               return null;
             }));
 
     copyButton.addActionListener(
         (ActionEvent evt) -> {
-          ClipboardUtils.copy(resultTextArea.getText());
+          ClipboardUtils.copy(resultTextField.getText());
         });
 
     pasteButton.addActionListener(
         (ActionEvent evt) -> {
-          ClipboardUtils.paste().ifPresent(dataTextArea::setText);
+          ClipboardUtils.paste().ifPresent(dataTextField::setText);
         });
     clearButton.addActionListener(evt -> reset());
   }
@@ -170,18 +168,18 @@ public class LinesSort extends Operation {
 
   @Override
   public void reset() {
-    ComponentUtils.resetTextField(dataTextArea);
+    ComponentUtils.resetTextField(dataTextField);
   }
 
   @Override
   public void persistState() {
-    dataText = dataTextArea.getText();
-    resultText = resultTextArea.getText();
+    dataText = dataTextField.getText();
+    resultText = resultTextField.getText();
   }
 
   @Override
   public void restoreState() {
-    dataTextArea.setText(dataText);
-    resultTextArea.setText(resultText);
+    dataTextField.setText(dataText);
+    resultTextField.setText(resultText);
   }
 }

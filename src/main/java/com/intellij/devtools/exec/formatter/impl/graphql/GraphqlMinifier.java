@@ -4,6 +4,8 @@ import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.utils.GraphqlUtils;
+import com.intellij.lang.Language;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import javax.swing.Icon;
 
 public class GraphqlMinifier extends Formatter {
@@ -31,5 +33,10 @@ public class GraphqlMinifier extends Formatter {
   @Override
   protected String format(String rawData) {
     return GraphqlUtils.minify(rawData);
+  }
+
+  @Override
+  protected Language getLanguage() {
+    return PlainTextLanguage.INSTANCE;
   }
 }

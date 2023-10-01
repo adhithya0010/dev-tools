@@ -8,11 +8,17 @@ import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
+import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
+import com.intellij.lang.Language;
+import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.PlatformIcons;
 import java.awt.BorderLayout;
@@ -28,9 +34,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Document;
 
 public abstract class Converter extends Operation {
 
@@ -44,8 +47,8 @@ public abstract class Converter extends Operation {
   private final JPanel toHeaderPanel = new JPanel();
   private final JPanel toButtonPanel = new JPanel();
 
-  private final JTextArea fromTextArea = new JTextArea();
-  private final JTextArea toTextArea = new JTextArea();
+  private EditorTextField fromTextField;
+  private EditorTextField toTextField;
 
   private final JButton clearButton = new JButton();
 
@@ -82,14 +85,18 @@ public abstract class Converter extends Operation {
 
   protected abstract String getToLabel();
 
+  protected abstract Language getFromLanguage();
+
+  protected abstract Language getToLanguage();
+
   public Map<String, Object> getParameterResult() {
     return super.getParameterResult(parametersPanel);
   }
 
   @Override
   public void restoreState() {
-    fromTextArea.setText(fromText);
-    toTextArea.setText(toText);
+    fromTextField.setText(fromText);
+    toTextField.setText(toText);
     for (Component panel : parametersPanel.getComponents()) {
       if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
@@ -104,22 +111,30 @@ public abstract class Converter extends Operation {
 
   @Override
   public void persistState() {
-    fromText = fromTextArea.getText();
-    toText = toTextArea.getText();
+    fromText = fromTextField.getText();
+    toText = toTextField.getText();
     parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
   public void reset() {
-    ComponentUtils.resetTextField(fromTextArea);
+    fromTextField.setText(null);
   }
 
   private void configureComponents() {
-    fromTextArea.setLineWrap(true);
-    fromTextArea.setName("from-text-area");
+    fromTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                getFromLanguage(),
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED));
+    toTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                getToLanguage(), ProjectUtils.getProject(), List.of(WrapTextCustomization.ENABLED));
 
-    toTextArea.setLineWrap(true);
-    toTextArea.setName("to-text-area");
+    fromTextField.setName("from-text-area");
+    toTextField.setName("to-text-area");
 
     fromCopyButton.setIcon(PlatformIcons.COPY_ICON);
     fromCopyButton.setText("Copy");
@@ -176,16 +191,14 @@ public abstract class Converter extends Operation {
         fromHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     fromContentPanel.add(
-        ComponentUtils.attachScroll(fromTextArea),
-        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        fromTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     toContentPanel.setLayout(new GridLayoutManager(2, 1));
     toContentPanel.add(
         toHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     toContentPanel.add(
-        ComponentUtils.attachScroll(toTextArea),
-        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        toTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     fromPanel.setLayout(new GridBagLayout());
     toPanel.setLayout(new GridBagLayout());
@@ -197,31 +210,41 @@ public abstract class Converter extends Operation {
   }
 
   private void configureListeners() {
-    Document fromDocument = fromTextArea.getDocument();
-    Document toDocument = toTextArea.getDocument();
-    fromDocument.addDocumentListener(ComponentUtils.getDocumentChangeListener(this::convertTo));
-    toDocument.addDocumentListener(ComponentUtils.getDocumentChangeListener(this::convertFrom));
+    fromTextField.addDocumentListener(
+        new DocumentListener() {
+          @Override
+          public void documentChanged(com.intellij.openapi.editor.event.DocumentEvent event) {
+            convertTo(event);
+          }
+        });
+    toTextField.addDocumentListener(
+        new DocumentListener() {
+          @Override
+          public void documentChanged(com.intellij.openapi.editor.event.DocumentEvent event) {
+            convertFrom(event);
+          }
+        });
 
     clearButton.addActionListener(evt -> reset());
 
-    fromCopyButton.addActionListener(evt -> ClipboardUtils.copy(fromTextArea.getText()));
+    fromCopyButton.addActionListener(evt -> ClipboardUtils.copy(fromTextField.getText()));
     fromPasteButton.addActionListener(
         evt -> {
-          ClipboardUtils.paste().ifPresent(fromTextArea::setText);
+          ClipboardUtils.paste().ifPresent(fromTextField::setText);
         });
 
-    toCopyButton.addActionListener(evt -> ClipboardUtils.copy(toTextArea.getText()));
+    toCopyButton.addActionListener(evt -> ClipboardUtils.copy(toTextField.getText()));
     toPasteButton.addActionListener(
         evt -> {
-          ClipboardUtils.paste().ifPresent(toTextArea::setText);
+          ClipboardUtils.paste().ifPresent(toTextField::setText);
         });
   }
 
-  private Void convertFrom(DocumentEvent e) {
+  private Void convertFrom(com.intellij.openapi.editor.event.DocumentEvent e) {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {
-        fromTextArea.setText(convertFrom(toTextArea.getText()));
+        fromTextField.setText(convertFrom(toTextField.getText()));
       } finally {
         isConversionInProgress.set(false);
       }
@@ -229,11 +252,11 @@ public abstract class Converter extends Operation {
     return null;
   }
 
-  private Void convertTo(DocumentEvent e) {
+  private Void convertTo(com.intellij.openapi.editor.event.DocumentEvent e) {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {
-        toTextArea.setText(convertTo(fromTextArea.getText()));
+        toTextField.setText(convertTo(fromTextField.getText()));
       } finally {
         isConversionInProgress.set(false);
       }

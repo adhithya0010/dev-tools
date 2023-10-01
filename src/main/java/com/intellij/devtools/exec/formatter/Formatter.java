@@ -8,11 +8,20 @@ import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
+import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
+import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
+import com.intellij.lang.Language;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,10 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Document;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Formatter extends Operation {
 
@@ -47,8 +53,8 @@ public abstract class Formatter extends Operation {
   private JComponent dataScrollPane;
   private JComponent resultScrollPane;
 
-  private final JTextArea dataTextArea = new JTextArea();
-  private final JTextArea resultTextArea = new JTextArea();
+  private EditorTextField dataTextField;
+  private EditorTextField resultTextField;
 
   private final JButton pasteButton = new JButton("Paste", Actions.MenuPaste);
   private final JButton copyButton = new JButton("Copy", Actions.Copy);
@@ -73,8 +79,8 @@ public abstract class Formatter extends Operation {
 
   @Override
   public void restoreState() {
-    dataTextArea.setText(dataText);
-    resultTextArea.setText(resultText);
+    dataTextField.setText(dataText);
+    resultTextField.setText(resultText);
     for (Component panel : parametersPanel.getComponents()) {
       if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
@@ -89,26 +95,40 @@ public abstract class Formatter extends Operation {
 
   @Override
   public void persistState() {
-    dataText = dataTextArea.getText();
-    resultText = resultTextArea.getText();
+    dataText = dataTextField.getText();
+    resultText = resultTextField.getText();
     parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
   public void reset() {
-    ComponentUtils.resetTextField(dataTextArea);
+    dataTextField.setText(null);
+    //    ComponentUtils.resetTextField(dataTextField);
   }
 
+  protected abstract Language getLanguage();
+
   private void configureComponents() {
-    dataTextArea.setLineWrap(true);
-    dataTextArea.setName("data-text-area");
 
-    resultTextArea.setLineWrap(true);
-    resultTextArea.setEditable(false);
-    resultTextArea.setName("result-text-area");
+    dataTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                getLanguage(), ProjectUtils.getProject(), List.of(WrapTextCustomization.ENABLED));
+    resultTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                getLanguage(),
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED, ReadOnlyCustomization.ENABLED));
 
-    dataScrollPane = ComponentUtils.attachScroll(dataTextArea);
-    resultScrollPane = ComponentUtils.attachScroll(resultTextArea);
+    //    dataTextField.setLineWrap(true);
+    dataTextField.setName("data-text-area");
+
+    //    resultTextField.setLineWrap(true);
+    resultTextField.setName("result-text-area");
+
+    //    dataScrollPane = ComponentUtils.attachScroll(dataTextField);
+    //    resultScrollPane = ComponentUtils.attachScroll(resultTextField);
 
     clearButton.setText("Reset");
     clearButton.setIcon(Actions.Refresh);
@@ -165,7 +185,7 @@ public abstract class Formatter extends Operation {
         dataHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     dataContentPanel.add(
-        dataScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        dataTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     resultHeaderPanel.setLayout(new BorderLayout());
     resultHeaderPanel.add(new JLabel("Result"), BorderLayout.WEST);
@@ -177,7 +197,7 @@ public abstract class Formatter extends Operation {
         resultHeaderPanel,
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
     resultContentPanel.add(
-        resultScrollPane, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
+        resultTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     dataPanel.setLayout(new GridBagLayout());
     resultsPanel.setLayout(new GridBagLayout());
@@ -186,32 +206,32 @@ public abstract class Formatter extends Operation {
   }
 
   private void configureListeners() {
-    Document document = dataTextArea.getDocument();
-    document.addDocumentListener(
-        ComponentUtils.getDocumentChangeListener(
-            (DocumentEvent e) -> {
-              runInEDThread(
-                  () -> {
-                    ComponentUtils.resetTextField(resultTextArea);
-                    resultTextArea.setText(format(dataTextArea.getText()));
-                  });
-              return null;
-            }));
+    dataTextField.addDocumentListener(
+        new DocumentListener() {
+          @Override
+          public void documentChanged(
+              com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
+            resultTextField.setText(null);
+            String formattedData = format(dataTextField.getText());
+            resultTextField.setText(formattedData);
+          }
+        });
 
     copyButton.addActionListener(
         (ActionEvent evt) -> {
-          ClipboardUtils.copy(resultTextArea.getText());
+          ClipboardUtils.copy(resultTextField.getText());
         });
 
     pasteButton.addActionListener(
         (ActionEvent evt) -> {
-          ClipboardUtils.paste().ifPresent(dataTextArea::setText);
+          ClipboardUtils.paste().ifPresent(dataTextField::setText);
         });
     clearButton.addActionListener(evt -> reset());
   }
 
-  private void runInEDThread(Runnable task) {
-    SwingUtilities.invokeLater(task);
+  private void runInEDThread(Runnable task, EditorTextField resultTextField) {
+    ApplicationManager.getApplication()
+        .invokeLater(task, ModalityState.stateForComponent(resultTextField));
   }
 
   protected abstract String format(String rawData);
