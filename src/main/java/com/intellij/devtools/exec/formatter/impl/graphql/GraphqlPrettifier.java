@@ -5,7 +5,7 @@ import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.utils.GraphqlUtils;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.lang.jsgraphql.GraphQLLanguage;
 import javax.swing.Icon;
 
 public class GraphqlPrettifier extends Formatter {
@@ -37,6 +37,6 @@ public class GraphqlPrettifier extends Formatter {
 
   @Override
   protected Language getLanguage() {
-    return PlainTextLanguage.INSTANCE;
+    return GraphQLLanguage.INSTANCE;
   }
 }
