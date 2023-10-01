@@ -5,8 +5,8 @@ plugins {
 }
 
 group = "com.intellij.devtools"
-version = "1.1"
-val channel: String = "default"
+version = "1.1-snapshot"
+val channel: String = "snapshot"
 
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")

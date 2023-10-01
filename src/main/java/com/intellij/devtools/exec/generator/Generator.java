@@ -9,11 +9,19 @@ import static com.intellij.uiDesigner.core.GridConstraints.FILL_NONE;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
+import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
+import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.Component;
@@ -27,7 +35,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 public abstract class Generator extends Operation {
 
@@ -36,7 +43,7 @@ public abstract class Generator extends Operation {
   private final JPanel buttonsPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
-  private final JTextArea resultTextArea = new JTextArea();
+  private EditorTextField resultTextField;
 
   private final JButton generateButton = new JButton("Generate", Actions.Run_anything);
   private final JButton generateAndCopyButton = new JButton("Generate And Copy", Actions.RunAll);
@@ -68,7 +75,7 @@ public abstract class Generator extends Operation {
 
   @Override
   public void restoreState() {
-    resultTextArea.setText(resultText);
+    resultTextField.setText(resultText);
     for (Component panel : parametersPanel.getComponents()) {
       if (panel instanceof JPanel) {
         Component[] components = ((JPanel) panel).getComponents();
@@ -86,17 +93,22 @@ public abstract class Generator extends Operation {
 
   @Override
   public void persistState() {
-    resultText = resultTextArea.getText();
+    resultText = resultTextField.getText();
     parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
   public void reset() {
-    resultTextArea.setText(null);
+    resultTextField.setText(null);
   }
 
   private void configureComponents() {
-    resultTextArea.setEditable(false);
+    resultTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(ReadOnlyCustomization.ENABLED, WrapTextCustomization.ENABLED));
     isParametersAdded = configureParameters(parametersPanel);
     clearButton.setName("clear-button");
   }
@@ -116,7 +128,7 @@ public abstract class Generator extends Operation {
     headerPanel.add(buttonsPanel, buildGridConstraint(0, 1, 1, 1, FILL_NONE, SIZEPOLICY_FIXED));
 
     resultsPanel.setLayout(new GridBagLayout());
-    resultsPanel.add(resultTextArea, buildGridBagConstraint(0, 0, 1.0, 1.0, 1));
+    resultsPanel.add(resultTextField, buildGridBagConstraint(0, 0, 1.0, 1.0, 1));
 
     setLayout(new GridLayoutManager(4, 1));
     if (isParametersAdded) {
@@ -133,20 +145,22 @@ public abstract class Generator extends Operation {
     generateButton.addActionListener(
         (evt) -> {
           reset();
-          resultTextArea.setText(generate());
+          resultTextField.setText(generate());
         });
     copyButton.addActionListener(
         (evt) -> {
           String copyText =
-              Optional.ofNullable(resultTextArea.getSelectedText())
-                  .orElseGet(resultTextArea::getText);
+              Optional.ofNullable(resultTextField.getEditor())
+                  .map(Editor::getSelectionModel)
+                  .map(SelectionModel::getSelectedText)
+                  .orElseGet(resultTextField::getText);
           ClipboardUtils.copy(copyText);
         });
     generateAndCopyButton.addActionListener(
         (evt) -> {
           reset();
-          resultTextArea.setText(generate());
-          ClipboardUtils.copy(resultTextArea.getText());
+          resultTextField.setText(generate());
+          ClipboardUtils.copy(resultTextField.getText());
         });
     clearButton.addActionListener(evt -> reset());
   }

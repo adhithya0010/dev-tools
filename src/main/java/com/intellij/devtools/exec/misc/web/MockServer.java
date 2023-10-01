@@ -5,6 +5,8 @@
 
 package com.intellij.devtools.exec.misc.web;
 
+import com.intellij.devtools.component.editortextfield.customization.LinesCustomization;
+import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.component.table.MockMetadata;
 import com.intellij.devtools.component.table.RunningServersModel;
@@ -13,14 +15,17 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.GridConstraintUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.devtools.utils.ServerUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.intellij.util.ui.JBUI.Borders;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -33,7 +38,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
@@ -58,8 +62,8 @@ public class MockServer extends Operation {
   private JTextField portTextField;
   private JTextField responseCodeTextField;
   private JComboBox<HttpMethod> methodComboBox;
-  private JTextArea responseHeadersTextArea;
-  private JTextArea responseBodyTextArea;
+  private EditorTextField responseHeadersTextField;
+  private EditorTextField responseBodyTextField;
   private JButton startServerButton;
   private JButton stopServerButton;
   private JButton clearHistoryButton;
@@ -105,15 +109,18 @@ public class MockServer extends Operation {
             return this;
           }
         });
-    this.responseHeadersTextArea = new JTextArea();
-    this.responseBodyTextArea = new JTextArea();
-    this.responseBodyTextArea.setBorder(Borders.empty(4));
-    this.responseHeadersTextArea.setRows(5);
-    this.responseHeadersTextArea.setColumns(50);
-    this.responseHeadersTextArea.setLineWrap(true);
-    this.responseBodyTextArea.setRows(10);
-    this.responseBodyTextArea.setColumns(50);
-    this.responseBodyTextArea.setLineWrap(true);
+    this.responseHeadersTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
+    this.responseBodyTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
     this.startServerButton = new JButton("Mock", Actions.Execute);
     this.stopServerButton = new JButton("Destroy", Actions.Suspend);
     this.clearHistoryButton = new JButton("Clear", Diff.Remove);
@@ -128,10 +135,9 @@ public class MockServer extends Operation {
     PromptSupport.setPrompt("Path to mock /test/abc", this.pathTextField);
     PromptSupport.setPrompt("Port for the mock server", this.portTextField);
     PromptSupport.setPrompt("Response status code value", this.responseCodeTextField);
-    PromptSupport.setPrompt(
-        "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json",
-        this.responseHeadersTextArea);
-    PromptSupport.setPrompt("Response body data", this.responseBodyTextArea);
+    responseHeadersTextField.setPlaceholder(
+        "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json");
+    responseBodyTextField.setPlaceholder("Response body data");
   }
 
   private JPanel encloseForRight(JComponent component) {
@@ -189,14 +195,13 @@ public class MockServer extends Operation {
         this.encloseForVertical(this.responseHeadersLabel),
         GridConstraintUtils.buildGridConstraint(5, 0, 1, 1, 3, 3, 3));
     this.parameterPanel.add(
-        new JScrollPane(this.responseHeadersTextArea),
+        this.responseHeadersTextField,
         GridConstraintUtils.buildGridConstraint(5, 1, 1, 1, 1, 3, 3));
     this.parameterPanel.add(
         this.encloseForVertical(this.responseBodyLabel),
         GridConstraintUtils.buildGridConstraint(6, 0, 1, 1, 3, 3, 3));
     this.parameterPanel.add(
-        new JScrollPane(this.responseBodyTextArea),
-        GridConstraintUtils.buildGridConstraint(6, 1, 1, 1, 1, 3, 3));
+        this.responseBodyTextField, GridConstraintUtils.buildGridConstraint(6, 1, 1, 1, 1, 3, 3));
     this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 2));
     this.runningServersHeaderPanel.add(
         this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
@@ -241,8 +246,8 @@ public class MockServer extends Operation {
           String port = this.portTextField.getText();
           String responseCode = this.responseCodeTextField.getText();
           HttpMethod httpMethod = (HttpMethod) this.methodComboBox.getSelectedItem();
-          String responseHeaders = this.responseHeadersTextArea.getText();
-          String responseBody = this.responseBodyTextArea.getText();
+          String responseHeaders = this.responseHeadersTextField.getText();
+          String responseBody = this.responseBodyTextField.getText();
           MockMetadata mockMetadata =
               ServerUtils.startServer(
                   this.invocationsTableModel,

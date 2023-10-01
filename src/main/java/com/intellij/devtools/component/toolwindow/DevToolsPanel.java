@@ -13,7 +13,9 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationFactory;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.GridConstraintUtils;
+import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.devtools.utils.TreeModelUtils;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.Dimension;
@@ -23,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.jetbrains.annotations.NotNull;
 
 public class DevToolsPanel extends JPanel {
 
@@ -32,7 +35,8 @@ public class DevToolsPanel extends JPanel {
   // components
   private final ComboBox<DefaultMutableTreeNode> operationGroupComboBox = new TreeComboBox();
 
-  public DevToolsPanel() {
+  public DevToolsPanel(@NotNull Project project) {
+    ProjectUtils.setProject(project);
     configureComponents();
     configureLayouts();
     initializeListeners();

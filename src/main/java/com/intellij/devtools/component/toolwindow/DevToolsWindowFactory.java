@@ -16,17 +16,17 @@ public class DevToolsWindowFactory implements ToolWindowFactory {
   @Override
   public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
     ContentManager contentManager = toolWindow.getContentManager();
-    contentManager.addContent(createContent(contentManager));
+    contentManager.addContent(createContent(project, contentManager));
   }
 
-  private Content createContent(ContentManager contentManager) {
+  private Content createContent(@NotNull Project project, ContentManager contentManager) {
     JPanel rootPanel = new JPanel(new GridLayoutManager(1, 1));
 
     GridConstraints gc = new GridConstraints();
     gc.setFill(GridConstraints.FILL_BOTH);
     gc.setRow(0);
     gc.setColumn(0);
-    rootPanel.add(new DevToolsPanel(), gc);
+    rootPanel.add(new DevToolsPanel(project), gc);
     rootPanel.setBorder(Borders.empty(10));
 
     return contentManager.getFactory().createContent(rootPanel, null, false);

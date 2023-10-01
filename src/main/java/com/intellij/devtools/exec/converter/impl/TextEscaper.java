@@ -10,6 +10,8 @@ import com.intellij.devtools.exec.ParameterGroup;
 import com.intellij.devtools.exec.converter.Converter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.TextUtils;
+import com.intellij.lang.Language;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -70,5 +72,15 @@ public class TextEscaper extends Converter {
             .defaultValue("Java")
             .build();
     return List.of(ParameterGroup.builder().parameters(List.of(typeParameter)).build());
+  }
+
+  @Override
+  protected Language getFromLanguage() {
+    return PlainTextLanguage.INSTANCE;
+  }
+
+  @Override
+  protected Language getToLanguage() {
+    return PlainTextLanguage.INSTANCE;
   }
 }
