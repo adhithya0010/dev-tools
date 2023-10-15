@@ -1,5 +1,6 @@
 package com.intellij.devtools.utils;
 
+import com.intellij.devtools.exec.PrettifyConfig;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -73,14 +74,20 @@ public class XmlUtils {
     }
   }
 
-  public static String prettify(String xmlString) {
+  public static String prettify(String xmlString, PrettifyConfig prettifyConfig) {
     if (StringUtils.isEmpty(xmlString)) {
       return null;
     }
     try {
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setAttribute("indent-number", prettifyConfig.getIndentLength());
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       Document document = toDocument(minify(xmlString));
       Writer out = new StringWriter();
-      TRANSFORMER.transform(new DOMSource(document), new StreamResult(out));
+      transformer.transform(new DOMSource(document), new StreamResult(out));
       return out.toString();
     } catch (Exception e) {
       e.printStackTrace();

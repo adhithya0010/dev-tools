@@ -13,7 +13,6 @@ import com.intellij.devtools.component.editortextfield.customization.WrapTextCus
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
-import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.lang.Language;
@@ -24,7 +23,6 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -69,6 +67,7 @@ public abstract class Formatter extends Operation {
 
   protected Formatter() {
     configureComponents();
+    configureParameters_(parametersPanel);
     configureLayout();
     configureListeners();
     parameterMap =
@@ -81,34 +80,22 @@ public abstract class Formatter extends Operation {
   public void restoreState() {
     dataTextField.setText(dataText);
     resultTextField.setText(resultText);
-    for (Component panel : parametersPanel.getComponents()) {
-      if (panel instanceof JPanel) {
-        Component[] components = ((JPanel) panel).getComponents();
-        Component component = components[1];
-        String name = component.getName();
-        ComponentUtils.setValue(
-            component,
-            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
-      }
-    }
   }
 
   @Override
   public void persistState() {
     dataText = dataTextField.getText();
     resultText = resultTextField.getText();
-    parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
   public void reset() {
     dataTextField.setText(null);
-    //    ComponentUtils.resetTextField(dataTextField);
   }
 
   protected abstract Language getLanguage();
 
-  private void configureComponents() {
+  protected void configureComponents() {
 
     dataTextField =
         EditorTextFieldProvider.getInstance()
@@ -121,53 +108,24 @@ public abstract class Formatter extends Operation {
                 ProjectUtils.getProject(),
                 List.of(WrapTextCustomization.ENABLED, ReadOnlyCustomization.ENABLED));
 
-    //    dataTextField.setLineWrap(true);
     dataTextField.setName("data-text-area");
-
-    //    resultTextField.setLineWrap(true);
     resultTextField.setName("result-text-area");
-
-    //    dataScrollPane = ComponentUtils.attachScroll(dataTextField);
-    //    resultScrollPane = ComponentUtils.attachScroll(resultTextField);
 
     clearButton.setText("Reset");
     clearButton.setIcon(Actions.Refresh);
     clearButton.setName("clear-button");
-
-    configureParameters();
   }
 
-  private void configureParameters() {
-    //    List<Parameter> parameters = getParameterGroups();
-    //    if(CollectionUtils.isEmpty(parameters)) {
-    //      parametersPanel.setVisible(false);
-    //      return;
-    //    }
-    //    parametersPanel.setLayout(new GridLayoutManager(parameters.size(), 1));
-    //    AtomicInteger i = new AtomicInteger(0);
-    //    parameters.forEach(parameter -> {
-    //      JPanel row = new JPanel(new GridBagLayout());
-    //      Optional<JComponent> component = ComponentUtils.toComponent(parameter);
-    //      if(component.isPresent()) {
-    //        JLabel label = new JLabel(parameter.getLabel());
-    //        JComponent value = component.get();
-    //        value.setName(parameter.getName());
-    //        row.add(label, buildGridBagConstraint(0, 0, FILL_NONE));
-    //        row.add(value, buildGridBagConstraint(1, 0, 1.0, 1.0, FILL_HORIZONTAL));
-    //        parametersPanel.add(row, buildGridConstraint(i.getAndIncrement(), 0,
-    // FILL_HORIZONTAL));
-    //        this.isParametersAdded = true;
-    //      }
-    //    });
-    //    parametersPanel.setVisible(true);
+  protected void configureParameters_(JPanel parametersPanel) {
+    parametersPanel.setLayout(new GridBagLayout());
   }
+  ;
 
   private void configureLayout() {
 
     setLayout(new GridLayoutManager(3, 1));
-    if (isParametersAdded) {
-      add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    }
+
+    this.add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     this.add(dataPanel, buildGridConstraint(1, 0, FILL_BOTH));
     this.add(resultsPanel, buildGridConstraint(2, 0, FILL_BOTH));
 
@@ -205,15 +163,13 @@ public abstract class Formatter extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
-  private void configureListeners() {
+  protected void configureListeners() {
     dataTextField.addDocumentListener(
         new DocumentListener() {
           @Override
           public void documentChanged(
               com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
-            resultTextField.setText(null);
-            String formattedData = format(dataTextField.getText());
-            resultTextField.setText(formattedData);
+            updateResult();
           }
         });
 
@@ -227,6 +183,16 @@ public abstract class Formatter extends Operation {
           ClipboardUtils.paste().ifPresent(dataTextField::setText);
         });
     clearButton.addActionListener(evt -> reset());
+  }
+
+  protected void updateResult() {
+    resultTextField.setText(null);
+    String formattedData = format(getData());
+    resultTextField.setText(formattedData);
+  }
+
+  protected String getData() {
+    return dataTextField.getText();
   }
 
   private void runInEDThread(Runnable task, EditorTextField resultTextField) {

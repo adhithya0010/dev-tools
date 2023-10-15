@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.intellij.devtools"
-version = "1.1-snapshot"
+version = "1.2-snapshot"
 val channel: String = "snapshot"
 
 repositories {
@@ -42,7 +42,8 @@ dependencies {
     implementation("pl.jalokim.propertiestojson:java-properties-to-json:5.3.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
     implementation("com.graphql-java:graphql-java:21.1")
-
+    implementation("com.arakelian:java-jq:1.3.0")
+    implementation("net.thisptr:jackson-jq:0.0.13")
 }
 
 dependencies {

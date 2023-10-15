@@ -2,13 +2,23 @@ package com.intellij.devtools.exec.formatter.impl.graphql;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.formatter.Formatter;
+import com.intellij.devtools.exec.PrettifyConfig;
+import com.intellij.devtools.exec.formatter.PrettyFormatter;
 import com.intellij.devtools.utils.GraphqlUtils;
 import com.intellij.lang.Language;
 import com.intellij.lang.jsgraphql.GraphQLLanguage;
 import javax.swing.Icon;
 
-public class GraphqlPrettifier extends Formatter {
+public class GraphqlPrettifier extends PrettyFormatter {
+
+  public GraphqlPrettifier() {
+    super();
+  }
+
+  @Override
+  protected boolean isIndentLengthEnabled() {
+    return false;
+  }
 
   @Override
   public String getNodeName() {
@@ -31,8 +41,8 @@ public class GraphqlPrettifier extends Formatter {
   }
 
   @Override
-  protected String format(String rawData) {
-    return GraphqlUtils.prettify(rawData);
+  protected String format(String rawData, PrettifyConfig prettifyConfig) {
+    return GraphqlUtils.prettify(rawData, prettifyConfig);
   }
 
   @Override

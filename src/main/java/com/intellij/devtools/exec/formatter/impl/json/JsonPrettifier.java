@@ -4,14 +4,15 @@ import static com.intellij.devtools.MessageKeys.FORMATTER_JSON_PRETTIFIER_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.formatter.Formatter;
+import com.intellij.devtools.exec.PrettifyConfig;
+import com.intellij.devtools.exec.formatter.PrettyFormatter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.json.json5.Json5Language;
 import com.intellij.lang.Language;
 import javax.swing.Icon;
 
-public class JsonPrettifier extends Formatter {
+public class JsonPrettifier extends PrettyFormatter {
 
   public JsonPrettifier() {
     super();
@@ -38,8 +39,8 @@ public class JsonPrettifier extends Formatter {
   }
 
   @Override
-  protected String format(String rawData) {
-    return JsonUtils.prettify(rawData);
+  protected String format(String rawData, PrettifyConfig prettifyConfig) {
+    return JsonUtils.prettify(rawData, prettifyConfig);
   }
 
   @Override

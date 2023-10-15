@@ -1,4 +1,4 @@
-package com.intellij.devtools.exec.misc.text;
+package com.intellij.devtools.exec.misc.json;
 
 import static com.intellij.devtools.utils.GridConstraintUtils.CAN_SHRINK_AND_GROW;
 import static com.intellij.devtools.utils.GridConstraintUtils.buildGridBagConstraint;
@@ -14,10 +14,12 @@ import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.devtools.utils.ProjectUtils;
-import com.intellij.devtools.utils.TextUtils;
 import com.intellij.icons.AllIcons;
+import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
@@ -33,8 +35,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class DuplicateRemover extends Operation {
+public class JsonQuery extends Operation {
 
+  private final JPanel parametersPanel = new JPanel();
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -47,6 +50,7 @@ public class DuplicateRemover extends Operation {
   private final JLabel dataLabel = new JLabel("Input");
   private final JLabel resultsLabel = new JLabel("Results");
 
+  private EditorTextField queryTextField;
   private EditorTextField dataTextField;
   private EditorTextField resultTextField;
 
@@ -57,36 +61,50 @@ public class DuplicateRemover extends Operation {
   private String dataText = null;
   private String resultText = null;
 
-  public DuplicateRemover() {
+  private boolean isParametersAdded = false;
+
+  public JsonQuery() {
     this.configureComponents();
     this.configureLayout();
     this.configureListeners();
   }
 
   private void configureComponents() {
-    dataTextField =
+    queryTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    dataTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(JsonLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
     resultTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
-                PlainTextLanguage.INSTANCE,
+                JsonLanguage.INSTANCE,
                 ProjectUtils.getProject(),
                 List.of(ReadOnlyCustomization.ENABLED));
 
+    queryTextField.setPlaceholder("Query");
     dataTextField.setName("data-text-area");
     resultTextField.setName("result-text-area");
 
     clearButton.setText("Reset");
     clearButton.setIcon(AllIcons.Actions.Refresh);
     clearButton.setName("clear-button");
+    isParametersAdded = configureParameters(parametersPanel);
   }
 
   private void configureLayout() {
-    setLayout(new GridLayoutManager(2, 1));
+    setLayout(new GridLayoutManager(3, 1));
 
-    this.add(dataPanel, buildGridConstraint(0, 0, FILL_BOTH));
-    this.add(resultsPanel, buildGridConstraint(1, 0, FILL_BOTH));
+    this.add(
+        queryTextField,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, CAN_SHRINK_AND_GROW));
+    this.add(
+        dataPanel,
+        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW, CAN_SHRINK_AND_GROW));
+    this.add(
+        resultsPanel,
+        buildGridConstraint(2, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW, CAN_SHRINK_AND_GROW));
 
     dataHeaderButtonPanel.setLayout(new BoxLayout(dataHeaderButtonPanel, BoxLayout.X_AXIS));
     dataHeaderButtonPanel.add(clearButton);
@@ -123,16 +141,21 @@ public class DuplicateRemover extends Operation {
   }
 
   private void configureListeners() {
-    dataTextField.addDocumentListener(
+    DocumentListener documentListener =
         ComponentUtils.getDocumentChangeListener(
             (DocumentEvent e) -> {
               runInEDThread(
                   () -> {
                     ComponentUtils.resetTextField(resultTextField);
-                    resultTextField.setText(TextUtils.removeDuplicates(dataTextField.getText()));
+                    String result =
+                        JsonUtils.executeJQ(queryTextField.getText(), dataTextField.getText());
+                    resultTextField.setText(result);
                   });
               return null;
-            }));
+            });
+
+    queryTextField.addDocumentListener(documentListener);
+    dataTextField.addDocumentListener(documentListener);
 
     copyButton.addActionListener(
         (ActionEvent evt) -> {
@@ -152,7 +175,7 @@ public class DuplicateRemover extends Operation {
 
   @Override
   public String getNodeName() {
-    return "Remove Duplicate Lines";
+    return "Json Query";
   }
 
   @Override
@@ -162,7 +185,7 @@ public class DuplicateRemover extends Operation {
 
   @Override
   public OperationCategory getOperationCategory() {
-    return OperationCategory.TEXT;
+    return OperationCategory.JSON;
   }
 
   @Override

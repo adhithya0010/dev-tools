@@ -8,6 +8,7 @@ import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
+import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
@@ -68,7 +69,10 @@ public class LinesSort extends Operation {
             .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
     resultTextField =
         EditorTextFieldProvider.getInstance()
-            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+            .getEditorField(
+                PlainTextLanguage.INSTANCE,
+                ProjectUtils.getProject(),
+                List.of(ReadOnlyCustomization.ENABLED));
 
     dataTextField.setName("data-text-area");
     resultTextField.setName("result-text-area");
