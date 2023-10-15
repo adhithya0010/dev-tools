@@ -13,13 +13,16 @@ import java.awt.Insets;
 
 public abstract class PrettyFormatter extends Formatter {
 
+  private static final int DEFAULT_INDENT_LENGTH = 2;
+
   private JBIntSpinner indentLengthSpinner;
+  private int indentLength = DEFAULT_INDENT_LENGTH;
 
   @Override
   protected void configureComponents() {
     super.configureComponents();
 
-    indentLengthSpinner = new JBIntSpinner(2, 1, 16, 1);
+    indentLengthSpinner = new JBIntSpinner(DEFAULT_INDENT_LENGTH, 1, 16, 1);
     indentLengthSpinner.setPreferredSize(new Dimension(100, 30));
     indentLengthSpinner.setMinimumSize(new Dimension(100, 30));
   }
@@ -52,6 +55,24 @@ public abstract class PrettyFormatter extends Formatter {
     PrettifyConfig prettifyConfig =
         PrettifyConfig.builder().indentLength(indentLengthSpinner.getNumber()).build();
     return format(rawData, prettifyConfig);
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    indentLengthSpinner.setNumber(DEFAULT_INDENT_LENGTH);
+  }
+
+  @Override
+  public void persistState() {
+    super.persistState();
+    indentLength = indentLengthSpinner.getNumber();
+  }
+
+  @Override
+  public void restoreState() {
+    super.restoreState();
+    indentLengthSpinner.setNumber(indentLength);
   }
 
   protected boolean isIndentLengthEnabled() {
