@@ -14,10 +14,6 @@ import javax.swing.Icon;
 
 public class JsonPrettifier extends PrettyFormatter {
 
-  public JsonPrettifier() {
-    super();
-  }
-
   @Override
   public String getNodeName() {
     return MessageBundle.get(FORMATTER_JSON_PRETTIFIER_NAME);

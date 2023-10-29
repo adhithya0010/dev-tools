@@ -4,20 +4,22 @@ import static com.intellij.devtools.MessageKeys.CONVERTER_TEXT_ESCAPER_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.Parameter;
-import com.intellij.devtools.exec.Parameter.Type;
-import com.intellij.devtools.exec.ParameterGroup;
 import com.intellij.devtools.exec.converter.Converter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.TextUtils;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import com.intellij.openapi.ui.ComboBox;
+import com.intellij.uiDesigner.core.Spacer;
+import com.intellij.util.ui.GridBag;
+import com.intellij.util.ui.JBInsets;
+import java.awt.Insets;
 import javax.swing.Icon;
+import javax.swing.JPanel;
 
 public class TextEscaper extends Converter {
+
+  private ComboBox<String> languageComboBox;
 
   @Override
   public String getNodeName() {
@@ -41,14 +43,14 @@ public class TextEscaper extends Converter {
 
   @Override
   protected String convertTo(String data) {
-    Map<String, Object> parameterResult = getParameterResult();
-    return TextUtils.unescapeText(data, (String) parameterResult.getOrDefault("type", "java"));
+    String type = (String) languageComboBox.getSelectedItem();
+    return TextUtils.unescapeText(data, type);
   }
 
   @Override
   protected String convertFrom(String data) {
-    Map<String, Object> parameterResult = getParameterResult();
-    return TextUtils.escapeText(data, (String) parameterResult.getOrDefault("type", "java"));
+    String type = (String) languageComboBox.getSelectedItem();
+    return TextUtils.escapeText(data, type);
   }
 
   @Override
@@ -62,16 +64,18 @@ public class TextEscaper extends Converter {
   }
 
   @Override
-  public List<ParameterGroup> getParameterGroups() {
-    Parameter typeParameter =
-        Parameter.builder()
-            .name("type")
-            .label("Type")
-            .type(Type.SELECT)
-            .values(Arrays.asList("Java", "HTML", "CSV", "XML", "Javascript"))
-            .defaultValue("Java")
-            .build();
-    return List.of(ParameterGroup.builder().parameters(List.of(typeParameter)).build());
+  protected void configureParameters(JPanel parametersPanel) {
+    super.configureParameters(parametersPanel);
+    this.languageComboBox =
+        new ComboBox<>(new String[] {"Java", "HTML", "CSV", "XML", "Javascript"});
+    languageComboBox.setSelectedItem("Java");
+
+    GridBag gbc = new GridBag();
+    Insets insets = JBInsets.create(3, 3);
+    gbc.nextLine();
+    parametersPanel.add(languageComboBox, gbc.next().insets(insets).fillCellNone());
+    parametersPanel.add(
+        new Spacer(), gbc.next().insets(insets).fillCellHorizontally().coverLine(2).weightx(1f));
   }
 
   @Override

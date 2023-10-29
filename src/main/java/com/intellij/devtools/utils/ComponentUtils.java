@@ -32,15 +32,15 @@ public class ComponentUtils {
   }
 
   public static void removeAllChildren(JComponent jComponent) {
-    jComponent.removeAll();
+    Optional.ofNullable(jComponent).ifPresent(JComponent::removeAll);
   }
 
   public static void resetTextField(JTextComponent jTextComponent) {
-    jTextComponent.setText(null);
+    Optional.ofNullable(jTextComponent).ifPresent(component -> component.setText(null));
   }
 
   public static void resetTextField(EditorTextField jTextComponent) {
-    jTextComponent.setText(null);
+    Optional.ofNullable(jTextComponent).ifPresent(component -> component.setText(null));
   }
 
   public static JScrollPane attachScroll(JComponent jComponent) {

@@ -5,11 +5,10 @@ import com.intellij.ui.JBIntSpinner;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBInsets;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.Insets;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public abstract class PrettyFormatter extends Formatter {
 
@@ -28,8 +27,8 @@ public abstract class PrettyFormatter extends Formatter {
   }
 
   @Override
-  protected void configureParameters_(JPanel parametersPanel) {
-    super.configureParameters_(parametersPanel);
+  protected void configureParameters(JPanel parametersPanel) {
+    super.configureParameters(parametersPanel);
 
     GridBag gbc = new GridBag();
     if (isIndentLengthEnabled()) {
@@ -37,7 +36,8 @@ public abstract class PrettyFormatter extends Formatter {
       gbc.nextLine();
       parametersPanel.add(new JLabel("Indent"), gbc.next().insets(insets).fillCellNone());
       parametersPanel.add(indentLengthSpinner, gbc.next().insets(insets).fillCellNone());
-      parametersPanel.add(new Spacer(), gbc.next().insets(insets).fillCellHorizontally().coverLine(2).weightx(1f));
+      parametersPanel.add(
+          new Spacer(), gbc.next().insets(insets).fillCellHorizontally().coverLine(2).weightx(1f));
     }
   }
 

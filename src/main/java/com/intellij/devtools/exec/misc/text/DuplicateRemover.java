@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -59,11 +60,12 @@ public class DuplicateRemover extends Operation {
 
   public DuplicateRemover() {
     this.configureComponents();
-    this.configureLayout();
+    this.configureLayouts();
     this.configureListeners();
   }
 
-  private void configureComponents() {
+  @Override
+  public void configureComponents() {
     dataTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
@@ -82,7 +84,8 @@ public class DuplicateRemover extends Operation {
     clearButton.setName("clear-button");
   }
 
-  private void configureLayout() {
+  @Override
+  protected void configureLayouts() {
     setLayout(new GridLayoutManager(2, 1));
 
     this.add(dataPanel, buildGridConstraint(0, 0, FILL_BOTH));
@@ -122,7 +125,8 @@ public class DuplicateRemover extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
-  private void configureListeners() {
+  @Override
+  protected void configureListeners() {
     dataTextField.addDocumentListener(
         ComponentUtils.getDocumentChangeListener(
             (DocumentEvent e) -> {
@@ -177,13 +181,13 @@ public class DuplicateRemover extends Operation {
 
   @Override
   public void persistState() {
-    dataText = dataTextField.getText();
-    resultText = resultTextField.getText();
+    dataText = Optional.ofNullable(dataTextField).map(EditorTextField::getText).orElse(null);
+    resultText = Optional.ofNullable(resultTextField).map(EditorTextField::getText).orElse(null);
   }
 
   @Override
   public void restoreState() {
-    dataTextField.setText(dataText);
-    resultTextField.setText(resultText);
+    Optional.ofNullable(dataTextField).ifPresent(component -> component.setText(dataText));
+    Optional.ofNullable(resultTextField).ifPresent(component -> component.setText(resultText));
   }
 }

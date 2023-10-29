@@ -11,7 +11,6 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
@@ -25,11 +24,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -39,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class Formatter extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -56,24 +50,18 @@ public abstract class Formatter extends Operation {
 
   private final JButton pasteButton = new JButton("Paste", Actions.MenuPaste);
   private final JButton copyButton = new JButton("Copy", Actions.Copy);
-  private final JButton clearButton = new JButton();
+  private final JButton clearButton = new JButton("Reset", Actions.Refresh);
 
   private String dataText = null;
   private String resultText = null;
 
   private boolean isParametersAdded;
-  private final transient Map<String, List<Parameter>> parameterMap;
-  private transient Map<String, Object> parameterResult = Map.of();
 
-  protected Formatter() {
+  public Formatter() {
     configureComponents();
-    configureParameters_(parametersPanel);
-    configureLayout();
+    configureParameters(parametersPanel);
+    configureLayouts();
     configureListeners();
-    parameterMap =
-        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
-            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-            .collect(Collectors.groupingBy(Parameter::getName));
   }
 
   @Override
@@ -95,8 +83,8 @@ public abstract class Formatter extends Operation {
 
   protected abstract Language getLanguage();
 
+  @Override
   protected void configureComponents() {
-
     dataTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
@@ -116,12 +104,13 @@ public abstract class Formatter extends Operation {
     clearButton.setName("clear-button");
   }
 
-  protected void configureParameters_(JPanel parametersPanel) {
+  @Override
+  protected void configureParameters(JPanel parametersPanel) {
     parametersPanel.setLayout(new GridBagLayout());
   }
-  ;
 
-  private void configureLayout() {
+  @Override
+  protected void configureLayouts() {
 
     setLayout(new GridLayoutManager(3, 1));
 

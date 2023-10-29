@@ -4,26 +4,53 @@ import static com.intellij.devtools.MessageKeys.GENERATOR_TIMESTAMP_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.Parameter;
-import com.intellij.devtools.exec.Parameter.Type;
-import com.intellij.devtools.exec.ParameterGroup;
 import com.intellij.devtools.exec.generator.Generator;
 import com.intellij.devtools.locale.MessageBundle;
-import java.time.LocalDateTime;
+import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.icons.AllIcons;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBTextField;
+import com.intellij.ui.table.JBTable;
+import com.intellij.uiDesigner.core.Spacer;
+import com.intellij.util.ui.GridBag;
+import com.intellij.util.ui.JBInsets;
+import com.intellij.util.ui.JBUI;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 public class TimeStampGenerator extends Generator {
 
-  private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ";
+  private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+  private TimeHolder timeHolder;
+  private JBTextField timeFormatTextField;
+  private JBLabel formatCorrectnessLabel;
+  private JButton infoButton;
 
   @Override
   public String getNodeName() {
@@ -46,130 +73,143 @@ public class TimeStampGenerator extends Generator {
   }
 
   @Override
-  protected String generate() {
-    Map<String, Object> parameterResult = getParameterResult();
-    ZoneId zoneId = ZoneId.of((String) parameterResult.get("timezone"));
-    ZoneId defaultZoneId = ZoneId.systemDefault();
-    LocalDateTime dateTime =
-        LocalDateTime.of(
-            (Integer) parameterResult.get("year"),
-            (Integer) parameterResult.get("month"),
-            (Integer) parameterResult.get("day"),
-            (Integer) parameterResult.get("hour"),
-            (Integer) parameterResult.get("minute"),
-            (Integer) parameterResult.get("second"),
-            (Integer) parameterResult.get("nano"));
-    ZonedDateTime zonedDateTime = dateTime.atZone(zoneId);
-    DateTimeFormatter timeFormat =
-        DateTimeFormatter.ofPattern((String) parameterResult.get("timeFormat"));
-    String formattedTime = zonedDateTime.format(timeFormat);
-    String millis = String.valueOf(zonedDateTime.toInstant().toEpochMilli());
+  protected void configureParameters(JPanel parametersPanel) {
+    super.configureParameters(parametersPanel);
+    GridBag gridBag = new GridBag();
+    JBInsets insets = JBInsets.create(3, 3);
+    timeFormatTextField = new JBTextField(DEFAULT_TIME_FORMAT, 25);
+    infoButton = new RoundedButton(AllIcons.General.BalloonInformation);
+    formatCorrectnessLabel = new JBLabel();
+    validatePattern();
+    // to remote the spacing between the image and button's borders
+    infoButton.setMargin(JBUI.emptyInsets());
+    infoButton.setSize(new Dimension(24, 24));
+    infoButton.setPreferredSize(new Dimension(24, 24));
+    infoButton.setMaximumSize(new Dimension(24, 24));
+    infoButton.setMinimumSize(new Dimension(24, 24));
 
-    ZonedDateTime localZonedTime = zonedDateTime.withZoneSameInstant(defaultZoneId);
-    String localTime = localZonedTime.format(timeFormat);
+    parametersPanel.setLayout(new GridBagLayout());
+    gridBag.nextLine();
+    JScrollPane dateInputTable = getDateInputTable();
+    dateInputTable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    dateInputTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+    parametersPanel.add(
+        dateInputTable,
+        gridBag.next().insets(insets).fillCellHorizontally().weightx(1f).coverLine());
 
-    Map<String, String> values = new LinkedHashMap<>();
-    values.put("Input Timezone", zoneId.getId());
-    values.put("Formatted Time", formattedTime);
-    values.put("Millis", millis);
-    values.put("Local Timezone", defaultZoneId.getId());
-    values.put("Local Time", localTime);
-    return formatResult(values);
+    gridBag.nextLine();
+    parametersPanel.add(new JBLabel("Time pattern"), gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(infoButton, gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(timeFormatTextField, gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(formatCorrectnessLabel, gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(new Spacer(), gridBag.next().fillCellHorizontally().coverLine());
   }
 
   @Override
-  public List<ParameterGroup> getParameterGroups() {
+  protected void configureListeners() {
+    super.configureListeners();
+    infoButton.addActionListener(
+        evt -> {
+          try {
+            Desktop.getDesktop()
+                .browse(
+                    new URL(
+                            "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#patterns")
+                        .toURI());
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        });
+    timeFormatTextField
+        .getDocument()
+        .addDocumentListener(
+            new DocumentListener() {
+              @Override
+              public void insertUpdate(DocumentEvent evt) {
+                validatePattern();
+              }
+
+              @Override
+              public void removeUpdate(DocumentEvent e) {
+                validatePattern();
+              }
+
+              @Override
+              public void changedUpdate(DocumentEvent e) {
+                validatePattern();
+              }
+            });
+  }
+
+  private void validatePattern() {
+    String pattern = timeFormatTextField.getText();
+    try {
+      DateTimeFormatter.ofPattern(pattern);
+      formatCorrectnessLabel.setIcon(AllIcons.General.InspectionsOK);
+      formatCorrectnessLabel.setToolTipText("Pattern is valid");
+    } catch (IllegalArgumentException e) {
+      formatCorrectnessLabel.setIcon(AllIcons.General.Error);
+      formatCorrectnessLabel.setToolTipText("Pattern is invalid");
+    }
+  }
+
+  private JScrollPane getDateInputTable() {
     ZoneId zoneId = ZoneId.systemDefault();
+    timeHolder = new TimeHolder(ZonedDateTime.now(zoneId));
 
-    Parameter timeFormat =
-        Parameter.builder()
-            .name("timeFormat")
-            .label("Time Format")
-            .type(Type.TEXT)
-            .defaultValue(DEFAULT_TIME_FORMAT)
-            .build();
-    Parameter timeZone =
-        Parameter.builder()
-            .name("timezone")
-            .label("Timezone")
-            .type(Type.TEXT)
-            .defaultValue(zoneId.toString())
-            .build();
+    Object[] columns = {"Day", "Month", "Year", "Hour", "Minute", "Second", "Nano", "Timezone"};
+    Object[][] row = {
+      {
+        timeHolder.getZonedDateTime().getDayOfMonth(),
+        timeHolder.getZonedDateTime().getMonthValue(),
+        timeHolder.getZonedDateTime().getYear(),
+        timeHolder.getZonedDateTime().getHour(),
+        timeHolder.getZonedDateTime().getMinute(),
+        timeHolder.getZonedDateTime().getSecond(),
+        timeHolder.getZonedDateTime().getNano(),
+        zoneId.getId()
+      }
+    };
+    JTable table = new JBTable(new DefaultTableModel(row, columns));
+    table.setRowSelectionAllowed(false);
+    TableColumnModel tcm = table.getColumnModel();
+    Iterator<TableColumn> iterator = tcm.getColumns().asIterator();
+    Map<Object, TableCellEditor> cellEditorMap = getCellEditorMap();
+    while (iterator.hasNext()) {
+      TableColumn tableColumn = iterator.next();
+      tableColumn.setCellEditor(cellEditorMap.get(tableColumn.getIdentifier()));
+    }
+    return ComponentUtils.attachScroll(table);
+  }
 
-    LocalDateTime localDateTime = LocalDateTime.now(zoneId);
+  private Map<Object, TableCellEditor> getCellEditorMap() {
+    ZoneId zoneId = ZoneId.systemDefault();
+    Date date = new Date();
+    return Map.of(
+        "Day", new DateSpinnerEditor(date, "d", timeHolder),
+        "Month", new DateSpinnerEditor(date, "M", timeHolder),
+        "Year", new DateSpinnerEditor(date, "yyyy", timeHolder),
+        "Hour", new DateSpinnerEditor(date, "H", timeHolder),
+        "Minute", new DateSpinnerEditor(date, "m", timeHolder),
+        "Second", new DateSpinnerEditor(date, "s", timeHolder),
+        "Nano", new DateSpinnerEditor(date, "SSSSSSSSS", timeHolder),
+        "Timezone", new TimezoneComboBoxEditor(zoneId, timeHolder));
+  }
 
-    Parameter day =
-        Parameter.builder()
-            .name("day")
-            .label("Day")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getDayOfMonth()))
-            .minValue(1)
-            .maxValue(31)
-            .build();
-    Parameter month =
-        Parameter.builder()
-            .name("month")
-            .label("Month")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getMonthValue()))
-            .minValue(1)
-            .maxValue(12)
-            .build();
-    Parameter year =
-        Parameter.builder()
-            .name("year")
-            .label("Year")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getYear()))
-            .minValue(1970)
-            .maxValue(4000)
-            .build();
-    Parameter hour =
-        Parameter.builder()
-            .name("hour")
-            .label("Hour")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getHour()))
-            .minValue(0)
-            .maxValue(23)
-            .build();
-    Parameter minute =
-        Parameter.builder()
-            .name("minute")
-            .label("Minute")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getMinute()))
-            .minValue(0)
-            .maxValue(59)
-            .build();
-    Parameter second =
-        Parameter.builder()
-            .name("second")
-            .label("Second")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.getSecond()))
-            .minValue(0)
-            .maxValue(59)
-            .build();
+  @Override
+  protected String generate() {
+    try {
+      DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(timeFormatTextField.getText());
 
-    Parameter nano =
-        Parameter.builder()
-            .name("nano")
-            .label("Nano")
-            .type(Type.NUMBER)
-            .defaultValue(String.valueOf(localDateTime.get(ChronoField.NANO_OF_SECOND)))
-            .minValue(0)
-            .maxValue(Long.MAX_VALUE)
-            .build();
-
-    List<ParameterGroup> parameterGroups = new ArrayList<>();
-    parameterGroups.add(ParameterGroup.builder().parameters(List.of(timeFormat)).build());
-    parameterGroups.add(ParameterGroup.builder().parameters(List.of(timeZone)).build());
-    parameterGroups.add(ParameterGroup.builder().parameters(List.of(day, month, year)).build());
-    parameterGroups.add(
-        ParameterGroup.builder().parameters(List.of(hour, minute, second, nano)).build());
-    return parameterGroups;
+      Map<String, String> values = new LinkedHashMap<>();
+      values.put("Formatted Time", timeHolder.getZonedDateTime().format(timeFormat));
+      values.put("Millis", timeHolder.getZonedDateTime().toInstant().toEpochMilli() + "");
+      System.out.println(formatResult(values));
+      return formatResult(values);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "ERROR";
+    }
   }
 
   private String formatResult(Map<String, String> values) {
@@ -177,7 +217,7 @@ public class TimeStampGenerator extends Generator {
         .reduce(
             new StringJoiner("\n"),
             (sj, entry) -> {
-              sj.add(String.format("%-20s\t:\t%-2s", entry.getKey(), entry.getValue()));
+              sj.add(String.format("%-14s\t:\t%-2s", entry.getKey(), entry.getValue()));
               return sj;
             },
             (sj1, sj2) -> {
@@ -187,5 +227,12 @@ public class TimeStampGenerator extends Generator {
               return sj;
             })
         .toString();
+  }
+
+  @Setter
+  @Getter
+  @AllArgsConstructor
+  public static class TimeHolder {
+    private ZonedDateTime zonedDateTime;
   }
 }

@@ -10,7 +10,6 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -22,14 +21,9 @@ import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.PlatformIcons;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -59,23 +53,9 @@ public abstract class Converter extends Operation {
   private final JButton toPasteButton = new JButton();
 
   private final AtomicBoolean isConversionInProgress = new AtomicBoolean(false);
-  private boolean isParametersAdded;
 
   private String fromText = null;
   private String toText = null;
-
-  private final transient Map<String, List<Parameter>> parameterMap;
-  private transient Map<String, Object> parameterResult = Map.of();
-
-  protected Converter() {
-    configureComponents();
-    configureLayouts();
-    configureListeners();
-    parameterMap =
-        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
-            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-            .collect(Collectors.groupingBy(Parameter::getName));
-  }
 
   protected abstract String convertTo(String data);
 
@@ -89,31 +69,23 @@ public abstract class Converter extends Operation {
 
   protected abstract Language getToLanguage();
 
-  public Map<String, Object> getParameterResult() {
-    return super.getParameterResult(parametersPanel);
+  public Converter() {
+    configureComponents();
+    configureParameters(parametersPanel);
+    configureLayouts();
+    configureListeners();
   }
 
   @Override
   public void restoreState() {
     fromTextField.setText(fromText);
     toTextField.setText(toText);
-    for (Component panel : parametersPanel.getComponents()) {
-      if (panel instanceof JPanel) {
-        Component[] components = ((JPanel) panel).getComponents();
-        Component component = components[1];
-        String name = component.getName();
-        ComponentUtils.setValue(
-            component,
-            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
-      }
-    }
   }
 
   @Override
   public void persistState() {
     fromText = fromTextField.getText();
     toText = toTextField.getText();
-    parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
@@ -121,7 +93,7 @@ public abstract class Converter extends Operation {
     fromTextField.setText(null);
   }
 
-  private void configureComponents() {
+  protected void configureComponents() {
     fromTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
@@ -152,17 +124,13 @@ public abstract class Converter extends Operation {
     toPasteButton.setIcon(Actions.MenuPaste);
     toPasteButton.setText("Paste");
     toPasteButton.setName("to-paste-button");
-
-    isParametersAdded = configureParameters(parametersPanel);
   }
 
-  private void configureLayouts() {
+  protected void configureLayouts() {
     ComponentUtils.removeAllChildren(this);
 
     setLayout(new GridLayoutManager(3, 1));
-    if (isParametersAdded) {
-      add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    }
+    add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     add(fromPanel, buildGridConstraint(1, 0, FILL_BOTH));
     add(toPanel, buildGridConstraint(2, 0, FILL_BOTH));
 
@@ -209,7 +177,13 @@ public abstract class Converter extends Operation {
     ComponentUtils.refreshComponent(this);
   }
 
-  private void configureListeners() {
+  @Override
+  protected void configureParameters(JPanel parametersPanel) {
+    super.configureParameters(parametersPanel);
+    parametersPanel.setLayout(new GridBagLayout());
+  }
+
+  protected void configureListeners() {
     fromTextField.addDocumentListener(
         new DocumentListener() {
           @Override

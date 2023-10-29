@@ -20,13 +20,8 @@ public class TextDiff extends Operation {
 
   private DiffRequestPanel diffRequestPanel = null;
 
-  public TextDiff() {
-    this.configureComponents();
-    this.configureLayout();
-    this.configureListeners();
-  }
-
-  private void configureComponents() {
+  @Override
+  protected void configureComponents() {
     Document document1 = EditorFactory.getInstance().createDocument("");
     Document document2 = EditorFactory.getInstance().createDocument("");
 
@@ -38,12 +33,18 @@ public class TextDiff extends Operation {
         new SimpleDiffRequest(null, diffContent1, diffContent2, "Original", "Changed"));
   }
 
-  private void configureLayout() {
+  public TextDiff() {
+    configureComponents();
+    configureParameters(parametersPanel);
+    configureLayouts();
+    configureListeners();
+  }
+
+  @Override
+  protected void configureLayouts() {
     setLayout(new GridLayoutManager(1, 1));
     this.add(diffRequestPanel.getComponent(), buildGridConstraint(0, 0, FILL_BOTH));
   }
-
-  private void configureListeners() {}
 
   @Override
   public String getNodeName() {

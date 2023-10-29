@@ -10,6 +10,7 @@ public enum OperationCategory implements BaseNode {
   BASE_64("Base64"),
   URL("Url"),
   WEB("Web"),
+  TIME("Time"),
   TEXT("Text");
 
   private final String categoryName;

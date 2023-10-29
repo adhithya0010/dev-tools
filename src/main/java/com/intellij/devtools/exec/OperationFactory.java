@@ -17,6 +17,7 @@ import com.intellij.devtools.exec.generator.impl.UUIDGenerator;
 import com.intellij.devtools.exec.misc.json.JsonQuery;
 import com.intellij.devtools.exec.misc.text.DuplicateRemover;
 import com.intellij.devtools.exec.misc.text.LinesSort;
+import com.intellij.devtools.exec.misc.text.Regex;
 import com.intellij.devtools.exec.misc.text.TextDiff;
 import com.intellij.devtools.exec.misc.web.MockServer;
 import java.util.ArrayList;
@@ -73,6 +74,10 @@ public class OperationFactory {
 
   public List<Operation> getAllMiscOperations() {
     return List.of(
-        new MockServer(), new LinesSort(), new DuplicateRemover(), new TextDiff(), new JsonQuery());
+        new MockServer(),
+        new TextDiff(),
+        new DuplicateRemover(),
+        new Regex(),
+        new LinesSort());
   }
 }

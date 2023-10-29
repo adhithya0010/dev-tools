@@ -69,7 +69,8 @@ public class JsonQuery extends Operation {
     this.configureListeners();
   }
 
-  private void configureComponents() {
+  @Override
+  public void configureComponents() {
     queryTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
@@ -90,7 +91,7 @@ public class JsonQuery extends Operation {
     clearButton.setText("Reset");
     clearButton.setIcon(AllIcons.Actions.Refresh);
     clearButton.setName("clear-button");
-    isParametersAdded = configureParameters(parametersPanel);
+    configureParameters(parametersPanel);
   }
 
   private void configureLayout() {
@@ -140,7 +141,8 @@ public class JsonQuery extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
-  private void configureListeners() {
+  @Override
+  protected void configureListeners() {
     DocumentListener documentListener =
         ComponentUtils.getDocumentChangeListener(
             (DocumentEvent e) -> {
