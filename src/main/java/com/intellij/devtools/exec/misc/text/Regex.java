@@ -1,6 +1,7 @@
 package com.intellij.devtools.exec.misc.text;
 
 import com.intellij.codeInsight.highlighting.HighlightManager;
+import com.intellij.devtools.component.editortextfield.customization.IconEditorCustomization;
 import com.intellij.devtools.component.editortextfield.customization.RegexEditorCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
@@ -136,6 +137,7 @@ public class Regex extends Operation {
                 project,
                 List.of(
                     WrapTextCustomization.ENABLED,
+                    new IconEditorCustomization(myRegExpIcon),
                     new RegexEditorCustomization(
                         this::highlightRegExpGroup, tempFile, regexpDisposable)));
     inputTextField =
@@ -145,6 +147,7 @@ public class Regex extends Operation {
                 project,
                 List.of(
                     WrapTextCustomization.ENABLED,
+                        new IconEditorCustomization(mySampleIcon),
                     new RegexEditorCustomization(
                         this::highlightSampleGroup, tempFile, mySampleTextDisposable)));
 
@@ -180,8 +183,8 @@ public class Regex extends Operation {
           }
         });
 
-    setupIcon(regularExpressionTextField, myRegExpIcon);
-    setupIcon(inputTextField, mySampleIcon);
+//    setupIcon(regularExpressionTextField, myRegExpIcon);
+//    setupIcon(inputTextField, mySampleIcon);
 
     final DocumentListener documentListener =
         new DocumentListener() {

@@ -88,7 +88,7 @@ public class Regex2 extends Operation {
 
   @Override
   public String getNodeName() {
-    return "Regex";
+    return "Regex 2";
   }
 
   @Override

@@ -12,9 +12,9 @@ import com.intellij.devtools.exec.formatter.impl.json.JsonMinifier;
 import com.intellij.devtools.exec.formatter.impl.json.JsonPrettifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlMinifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlPrettifier;
-import com.intellij.devtools.exec.generator.impl.TimeStampGenerator;
+import com.intellij.devtools.exec.misc.text.Regex2;
+import com.intellij.devtools.exec.misc.time.TimeFormatter;
 import com.intellij.devtools.exec.generator.impl.UUIDGenerator;
-import com.intellij.devtools.exec.misc.json.JsonQuery;
 import com.intellij.devtools.exec.misc.text.DuplicateRemover;
 import com.intellij.devtools.exec.misc.text.LinesSort;
 import com.intellij.devtools.exec.misc.text.Regex;
@@ -69,7 +69,7 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllGenerators() {
-    return List.of(new UUIDGenerator(), new TimeStampGenerator());
+    return List.of(new UUIDGenerator(), new TimeFormatter());
   }
 
   public List<Operation> getAllMiscOperations() {

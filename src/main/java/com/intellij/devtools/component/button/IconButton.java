@@ -1,4 +1,4 @@
-package com.intellij.devtools.exec.generator.impl;
+package com.intellij.devtools.component.button;
 
 import com.intellij.util.ui.JBUI;
 import java.awt.Dimension;
@@ -8,8 +8,9 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-public class RoundedButton extends JButton {
-  public RoundedButton(Icon icon) {
+public class IconButton extends JButton {
+
+  public IconButton(Icon icon) {
     super(icon);
 
     // These statements enlarge the button so that it
@@ -43,8 +44,6 @@ public class RoundedButton extends JButton {
   // Paint the border of the button using a simple stroke.
   protected void paintBorder(Graphics g) {
     g.setColor(getForeground());
-    //        g.drawOval(0, 0, getSize().width - 1,
-    //                getSize().height - 1);
   }
 
   // Hit detection.

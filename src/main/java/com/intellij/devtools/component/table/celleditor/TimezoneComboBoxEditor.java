@@ -1,5 +1,6 @@
-package com.intellij.devtools.exec.generator.impl;
+package com.intellij.devtools.component.table.celleditor;
 
+import com.intellij.devtools.exec.misc.time.TimeFormatter;
 import com.intellij.openapi.ui.ComboBox;
 import java.awt.Component;
 import java.time.ZoneId;
@@ -14,9 +15,9 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class TimezoneComboBoxEditor extends DefaultCellEditor {
 
   private final JComboBox<Object> comboBox;
-  private final TimeStampGenerator.TimeHolder timeHolder;
+  private final TimeFormatter.TimeHolder timeHolder;
 
-  public TimezoneComboBoxEditor(ZoneId zoneId, TimeStampGenerator.TimeHolder timeHolder) {
+  public TimezoneComboBoxEditor(ZoneId zoneId, TimeFormatter.TimeHolder timeHolder) {
     super(new JTextField());
     this.timeHolder = timeHolder;
     comboBox = new ComboBox<>(ZoneId.getAvailableZoneIds().stream().sorted().toArray());

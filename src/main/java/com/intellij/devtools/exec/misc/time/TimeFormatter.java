@@ -1,10 +1,13 @@
-package com.intellij.devtools.exec.generator.impl;
+package com.intellij.devtools.exec.misc.time;
 
 import static com.intellij.devtools.MessageKeys.GENERATOR_TIMESTAMP_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.generator.Generator;
+import com.intellij.devtools.component.table.celleditor.DateSpinnerEditor;
+import com.intellij.devtools.component.button.IconButton;
+import com.intellij.devtools.component.table.celleditor.TimezoneComboBoxEditor;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.icons.AllIcons;
@@ -43,7 +46,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class TimeStampGenerator extends Generator {
+public class TimeFormatter extends Generator {
 
   private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
@@ -54,7 +57,7 @@ public class TimeStampGenerator extends Generator {
 
   @Override
   public String getNodeName() {
-    return MessageBundle.get(GENERATOR_TIMESTAMP_NAME);
+    return "Time Formatter";
   }
 
   @Override
@@ -64,12 +67,12 @@ public class TimeStampGenerator extends Generator {
 
   @Override
   public OperationCategory getOperationCategory() {
-    return null;
+    return OperationCategory.TIME;
   }
 
   @Override
   public OperationGroup getOperationGroup() {
-    return OperationGroup.GENERATOR;
+    return OperationGroup.MISC;
   }
 
   @Override
@@ -78,7 +81,8 @@ public class TimeStampGenerator extends Generator {
     GridBag gridBag = new GridBag();
     JBInsets insets = JBInsets.create(3, 3);
     timeFormatTextField = new JBTextField(DEFAULT_TIME_FORMAT, 25);
-    infoButton = new RoundedButton(AllIcons.General.BalloonInformation);
+    infoButton = new IconButton(AllIcons.General.BalloonInformation);
+    infoButton.setToolTipText("Documentation");
     formatCorrectnessLabel = new JBLabel();
     validatePattern();
     // to remote the spacing between the image and button's borders

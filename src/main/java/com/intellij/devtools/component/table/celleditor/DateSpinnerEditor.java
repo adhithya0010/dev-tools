@@ -1,4 +1,6 @@
-package com.intellij.devtools.exec.generator.impl;
+package com.intellij.devtools.component.table.celleditor;
+
+import com.intellij.devtools.exec.misc.time.TimeFormatter;
 
 import java.awt.Component;
 import java.time.temporal.ChronoField;
@@ -15,7 +17,7 @@ import javax.swing.SpinnerDateModel;
 public class DateSpinnerEditor extends DefaultCellEditor {
 
   private final JSpinner spinner;
-  private final TimeStampGenerator.TimeHolder timeHolder;
+  private final TimeFormatter.TimeHolder timeHolder;
 
   private final Map<Integer, TemporalField> TEMPORAL_FIELD_MAP =
       Map.of(
@@ -27,7 +29,7 @@ public class DateSpinnerEditor extends DefaultCellEditor {
           Calendar.SECOND, ChronoField.SECOND_OF_MINUTE,
           Calendar.MILLISECOND, ChronoField.MILLI_OF_SECOND);
 
-  public DateSpinnerEditor(Date date, String dateFormat, TimeStampGenerator.TimeHolder timeHolder) {
+  public DateSpinnerEditor(Date date, String dateFormat, TimeFormatter.TimeHolder timeHolder) {
     super(new JTextField());
     this.timeHolder = timeHolder;
     spinner = new JSpinner();
