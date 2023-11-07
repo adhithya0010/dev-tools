@@ -4,20 +4,22 @@ import static com.intellij.devtools.MessageKeys.GENERATOR_UUID_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.Parameter;
-import com.intellij.devtools.exec.Parameter.Type;
-import com.intellij.devtools.exec.ParameterGroup;
 import com.intellij.devtools.exec.generator.Generator;
 import com.intellij.devtools.locale.MessageBundle;
-import java.util.List;
-import java.util.Map;
+import com.intellij.ui.JBIntSpinner;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.uiDesigner.core.Spacer;
+import com.intellij.util.ui.GridBag;
+import com.intellij.util.ui.JBInsets;
+import java.awt.GridBagLayout;
 import java.util.StringJoiner;
 import java.util.UUID;
 import javax.swing.Icon;
+import javax.swing.JPanel;
 
 public class UUIDGenerator extends Generator {
 
-  public static final String COUNT_PARAMETER_NAME = "count";
+  private JBIntSpinner countSpinner;
 
   @Override
   public String getNodeName() {
@@ -40,27 +42,26 @@ public class UUIDGenerator extends Generator {
   }
 
   @Override
+  protected void configureParameters(JPanel parametersPanel) {
+    parametersPanel.setLayout(new GridBagLayout());
+    JBLabel countLabel = new JBLabel("Count");
+    this.countSpinner = new JBIntSpinner(1, 1, 100);
+    GridBag gridBag = new GridBag();
+    JBInsets insets = JBInsets.create(3, 3);
+    gridBag.nextLine();
+    parametersPanel.add(countLabel, gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(countSpinner, gridBag.next().insets(insets).fillCellNone());
+    parametersPanel.add(
+        new Spacer(), gridBag.next().fillCellHorizontally().coverLine(2).weightx(1f));
+  }
+
+  @Override
   protected String generate() {
-    Map<String, Object> parameterResult = getParameterResult();
-    int count = (int) parameterResult.get(COUNT_PARAMETER_NAME);
+    int count = countSpinner.getNumber();
     StringJoiner sj = new StringJoiner("\n");
     while (count-- > 0) {
       sj.add(UUID.randomUUID().toString());
     }
     return sj.toString();
-  }
-
-  @Override
-  public List<ParameterGroup> getParameterGroups() {
-    Parameter countParameter =
-        Parameter.builder()
-            .name(COUNT_PARAMETER_NAME)
-            .label("Count")
-            .type(Type.NUMBER)
-            .defaultValue("1")
-            .minValue(1)
-            .maxValue(Long.MAX_VALUE)
-            .build();
-    return List.of(ParameterGroup.builder().parameters(List.of(countParameter)).build());
   }
 }

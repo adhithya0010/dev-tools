@@ -1,4 +1,4 @@
-package com.intellij.devtools.exec.formatter;
+package com.intellij.devtools.exec.misc.json;
 
 import static com.intellij.devtools.utils.GridConstraintUtils.CAN_SHRINK_AND_GROW;
 import static com.intellij.devtools.utils.GridConstraintUtils.buildGridBagConstraint;
@@ -9,15 +9,18 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
 import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
-import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.exec.OperationCategory;
+import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
+import com.intellij.devtools.utils.ComponentUtils;
+import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.devtools.utils.ProjectUtils;
-import com.intellij.icons.AllIcons.Actions;
-import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
+import com.intellij.icons.AllIcons;
+import com.intellij.json.JsonLanguage;
+import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -26,14 +29,15 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.jetbrains.annotations.NotNull;
+import javax.swing.SwingUtilities;
 
-public abstract class Formatter extends Operation {
+public class JsonQuery extends Operation {
 
+  private final JPanel parametersPanel = new JPanel();
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -41,89 +45,74 @@ public abstract class Formatter extends Operation {
   private final JPanel resultHeaderPanel = new JPanel();
 
   private final JPanel dataHeaderButtonPanel = new JPanel();
+  private final JPanel resultsHeaderButtonPanel = new JPanel();
 
-  private JComponent dataScrollPane;
-  private JComponent resultScrollPane;
+  private final JLabel dataLabel = new JLabel("Input");
+  private final JLabel resultsLabel = new JLabel("Results");
 
+  private EditorTextField queryTextField;
   private EditorTextField dataTextField;
   private EditorTextField resultTextField;
 
-  private final JButton pasteButton = new JButton("Paste", Actions.MenuPaste);
-  private final JButton copyButton = new JButton("Copy", Actions.Copy);
-  private final JButton clearButton = new JButton("Reset", Actions.Refresh);
+  private final JButton pasteButton = new JButton("Paste", AllIcons.Actions.MenuPaste);
+  private final JButton copyButton = new JButton("Copy", AllIcons.Actions.Copy);
+  private final JButton clearButton = new JButton();
 
   private String dataText = null;
   private String resultText = null;
 
-  private boolean isParametersAdded;
+  private boolean isParametersAdded = false;
 
-  public Formatter() {
-    configureComponents();
-    configureParameters(parametersPanel);
-    configureLayouts();
-    configureListeners();
+  public JsonQuery() {
+    this.configureComponents();
+    this.configureLayout();
+    this.configureListeners();
   }
 
   @Override
-  public void restoreState() {
-    dataTextField.setText(dataText);
-    resultTextField.setText(resultText);
-  }
-
-  @Override
-  public void persistState() {
-    dataText = dataTextField.getText();
-    resultText = resultTextField.getText();
-  }
-
-  @Override
-  public void reset() {
-    dataTextField.setText(null);
-  }
-
-  protected abstract Language getLanguage();
-
-  @Override
-  protected void configureComponents() {
+  public void configureComponents() {
+    queryTextField =
+        EditorTextFieldProvider.getInstance()
+            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
     dataTextField =
         EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                getLanguage(), ProjectUtils.getProject(), List.of(WrapTextCustomization.ENABLED));
+            .getEditorField(JsonLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
     resultTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
-                getLanguage(),
+                JsonLanguage.INSTANCE,
                 ProjectUtils.getProject(),
-                List.of(WrapTextCustomization.ENABLED, ReadOnlyCustomization.ENABLED));
+                List.of(ReadOnlyCustomization.ENABLED));
 
+    queryTextField.setPlaceholder("Query");
     dataTextField.setName("data-text-area");
     resultTextField.setName("result-text-area");
 
     clearButton.setText("Reset");
-    clearButton.setIcon(Actions.Refresh);
+    clearButton.setIcon(AllIcons.Actions.Refresh);
     clearButton.setName("clear-button");
+    configureParameters(parametersPanel);
   }
 
-  @Override
-  protected void configureParameters(JPanel parametersPanel) {
-    parametersPanel.setLayout(new GridBagLayout());
-  }
-
-  @Override
-  protected void configureLayouts() {
-
+  private void configureLayout() {
     setLayout(new GridLayoutManager(3, 1));
 
-    this.add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    this.add(dataPanel, buildGridConstraint(1, 0, FILL_BOTH));
-    this.add(resultsPanel, buildGridConstraint(2, 0, FILL_BOTH));
+    this.add(
+        queryTextField,
+        buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, CAN_SHRINK_AND_GROW));
+    this.add(
+        dataPanel,
+        buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW, CAN_SHRINK_AND_GROW));
+    this.add(
+        resultsPanel,
+        buildGridConstraint(2, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW, CAN_SHRINK_AND_GROW));
 
     dataHeaderButtonPanel.setLayout(new BoxLayout(dataHeaderButtonPanel, BoxLayout.X_AXIS));
     dataHeaderButtonPanel.add(clearButton);
     dataHeaderButtonPanel.add(pasteButton);
 
     dataHeaderPanel.setLayout(new BorderLayout());
-    dataHeaderPanel.add(new JLabel("Data"), BorderLayout.WEST);
+    dataHeaderPanel.add(dataLabel, BorderLayout.WEST);
     dataHeaderPanel.add(dataHeaderButtonPanel, BorderLayout.EAST);
 
     JPanel dataContentPanel = new JPanel();
@@ -135,7 +124,7 @@ public abstract class Formatter extends Operation {
         dataTextField, buildGridConstraint(1, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
 
     resultHeaderPanel.setLayout(new BorderLayout());
-    resultHeaderPanel.add(new JLabel("Result"), BorderLayout.WEST);
+    resultHeaderPanel.add(resultsLabel, BorderLayout.WEST);
     resultHeaderPanel.add(copyButton, BorderLayout.EAST);
 
     JPanel resultContentPanel = new JPanel();
@@ -152,15 +141,23 @@ public abstract class Formatter extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
+  @Override
   protected void configureListeners() {
-    dataTextField.addDocumentListener(
-        new DocumentListener() {
-          @Override
-          public void documentChanged(
-              com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
-            updateResult();
-          }
-        });
+    DocumentListener documentListener =
+        ComponentUtils.getDocumentChangeListener(
+            (DocumentEvent e) -> {
+              runInEDThread(
+                  () -> {
+                    ComponentUtils.resetTextField(resultTextField);
+                    String result =
+                        JsonUtils.executeJQ(queryTextField.getText(), dataTextField.getText());
+                    resultTextField.setText(result);
+                  });
+              return null;
+            });
+
+    queryTextField.addDocumentListener(documentListener);
+    dataTextField.addDocumentListener(documentListener);
 
     copyButton.addActionListener(
         (ActionEvent evt) -> {
@@ -174,20 +171,44 @@ public abstract class Formatter extends Operation {
     clearButton.addActionListener(evt -> reset());
   }
 
-  protected void updateResult() {
-    resultTextField.setText(null);
-    String formattedData = format(getData());
-    resultTextField.setText(formattedData);
+  private void runInEDThread(Runnable task) {
+    SwingUtilities.invokeLater(task);
   }
 
-  protected String getData() {
-    return dataTextField.getText();
+  @Override
+  public String getNodeName() {
+    return "Json Query";
   }
 
-  private void runInEDThread(Runnable task, EditorTextField resultTextField) {
-    ApplicationManager.getApplication()
-        .invokeLater(task, ModalityState.stateForComponent(resultTextField));
+  @Override
+  public Icon getIcon() {
+    return null;
   }
 
-  protected abstract String format(String rawData);
+  @Override
+  public OperationCategory getOperationCategory() {
+    return OperationCategory.JSON;
+  }
+
+  @Override
+  public OperationGroup getOperationGroup() {
+    return OperationGroup.MISC;
+  }
+
+  @Override
+  public void reset() {
+    ComponentUtils.resetTextField(dataTextField);
+  }
+
+  @Override
+  public void persistState() {
+    dataText = dataTextField.getText();
+    resultText = resultTextField.getText();
+  }
+
+  @Override
+  public void restoreState() {
+    dataTextField.setText(dataText);
+    resultTextField.setText(resultText);
+  }
 }

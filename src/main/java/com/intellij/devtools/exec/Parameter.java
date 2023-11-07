@@ -19,6 +19,7 @@ public class Parameter {
   public enum Type {
     TEXT,
     NUMBER,
-    SELECT;
+    SELECT,
+    BOOLEAN
   }
 }

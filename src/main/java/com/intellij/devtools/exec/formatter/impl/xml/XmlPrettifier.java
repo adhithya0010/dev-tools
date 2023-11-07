@@ -4,14 +4,15 @@ import static com.intellij.devtools.MessageKeys.FORMATTER_XML_PRETTIFIER_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.formatter.Formatter;
+import com.intellij.devtools.exec.PrettifyConfig;
+import com.intellij.devtools.exec.formatter.PrettyFormatter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.XmlUtils;
 import com.intellij.lang.Language;
 import com.intellij.lang.xml.XMLLanguage;
 import javax.swing.Icon;
 
-public class XmlPrettifier extends Formatter {
+public class XmlPrettifier extends PrettyFormatter {
 
   public XmlPrettifier() {
     super();
@@ -38,8 +39,8 @@ public class XmlPrettifier extends Formatter {
   }
 
   @Override
-  protected String format(String rawData) {
-    return XmlUtils.prettify(rawData);
+  protected String format(String rawData, PrettifyConfig prettifyConfig) {
+    return XmlUtils.prettify(rawData, prettifyConfig);
   }
 
   @Override

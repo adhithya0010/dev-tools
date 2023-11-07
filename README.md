@@ -21,7 +21,7 @@ This is a simple tool that could be helpful in your everyday development workflo
 ## Screenshots
 
 <div>
-<img src="./screenshots/1.png" alt="1" style="height:300px;width:300px">
-<img src="./screenshots/2.png" alt="2"  style="height:300px;width:300px">
-<img src="./screenshots/3.png" alt="3"  style="height:300px;width:300px">
+  <img alt="1" src="./screenshots/1.png" style="height:300px;width:300px"/>
+  <img alt="2" src="./screenshots/2.png" style="height:300px;width:300px"/>
+  <img alt="3" src="./screenshots/3.png" style="height:300px;width:300px"/>
 </div>

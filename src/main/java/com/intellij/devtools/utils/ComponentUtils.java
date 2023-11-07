@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBScrollPane;
 import java.awt.Component;
 import java.util.Objects;
@@ -31,15 +32,15 @@ public class ComponentUtils {
   }
 
   public static void removeAllChildren(JComponent jComponent) {
-    jComponent.removeAll();
+    Optional.ofNullable(jComponent).ifPresent(JComponent::removeAll);
   }
 
   public static void resetTextField(JTextComponent jTextComponent) {
-    jTextComponent.setText(null);
+    Optional.ofNullable(jTextComponent).ifPresent(component -> component.setText(null));
   }
 
   public static void resetTextField(EditorTextField jTextComponent) {
-    jTextComponent.setText(null);
+    Optional.ofNullable(jTextComponent).ifPresent(component -> component.setText(null));
   }
 
   public static JScrollPane attachScroll(JComponent jComponent) {
@@ -105,6 +106,9 @@ public class ComponentUtils {
         JComboBox<String> comboBox = new ComboBox<>(parameter.getValues().toArray(new String[0]));
         comboBox.setSelectedItem(parameter.getDefaultValue());
         component = comboBox;
+        break;
+      case BOOLEAN:
+        component = new JBCheckBox(null, Boolean.parseBoolean(parameter.getDefaultValue()));
         break;
       default:
         component = null;

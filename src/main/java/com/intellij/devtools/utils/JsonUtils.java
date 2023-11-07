@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.intellij.devtools.exec.PrettifyConfig;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -18,9 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
+import net.thisptr.jackson.jq.JsonQuery;
+import net.thisptr.jackson.jq.Scope;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class JsonUtils {
+
+  public static final Scope ROOT_SCOPE = Scope.newEmptyScope();
 
   private JsonUtils() {}
 
@@ -31,6 +37,8 @@ public class JsonUtils {
   static {
     OBJECT_MAPPER.configure(ALLOW_COMMENTS, true);
     PRETTY_PRINTER.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+
+    ROOT_SCOPE.loadFunctions(Scope.class.getClassLoader());
   }
 
   public static String minify(String data) {
@@ -46,13 +54,20 @@ public class JsonUtils {
     }
   }
 
-  public static String prettify(String data) {
+  public static String prettify(String data, PrettifyConfig prettifyConfig) {
     if (StringUtils.isEmpty(data)) {
       return null;
     }
     try {
-      JsonNode object = OBJECT_MAPPER.readTree(data);
-      return OBJECT_MAPPER.writer(PRETTY_PRINTER).writeValueAsString(object);
+      ObjectMapper objectMapper = new ObjectMapper();
+      DefaultPrettyPrinter.Indenter indenter =
+          new DefaultIndenter(
+              StringUtils.repeat(' ', prettifyConfig.getIndentLength()), DefaultIndenter.SYS_LF);
+      DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+      prettyPrinter.indentObjectsWith(indenter);
+
+      JsonNode object = objectMapper.readTree(data);
+      return objectMapper.writer(prettyPrinter).writeValueAsString(object);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
       return "ERROR";
@@ -109,6 +124,34 @@ public class JsonUtils {
     } else if (jsonNode.isValueNode()) {
       ValueNode valueNode = (ValueNode) jsonNode;
       properties.put(path, valueNode.asText());
+    }
+  }
+
+  public static String executeJQ(String query, String data) {
+    try {
+      // JsonQuery#compile(...) parses and compiles a given expression. The resulting JsonQuery
+      // instance
+      // is immutable and thread-safe. It should be reused as possible if you repeatedly use the
+      // same expression.
+      JsonQuery q = JsonQuery.compile(query);
+
+      // You need a JsonNode to use as an input to the JsonQuery. There are many ways you can grab a
+      // JsonNode.
+      // In this example, we just parse a JSON text into a JsonNode.
+      JsonNode in = OBJECT_MAPPER.readTree(data);
+
+      // Finally, JsonQuery#apply(...) executes the query with given input and returns a list of
+      // JsonNode.
+      // The childScope will not be modified by this call because it internally creates a child
+      // scope as necessary.
+      final List<JsonNode> out = q.apply(ROOT_SCOPE, in);
+      if (CollectionUtils.isEmpty(out)) {
+        return "";
+      }
+      JsonNode result = out.get(0);
+      return result.toPrettyString();
+    } catch (JsonProcessingException e) {
+      return "ERROR";
     }
   }
 }

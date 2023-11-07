@@ -12,9 +12,7 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.Parameter;
 import com.intellij.devtools.utils.ClipboardUtils;
-import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.editor.Editor;
@@ -24,13 +22,9 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import java.awt.Component;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -50,25 +44,13 @@ public abstract class Generator extends Operation {
   private final JButton copyButton = new JButton("Copy", Actions.Copy);
   private final JButton clearButton = new JButton("Reset", Actions.Refresh);
 
-  private boolean isParametersAdded;
-
   private String resultText = null;
 
-  private final transient Map<String, List<Parameter>> parameterMap;
-  private transient Map<String, Object> parameterResult = Map.of();
-
-  protected Generator() {
+  public Generator() {
     configureComponents();
-    configureLayout();
+    configureParameters(parametersPanel);
+    configureLayouts();
     configureListeners();
-    parameterMap =
-        Optional.ofNullable(getParameterGroups()).orElseGet(ArrayList::new).stream()
-            .flatMap(parameterGroup -> parameterGroup.getParameters().stream())
-            .collect(Collectors.groupingBy(Parameter::getName));
-  }
-
-  protected Map<String, Object> getParameterResult() {
-    return super.getParameterResult(parametersPanel);
   }
 
   protected abstract String generate();
@@ -76,25 +58,11 @@ public abstract class Generator extends Operation {
   @Override
   public void restoreState() {
     resultTextField.setText(resultText);
-    for (Component panel : parametersPanel.getComponents()) {
-      if (panel instanceof JPanel) {
-        Component[] components = ((JPanel) panel).getComponents();
-        Component component = components[1];
-        if (component instanceof Spacer) {
-          continue;
-        }
-        String name = component.getName();
-        ComponentUtils.setValue(
-            component,
-            parameterResult.getOrDefault(name, parameterMap.get(name).get(0).getDefaultValue()));
-      }
-    }
   }
 
   @Override
   public void persistState() {
     resultText = resultTextField.getText();
-    parameterResult = getParameterResult(parametersPanel);
   }
 
   @Override
@@ -102,18 +70,19 @@ public abstract class Generator extends Operation {
     resultTextField.setText(null);
   }
 
-  private void configureComponents() {
+  @Override
+  protected void configureComponents() {
     resultTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
                 PlainTextLanguage.INSTANCE,
                 ProjectUtils.getProject(),
                 List.of(ReadOnlyCustomization.ENABLED, WrapTextCustomization.ENABLED));
-    isParametersAdded = configureParameters(parametersPanel);
     clearButton.setName("clear-button");
   }
 
-  private void configureLayout() {
+  @Override
+  protected void configureLayouts() {
 
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     buttonsPanel.add(generateAndCopyButton);
@@ -131,9 +100,7 @@ public abstract class Generator extends Operation {
     resultsPanel.add(resultTextField, buildGridBagConstraint(0, 0, 1.0, 1.0, 1));
 
     setLayout(new GridLayoutManager(4, 1));
-    if (isParametersAdded) {
-      add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    }
+    add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
     add(
         headerPanel,
         buildGridConstraint(1, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED, SIZEPOLICY_CAN_GROW));
@@ -141,7 +108,8 @@ public abstract class Generator extends Operation {
     add(new Spacer(), buildGridConstraint(3, 0, 1, 1, FILL_BOTH, CAN_SHRINK_AND_GROW));
   }
 
-  private void configureListeners() {
+  @Override
+  protected void configureListeners() {
     generateButton.addActionListener(
         (evt) -> {
           reset();

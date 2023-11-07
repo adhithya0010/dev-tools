@@ -8,7 +8,6 @@ package com.intellij.devtools.exec.misc.web;
 import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
 import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
 
-import com.intellij.devtools.component.editortextfield.customization.LinesCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.component.table.MockMetadata;
@@ -31,6 +30,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -80,7 +80,8 @@ public class MockServer extends Operation {
     this.configureListeners();
   }
 
-  private void configureComponents() {
+  @Override
+  protected void configureComponents() {
     this.parameterPanel = new JPanel();
     this.runningServersPanel = new JPanel();
     this.runningServersHeaderPanel = new JPanel();
@@ -122,13 +123,15 @@ public class MockServer extends Operation {
             .getEditorField(
                 PlainTextLanguage.INSTANCE,
                 ProjectUtils.getProject(),
-                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
+                List.of(WrapTextCustomization.ENABLED));
     this.responseBodyTextField =
         EditorTextFieldProvider.getInstance()
             .getEditorField(
                 PlainTextLanguage.INSTANCE,
                 ProjectUtils.getProject(),
-                List.of(WrapTextCustomization.ENABLED, LinesCustomization.ENABLED));
+                List.of(WrapTextCustomization.ENABLED));
+    this.responseHeadersTextField.setPreferredSize(new Dimension(-1, 100));
+    this.responseBodyTextField.setPreferredSize(new Dimension(-1, 100));
     this.startServerButton = new JButton("Mock", Actions.Execute);
     this.stopServerButton = new JButton("Destroy", Actions.Suspend);
     this.clearHistoryButton = new JButton("Clear", Diff.Remove);
@@ -254,7 +257,8 @@ public class MockServer extends Operation {
     this.add(this.historyPanel, GridConstraintUtils.buildGridConstraint(2, 0, 1, 1, 3, 3, 3));
   }
 
-  private void configureListeners() {
+  @Override
+  protected void configureListeners() {
     this.startServerButton.addActionListener(
         (evt) -> {
           String path = this.pathTextField.getText();
