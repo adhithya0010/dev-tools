@@ -10,6 +10,8 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.exec.OperationCategory;
+import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -74,6 +76,16 @@ public abstract class Converter extends Operation {
     configureParameters(parametersPanel);
     configureLayouts();
     configureListeners();
+  }
+
+  @Override
+  public OperationCategory getOperationCategory() {
+    return null;
+  }
+
+  @Override
+  public OperationGroup getOperationGroup() {
+    return null;
   }
 
   @Override

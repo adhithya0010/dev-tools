@@ -12,13 +12,12 @@ import com.intellij.devtools.exec.formatter.impl.json.JsonMinifier;
 import com.intellij.devtools.exec.formatter.impl.json.JsonPrettifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlMinifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlPrettifier;
-import com.intellij.devtools.exec.misc.text.Regex2;
-import com.intellij.devtools.exec.misc.time.TimeFormatter;
 import com.intellij.devtools.exec.generator.impl.UUIDGenerator;
 import com.intellij.devtools.exec.misc.text.DuplicateRemover;
 import com.intellij.devtools.exec.misc.text.LinesSort;
 import com.intellij.devtools.exec.misc.text.Regex;
 import com.intellij.devtools.exec.misc.text.TextDiff;
+import com.intellij.devtools.exec.misc.time.TimeFormatter;
 import com.intellij.devtools.exec.misc.web.MockServer;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,15 +68,19 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllGenerators() {
-    return List.of(new UUIDGenerator(), new TimeFormatter());
+    return List.of(new UUIDGenerator());
+  }
+
+  public List<Operation> getAllTextOperations() {
+    return List.of(new TextDiff(), new DuplicateRemover(), new Regex(), new LinesSort());
+  }
+
+  public List<Operation> getAllTimeOperations() {
+    return List.of(new TimeFormatter());
   }
 
   public List<Operation> getAllMiscOperations() {
     return List.of(
-        new MockServer(),
-        new TextDiff(),
-        new DuplicateRemover(),
-        new Regex(),
-        new LinesSort());
+        new MockServer(), new TextDiff(), new DuplicateRemover(), new Regex(), new LinesSort());
   }
 }

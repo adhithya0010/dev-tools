@@ -1,14 +1,9 @@
 package com.intellij.devtools.exec.misc.time;
 
-import static com.intellij.devtools.MessageKeys.GENERATOR_TIMESTAMP_NAME;
-
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
-import com.intellij.devtools.exec.generator.Generator;
-import com.intellij.devtools.component.table.celleditor.DateSpinnerEditor;
 import com.intellij.devtools.component.button.IconButton;
+import com.intellij.devtools.component.table.celleditor.DateSpinnerEditor;
 import com.intellij.devtools.component.table.celleditor.TimezoneComboBoxEditor;
-import com.intellij.devtools.locale.MessageBundle;
+import com.intellij.devtools.exec.generator.Generator;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.ui.components.JBLabel;
@@ -30,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringJoiner;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -58,21 +52,6 @@ public class TimeFormatter extends Generator {
   @Override
   public String getNodeName() {
     return "Time Formatter";
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.TIME;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.MISC;
   }
 
   @Override

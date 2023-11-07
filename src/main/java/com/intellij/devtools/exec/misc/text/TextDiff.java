@@ -4,8 +4,6 @@ import static com.intellij.devtools.utils.GridConstraintUtils.buildGridConstrain
 import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
 
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManagerEx;
 import com.intellij.diff.DiffRequestPanel;
@@ -14,7 +12,6 @@ import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import javax.swing.Icon;
 
 public class TextDiff extends Operation {
 
@@ -49,20 +46,5 @@ public class TextDiff extends Operation {
   @Override
   public String getNodeName() {
     return "Diff";
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.TEXT;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.MISC;
   }
 }

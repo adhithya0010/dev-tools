@@ -2,8 +2,6 @@ package com.intellij.devtools.exec.converter.impl;
 
 import static com.intellij.devtools.MessageKeys.CONVERTER_TEXT_ESCAPER_NAME;
 
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.converter.Converter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.TextUtils;
@@ -14,7 +12,6 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBInsets;
 import java.awt.Insets;
-import javax.swing.Icon;
 import javax.swing.JPanel;
 
 public class TextEscaper extends Converter {
@@ -24,21 +21,6 @@ public class TextEscaper extends Converter {
   @Override
   public String getNodeName() {
     return MessageBundle.get(CONVERTER_TEXT_ESCAPER_NAME);
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return null;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.CONVERTER;
   }
 
   @Override

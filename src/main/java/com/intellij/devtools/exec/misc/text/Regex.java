@@ -5,8 +5,6 @@ import com.intellij.devtools.component.editortextfield.customization.IconEditorC
 import com.intellij.devtools.component.editortextfield.customization.RegexEditorCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.lang.Language;
@@ -39,7 +37,6 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollBar;
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
@@ -93,21 +90,6 @@ public class Regex extends Operation {
     return "Regex";
   }
 
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.TEXT;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.MISC;
-  }
-
   public Regex() {
     configureComponents();
     configureParameters(parametersPanel);
@@ -147,7 +129,7 @@ public class Regex extends Operation {
                 project,
                 List.of(
                     WrapTextCustomization.ENABLED,
-                        new IconEditorCustomization(mySampleIcon),
+                    new IconEditorCustomization(mySampleIcon),
                     new RegexEditorCustomization(
                         this::highlightSampleGroup, tempFile, mySampleTextDisposable)));
 
@@ -183,8 +165,8 @@ public class Regex extends Operation {
           }
         });
 
-//    setupIcon(regularExpressionTextField, myRegExpIcon);
-//    setupIcon(inputTextField, mySampleIcon);
+    //    setupIcon(regularExpressionTextField, myRegExpIcon);
+    //    setupIcon(inputTextField, mySampleIcon);
 
     final DocumentListener documentListener =
         new DocumentListener() {
@@ -214,7 +196,9 @@ public class Regex extends Operation {
         regularExpressionTextField,
         gridBag.next().insets(insets).fillCellHorizontally().coverLine().weightx(1f));
     gridBag.nextLine();
-    add(createLabel("Text", inputTextField), gridBag.next().anchor(GridBagConstraints.FIRST_LINE_START).insets(insets).fillCellNone());
+    add(
+        createLabel("Text", inputTextField),
+        gridBag.next().anchor(GridBagConstraints.FIRST_LINE_START).insets(insets).fillCellNone());
     add(
         inputTextField,
         gridBag.next().insets(insets).fillCellHorizontally().coverLine().weightx(1f));

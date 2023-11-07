@@ -10,8 +10,6 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -28,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -157,21 +154,6 @@ public class DuplicateRemover extends Operation {
   @Override
   public String getNodeName() {
     return "Remove Duplicate Lines";
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.TEXT;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.MISC;
   }
 
   @Override

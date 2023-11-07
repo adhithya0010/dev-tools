@@ -1,7 +1,6 @@
 package com.intellij.devtools.component.table.celleditor;
 
 import com.intellij.devtools.exec.misc.time.TimeFormatter;
-
 import java.awt.Component;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;

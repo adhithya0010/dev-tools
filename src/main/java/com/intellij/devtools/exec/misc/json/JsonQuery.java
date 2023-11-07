@@ -10,7 +10,6 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
@@ -29,7 +28,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -178,16 +176,6 @@ public class JsonQuery extends Operation {
   @Override
   public String getNodeName() {
     return "Json Query";
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.JSON;
   }
 
   @Override

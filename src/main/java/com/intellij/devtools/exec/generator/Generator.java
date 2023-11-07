@@ -12,6 +12,8 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.exec.OperationCategory;
+import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
@@ -54,6 +56,16 @@ public abstract class Generator extends Operation {
   }
 
   protected abstract String generate();
+
+  @Override
+  public OperationGroup getOperationGroup() {
+    return null;
+  }
+
+  @Override
+  public OperationCategory getOperationCategory() {
+    return null;
+  }
 
   @Override
   public void restoreState() {

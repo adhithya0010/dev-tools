@@ -3,13 +3,11 @@ package com.intellij.devtools.exec.formatter.impl.json;
 import static com.intellij.devtools.MessageKeys.FORMATTER_JSON_MINIFY_NAME;
 
 import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.formatter.Formatter;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.JsonUtils;
 import com.intellij.json.json5.Json5Language;
 import com.intellij.lang.Language;
-import javax.swing.Icon;
 
 public class JsonMinifier extends Formatter {
 
@@ -25,16 +23,6 @@ public class JsonMinifier extends Formatter {
   @Override
   public OperationCategory getOperationCategory() {
     return OperationCategory.JSON;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.FORMATTER;
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
   }
 
   @Override

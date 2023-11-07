@@ -92,11 +92,6 @@ public class Regex2 extends Operation {
   }
 
   @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
   public OperationCategory getOperationCategory() {
     return OperationCategory.TEXT;
   }
