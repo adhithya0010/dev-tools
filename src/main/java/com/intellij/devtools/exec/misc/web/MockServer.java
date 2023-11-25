@@ -18,6 +18,7 @@ import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
 import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.JBUI;
 
 import java.util.List;
@@ -76,9 +77,9 @@ public class MockServer extends Operation {
   }
 
   private void configureLayout() {
+    this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 3));
     this.runningServersHeaderPanel.add(
         this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
-
     this.runningServersHeaderPanel.add(
         this.startServerButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
     this.runningServersHeaderPanel.add(
