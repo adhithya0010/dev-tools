@@ -18,9 +18,13 @@
   Your valuable feedback is much appreciated. Please create issues in the linked github repository for any concerns.
 ]]></description>
 
-  <change-notes>
-
-  </change-notes>
+  <change-notes><![CDATA[
+  <ul>
+    <li>New design with tabbed layout</li>
+    <li>Revamped Mock Server<li>
+    <li>Fixed bug in time formatter</li>
+  </ul>
+]]></change-notes>
 
   <!-- Product and plugin compatibility requirements.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
