@@ -1,10 +1,6 @@
 package com.intellij.devtools.exec.converter.impl;
 
-import static com.intellij.devtools.MessageKeys.ENCODER_BASE_64_NAME;
-
-import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.converter.Converter;
-import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.devtools.utils.Base64Utils;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
@@ -17,12 +13,7 @@ public class Base64Encoder extends Converter {
 
   @Override
   public String getNodeName() {
-    return MessageBundle.get(ENCODER_BASE_64_NAME);
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.BASE_64;
+    return "Base64";
   }
 
   @Override

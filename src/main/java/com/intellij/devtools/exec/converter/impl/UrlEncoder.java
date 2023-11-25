@@ -1,10 +1,6 @@
 package com.intellij.devtools.exec.converter.impl;
 
-import static com.intellij.devtools.MessageKeys.ENCODER_URL_NAME;
-
-import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.converter.Converter;
-import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import java.net.URLDecoder;
@@ -19,12 +15,7 @@ public class UrlEncoder extends Converter {
 
   @Override
   public String getNodeName() {
-    return MessageBundle.get(ENCODER_URL_NAME);
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.URL;
+    return "Url";
   }
 
   @Override

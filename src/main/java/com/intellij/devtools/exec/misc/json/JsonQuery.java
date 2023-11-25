@@ -14,19 +14,16 @@ import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.JsonUtils;
-import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -69,18 +66,10 @@ public class JsonQuery extends Operation {
 
   @Override
   public void configureComponents() {
-    queryTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
-    dataTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(JsonLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    queryTextField = ComponentUtils.createEditorTextField(PlainTextLanguage.INSTANCE);
+    dataTextField = ComponentUtils.createEditorTextField(JsonLanguage.INSTANCE);
     resultTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                JsonLanguage.INSTANCE,
-                ProjectUtils.getProject(),
-                List.of(ReadOnlyCustomization.ENABLED));
+        ComponentUtils.createEditorTextField(JsonLanguage.INSTANCE, ReadOnlyCustomization.ENABLED);
 
     queryTextField.setPlaceholder("Query");
     dataTextField.setName("data-text-area");

@@ -12,6 +12,7 @@ import com.intellij.devtools.exec.formatter.impl.json.JsonMinifier;
 import com.intellij.devtools.exec.formatter.impl.json.JsonPrettifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlMinifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlPrettifier;
+import com.intellij.devtools.exec.generator.impl.HashGenerator;
 import com.intellij.devtools.exec.generator.impl.UUIDGenerator;
 import com.intellij.devtools.exec.misc.text.DuplicateRemover;
 import com.intellij.devtools.exec.misc.text.LinesSort;
@@ -68,7 +69,7 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllGenerators() {
-    return List.of(new UUIDGenerator());
+    return List.of(new UUIDGenerator(), new HashGenerator());
   }
 
   public List<Operation> getAllTextOperations() {

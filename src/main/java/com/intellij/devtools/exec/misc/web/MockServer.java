@@ -5,14 +5,12 @@
 
 package com.intellij.devtools.exec.misc.web;
 
-import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
-import static com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL;
-
+import com.intellij.devtools.component.dialog.CreateMockDialog;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.component.table.InvocationsModel;
-import com.intellij.devtools.component.table.MockMetadata;
 import com.intellij.devtools.component.table.RunningServersModel;
 import com.intellij.devtools.exec.HttpMethod;
+import com.intellij.devtools.exec.HttpRequestConfig;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
@@ -26,12 +24,12 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.table.JBTable;
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -131,7 +129,7 @@ public class MockServer extends Operation {
                 List.of(WrapTextCustomization.ENABLED));
     this.responseHeadersTextField.setPreferredSize(new Dimension(-1, 100));
     this.responseBodyTextField.setPreferredSize(new Dimension(-1, 100));
-    this.startServerButton = new JButton("Mock", Actions.Execute);
+    this.startServerButton = new JButton("Create", Actions.Execute);
     this.stopServerButton = new JButton("Destroy", Actions.Suspend);
     this.clearHistoryButton = new JButton("Clear", Diff.Remove);
     this.runningServersTableModel = new RunningServersModel();
@@ -174,56 +172,14 @@ public class MockServer extends Operation {
   }
 
   private void configureLayout() {
-    this.parameterPanel.setLayout(new GridLayoutManager(7, 2));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.parametersLabel),
-        GridConstraintUtils.buildGridConstraint(
-            0, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.encloseForRight(this.startServerButton),
-        GridConstraintUtils.buildGridConstraint(0, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.pathLabel),
-        GridConstraintUtils.buildGridConstraint(
-            1, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.pathTextField, GridConstraintUtils.buildGridConstraint(1, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.portLabel),
-        GridConstraintUtils.buildGridConstraint(
-            2, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.portTextField, GridConstraintUtils.buildGridConstraint(2, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.responseCodeLabel),
-        GridConstraintUtils.buildGridConstraint(
-            3, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.responseCodeTextField, GridConstraintUtils.buildGridConstraint(3, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.methodLabel),
-        GridConstraintUtils.buildGridConstraint(
-            4, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.methodComboBox, GridConstraintUtils.buildGridConstraint(4, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.responseHeadersLabel),
-        GridConstraintUtils.buildGridConstraint(
-            5, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.responseHeadersTextField,
-        GridConstraintUtils.buildGridConstraint(5, 1, FILL_HORIZONTAL));
-    this.parameterPanel.add(
-        this.encloseForVertical(this.responseBodyLabel),
-        GridConstraintUtils.buildGridConstraint(
-            6, 0, 1, 1, FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED));
-    this.parameterPanel.add(
-        this.responseBodyTextField, GridConstraintUtils.buildGridConstraint(6, 1, FILL_HORIZONTAL));
-    this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 2));
+    this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 3));
     this.runningServersHeaderPanel.add(
         this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
+
     this.runningServersHeaderPanel.add(
-        this.stopServerButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
+        this.startServerButton, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
+    this.runningServersHeaderPanel.add(
+        this.stopServerButton, GridConstraintUtils.buildGridConstraint(0, 2, 1, 1, 0, 0, 0));
     this.runningServersContentPanel.setLayout(new GridLayoutManager(1, 1));
     this.runningServersContentPanel.add(
         new JScrollPane(this.runningServersTable),
@@ -258,33 +214,24 @@ public class MockServer extends Operation {
 
   @Override
   protected void configureListeners() {
+    var that = this;
     this.startServerButton.addActionListener(
         (evt) -> {
-          String path = this.pathTextField.getText();
-          String port = this.portTextField.getText();
-          String responseCode = this.responseCodeTextField.getText();
-          HttpMethod httpMethod = (HttpMethod) this.methodComboBox.getSelectedItem();
-          String responseHeaders = this.responseHeadersTextField.getText();
-          String responseBody = this.responseBodyTextField.getText();
-          MockMetadata mockMetadata =
-              ServerUtils.startServer(
-                  this.invocationsTableModel,
-                  path,
-                  port,
-                  httpMethod,
-                  responseCode,
-                  responseHeaders,
-                  responseBody);
-          this.runningServersTableModel.addRow(mockMetadata);
+          CreateMockDialog createMockDialog = new CreateMockDialog(that);
+          Optional<HttpRequestConfig> httpRequestConfig = createMockDialog.showAndGetData();
+          if (httpRequestConfig.isPresent()) {
+            ServerUtils.startServer(this.invocationsTableModel, httpRequestConfig.get());
+            this.runningServersTableModel.addRow(httpRequestConfig.get());
+          }
         });
     this.stopServerButton.addActionListener(
         (evt) -> {
-          List<MockMetadata> selectedMockMetadata =
-              this.runningServersTableModel.getSelectedServerMetas();
-          selectedMockMetadata.forEach(
-              (mockMetadata) -> {
-                ServerUtils.stopServer(mockMetadata.id);
-                this.runningServersTableModel.removeRow(mockMetadata);
+          List<HttpRequestConfig> selectedRequestConfigs =
+              this.runningServersTableModel.getSelectedRequestConfigs();
+          selectedRequestConfigs.forEach(
+              (httpRequestConfig) -> {
+                ServerUtils.stopServer(httpRequestConfig.getId());
+                this.runningServersTableModel.removeRow(httpRequestConfig);
               });
           runningServersTableModel.removeSelectedRows();
         });

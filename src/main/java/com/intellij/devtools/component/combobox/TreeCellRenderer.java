@@ -29,6 +29,7 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
 
   public TreeCellRenderer() {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    label.setBorder(JBUI.Borders.empty(5));
   }
 
   @Override
@@ -92,7 +93,6 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.add(label);
-        container.add(Box.createVerticalStrut(2 * node.getLevel()));
         add(container);
       } else {
         add(label);

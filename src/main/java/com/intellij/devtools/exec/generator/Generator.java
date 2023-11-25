@@ -15,22 +15,21 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
-import com.intellij.devtools.utils.ProjectUtils;
+import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.GridBagLayout;
-import java.util.List;
 import java.util.Optional;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public abstract class Generator extends Operation {
 
@@ -85,11 +84,10 @@ public abstract class Generator extends Operation {
   @Override
   protected void configureComponents() {
     resultTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                PlainTextLanguage.INSTANCE,
-                ProjectUtils.getProject(),
-                List.of(ReadOnlyCustomization.ENABLED, WrapTextCustomization.ENABLED));
+        ComponentUtils.createEditorTextField(
+            PlainTextLanguage.INSTANCE,
+            ReadOnlyCustomization.ENABLED,
+            WrapTextCustomization.ENABLED);
     clearButton.setName("clear-button");
   }
 
@@ -97,14 +95,16 @@ public abstract class Generator extends Operation {
   protected void configureLayouts() {
 
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-    buttonsPanel.add(generateAndCopyButton);
-    buttonsPanel.add(generateButton);
+    if (showGenerateButtons()) {
+      buttonsPanel.add(generateAndCopyButton);
+      buttonsPanel.add(generateButton);
+    }
     buttonsPanel.add(copyButton);
     buttonsPanel.add(clearButton);
 
     headerPanel.setLayout(new GridLayoutManager(1, 2));
     headerPanel.add(
-        new JLabel("Generate"),
+        new JLabel("Result"),
         buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_CAN_GROW));
     headerPanel.add(buttonsPanel, buildGridConstraint(0, 1, 1, 1, FILL_NONE, SIZEPOLICY_FIXED));
 
@@ -124,8 +124,7 @@ public abstract class Generator extends Operation {
   protected void configureListeners() {
     generateButton.addActionListener(
         (evt) -> {
-          reset();
-          resultTextField.setText(generate());
+          execute();
         });
     copyButton.addActionListener(
         (evt) -> {
@@ -138,10 +137,20 @@ public abstract class Generator extends Operation {
         });
     generateAndCopyButton.addActionListener(
         (evt) -> {
-          reset();
-          resultTextField.setText(generate());
+          execute();
           ClipboardUtils.copy(resultTextField.getText());
         });
     clearButton.addActionListener(evt -> reset());
+  }
+
+  protected void execute() {
+    SwingUtilities.invokeLater(
+        () -> {
+          resultTextField.setText(generate());
+        });
+  }
+
+  protected boolean showGenerateButtons() {
+    return true;
   }
 }

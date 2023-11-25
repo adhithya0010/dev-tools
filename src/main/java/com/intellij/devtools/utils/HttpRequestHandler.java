@@ -2,6 +2,7 @@ package com.intellij.devtools.utils;
 
 import com.intellij.devtools.component.table.InvocationsModel;
 import com.intellij.devtools.exec.HttpMethod;
+import com.intellij.devtools.exec.HttpRequestConfig;
 import com.intellij.devtools.exec.Invocation;
 import com.intellij.devtools.exec.Invocation.InvocationBuilder;
 import com.sun.net.httpserver.Headers;
@@ -23,24 +24,12 @@ public class HttpRequestHandler implements HttpHandler {
   private static final String OPERATION_NOT_SUPPORTED = "Unsupported Operation";
 
   private final InvocationsModel invocationsModel;
-  private final HttpMethod method;
-  private final int responseCode;
-  private final Map<String, List<String>> headers;
-  private final String responseHeaders;
-  private final String responseBody;
+  private final HttpRequestConfig httpRequestConfig;
 
   public HttpRequestHandler(
-      InvocationsModel invocationsModel,
-      HttpMethod method,
-      int responseCode,
-      String responseHeaders,
-      String responseBody) {
+      InvocationsModel invocationsModel, HttpRequestConfig httpRequestConfig) {
     this.invocationsModel = invocationsModel;
-    this.method = method;
-    this.responseCode = responseCode;
-    this.headers = toMap(responseHeaders);
-    this.responseHeaders = responseHeaders;
-    this.responseBody = responseBody;
+    this.httpRequestConfig = httpRequestConfig;
   }
 
   @Override
@@ -53,7 +42,7 @@ public class HttpRequestHandler implements HttpHandler {
             .httpMethod(HttpMethod.fromString(exchange.getRequestMethod()))
             .requestHeaders(toString(exchange.getRequestHeaders()));
 
-    if (!method.getValue().equalsIgnoreCase(exchange.getRequestMethod())) {
+    if (!httpRequestConfig.getMethod().getValue().equalsIgnoreCase(exchange.getRequestMethod())) {
       invocationBuilder.responseCode(400).responseBody(OPERATION_NOT_SUPPORTED);
       exchange.sendResponseHeaders(400, OPERATION_NOT_SUPPORTED.length());
       try (OutputStream os = exchange.getResponseBody()) {
@@ -61,13 +50,14 @@ public class HttpRequestHandler implements HttpHandler {
       }
     } else {
       invocationBuilder
-          .responseCode(responseCode)
-          .responseHeaders(responseHeaders)
-          .responseBody(responseBody);
-      exchange.getResponseHeaders().putAll(headers);
-      exchange.sendResponseHeaders(responseCode, responseBody.length());
+          .responseCode(httpRequestConfig.getResponseCode())
+          .responseHeaders(httpRequestConfig.getHeaders())
+          .responseBody(httpRequestConfig.getResponseBody());
+      exchange.getResponseHeaders().putAll(httpRequestConfig.getHeaders());
+      exchange.sendResponseHeaders(
+          httpRequestConfig.getResponseCode(), httpRequestConfig.getResponseBody().length());
       try (OutputStream os = exchange.getResponseBody()) {
-        os.write(responseBody.getBytes(StandardCharsets.UTF_8));
+        os.write(httpRequestConfig.getResponseBody().getBytes(StandardCharsets.UTF_8));
       }
     }
     invocationsModel.addRow(invocationBuilder.build());

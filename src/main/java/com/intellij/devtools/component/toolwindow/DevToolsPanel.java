@@ -25,6 +25,9 @@ public class DevToolsPanel extends JBPanel<DevToolsPanel> {
     tabbedPane.addTab(
         "Converter", new DropdownWrappedPanel(OperationFactory.getInstance().getAllConverters()));
     tabbedPane.addTab(
+        "Encode / Decode",
+        new DropdownWrappedPanel(OperationFactory.getInstance().getAllEncoders()));
+    tabbedPane.addTab(
         "Generator", new DropdownWrappedPanel(OperationFactory.getInstance().getAllGenerators()));
     tabbedPane.addTab(
         "Text", new DropdownWrappedPanel(OperationFactory.getInstance().getAllTextOperations()));
