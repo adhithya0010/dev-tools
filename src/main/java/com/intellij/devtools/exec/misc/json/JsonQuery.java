@@ -32,7 +32,6 @@ import javax.swing.SwingUtilities;
 
 public class JsonQuery extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -40,7 +39,6 @@ public class JsonQuery extends Operation {
   private final JPanel resultHeaderPanel = new JPanel();
 
   private final JPanel dataHeaderButtonPanel = new JPanel();
-  private final JPanel resultsHeaderButtonPanel = new JPanel();
 
   private final JLabel dataLabel = new JLabel("Input");
   private final JLabel resultsLabel = new JLabel("Results");
@@ -55,8 +53,6 @@ public class JsonQuery extends Operation {
 
   private String dataText = null;
   private String resultText = null;
-
-  private boolean isParametersAdded = false;
 
   public JsonQuery() {
     this.configureComponents();

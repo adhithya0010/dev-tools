@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
 
 public abstract class Generator extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel headerPanel = new JPanel();
   private final JPanel buttonsPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
@@ -47,7 +46,7 @@ public abstract class Generator extends Operation {
 
   private String resultText = null;
 
-  public Generator() {
+  protected Generator() {
     configureComponents();
     configureParameters(parametersPanel);
     configureLayouts();
@@ -122,10 +121,7 @@ public abstract class Generator extends Operation {
 
   @Override
   protected void configureListeners() {
-    generateButton.addActionListener(
-        (evt) -> {
-          execute();
-        });
+    generateButton.addActionListener((evt) -> execute());
     copyButton.addActionListener(
         (evt) -> {
           String copyText =

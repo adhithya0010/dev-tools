@@ -11,18 +11,10 @@ import org.jetbrains.annotations.PropertyKey;
 public class MessageBundle extends DynamicBundle {
 
   private static MessageBundle bundle = null;
+  private static final String MESSAGE_BUNDLE_PATH = "locale/messages";
 
   public MessageBundle() {
-    super(getPathToBundle());
-  }
-
-  private static String getPathToBundle() {
-    //    if(Boolean.parseBoolean(System.getProperty("ide.test.execution"))) {
-    //      return "locale/test_messages";
-    //    } else {
-    //      return "locale/messages";
-    //    }
-    return "locale/messages";
+    super(MESSAGE_BUNDLE_PATH);
   }
 
   @Override
@@ -37,7 +29,7 @@ public class MessageBundle extends DynamicBundle {
       String localizedPath = pathToBundle + "_" + ideLocale.getLanguage();
       ResourceBundle localeBundle =
           super.findBundle(localizedPath, MessageBundle.class.getClassLoader(), control);
-      if (localeBundle != null && !base.equals(localeBundle)) {
+      if (!base.equals(localeBundle)) {
         setParent(localeBundle, base);
         return localeBundle;
       }

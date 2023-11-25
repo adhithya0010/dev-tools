@@ -18,11 +18,11 @@ import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
 import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
+import com.intellij.util.ui.JBUI;
+
 import java.util.List;
 import java.util.Optional;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -53,6 +53,7 @@ public class MockServer extends Operation {
 
   @Override
   protected void configureComponents() {
+    setBorder(JBUI.Borders.emptyTop(10));
     this.runningServersPanel = new JPanel();
     this.runningServersHeaderPanel = new JPanel();
     this.runningServersContentPanel = new JPanel();
@@ -74,31 +75,7 @@ public class MockServer extends Operation {
     this.historyTable.setCellSelectionEnabled(false);
   }
 
-  private JPanel encloseForRight(JComponent component) {
-    JPanel jPanel = new JPanel(new GridLayoutManager(1, 2));
-    jPanel.add(new Spacer(), GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
-    jPanel.add(component, GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 0, 0, 0));
-    return jPanel;
-  }
-
-  private JPanel encloseForLeft(JComponent component) {
-    JPanel jPanel = new JPanel(new GridLayoutManager(1, 2));
-    jPanel.add(component, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 0, 0, 0));
-    jPanel.add(new Spacer(), GridConstraintUtils.buildGridConstraint(0, 1, 1, 1, 1, 3, 3));
-    return jPanel;
-  }
-
-  private JPanel encloseForVertical(JComponent component) {
-    JPanel jPanel = new JPanel(new GridLayoutManager(2, 1));
-    jPanel.add(
-        this.encloseForLeft(component),
-        GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 3));
-    jPanel.add(new Spacer(), GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
-    return jPanel;
-  }
-
   private void configureLayout() {
-    this.runningServersHeaderPanel.setLayout(new GridLayoutManager(1, 3));
     this.runningServersHeaderPanel.add(
         this.runningServersLabel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 3, 3));
 
@@ -161,10 +138,7 @@ public class MockServer extends Operation {
           runningServersTableModel.removeSelectedRows();
         });
 
-    clearHistoryButton.addActionListener(
-        (evt) -> {
-          invocationsTableModel.clear();
-        });
+    clearHistoryButton.addActionListener((evt) -> invocationsTableModel.clear());
   }
 
   @Override

@@ -16,6 +16,7 @@ import com.intellij.util.ui.JBUI;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.io.Serializable;
 import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -215,7 +216,7 @@ public class TimeFormatter extends Generator {
   @Setter
   @Getter
   @AllArgsConstructor
-  public static class TimeHolder {
+  public static class TimeHolder implements Serializable {
     private ZonedDateTime zonedDateTime;
   }
 }

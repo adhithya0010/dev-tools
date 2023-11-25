@@ -5,7 +5,7 @@ import com.intellij.ui.SimpleEditorCustomization;
 import org.jetbrains.annotations.NotNull;
 
 public class LinesCustomization extends SimpleEditorCustomization {
-  public static LinesCustomization ENABLED = new LinesCustomization(true);
+  public static final LinesCustomization ENABLED = new LinesCustomization(true);
   private int lines = 5;
 
   private LinesCustomization(boolean enabled) {

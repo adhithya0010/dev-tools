@@ -13,14 +13,9 @@ public class TreeComboBox extends ComboBox<DefaultMutableTreeNode> {
   }
 
   @Override
-  public void setSelectedIndex(int anIndex) {
-    super.setSelectedIndex(anIndex);
-  }
-
-  @Override
   public void setSelectedItem(Object anObject) {
-    if (anObject instanceof DefaultMutableTreeNode) {
-      Object userObject = ((DefaultMutableTreeNode) anObject).getUserObject();
+    if (anObject instanceof DefaultMutableTreeNode node) {
+      Object userObject = node.getUserObject();
       if (!(userObject instanceof Operation)) {
         this.showPopup = true;
         return;
@@ -31,6 +26,7 @@ public class TreeComboBox extends ComboBox<DefaultMutableTreeNode> {
     this.showPopup = false;
   }
 
+  @Override
   public void setPopupVisible(boolean v) {
     super.setPopupVisible(this.showPopup);
     this.showPopup = false;

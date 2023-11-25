@@ -40,7 +40,6 @@ public class LinesSort extends Operation {
   private final JPanel resultHeaderPanel = new JPanel();
 
   private final JPanel dataHeaderButtonPanel = new JPanel();
-  private final JPanel resultsHeaderButtonPanel = new JPanel();
 
   private final JLabel dataLabel = new JLabel("Input");
   private final JLabel resultsLabel = new JLabel("Results");

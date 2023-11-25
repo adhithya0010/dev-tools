@@ -7,13 +7,13 @@ import lombok.Builder;
 
 @Builder
 public class Invocation {
-  public Instant time;
-  public HttpMethod httpMethod;
-  public String path;
-  public Integer port;
-  public String requestHeaders;
-  public String requestBody;
-  public Integer responseCode;
-  public Map<String, List<String>> responseHeaders;
-  public String responseBody;
+  public final Instant time;
+  public final HttpMethod httpMethod;
+  public final String path;
+  public final Integer port;
+  public final String requestHeaders;
+  public final String requestBody;
+  public final Integer responseCode;
+  public final Map<String, List<String>> responseHeaders;
+  public final String responseBody;
 }

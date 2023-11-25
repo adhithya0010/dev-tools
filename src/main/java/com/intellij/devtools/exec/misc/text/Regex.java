@@ -5,6 +5,7 @@ import com.intellij.devtools.component.editortextfield.customization.IconEditorC
 import com.intellij.devtools.component.editortextfield.customization.RegexEditorCustomization;
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.lang.Language;
@@ -18,7 +19,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
@@ -34,7 +34,6 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.SyntaxTraverser;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollBar;
 import com.intellij.uiDesigner.core.Spacer;
@@ -107,31 +106,23 @@ public class Regex extends Operation {
     Document document = PsiDocumentManager.getInstance(project).getDocument(tempFile);
 
     Language language = RegExpLanguage.INSTANCE;
-    LanguageFileType fileType = language.getAssociatedFileType();
 
     Disposable regexpDisposable = Disposer.newDisposable();
     Disposable mySampleTextDisposable = Disposer.newDisposable();
 
     regularExpressionTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                language,
-                project,
-                List.of(
-                    WrapTextCustomization.ENABLED,
-                    new IconEditorCustomization(myRegExpIcon),
-                    new RegexEditorCustomization(
-                        this::highlightRegExpGroup, tempFile, regexpDisposable)));
+        ComponentUtils.createEditorTextField(
+            language,
+            WrapTextCustomization.ENABLED,
+            new IconEditorCustomization(myRegExpIcon),
+            new RegexEditorCustomization(this::highlightRegExpGroup, tempFile, regexpDisposable));
     inputTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                PlainTextLanguage.INSTANCE,
-                project,
-                List.of(
-                    WrapTextCustomization.ENABLED,
-                    new IconEditorCustomization(mySampleIcon),
-                    new RegexEditorCustomization(
-                        this::highlightSampleGroup, tempFile, mySampleTextDisposable)));
+        ComponentUtils.createEditorTextField(
+            PlainTextLanguage.INSTANCE,
+            WrapTextCustomization.ENABLED,
+            new IconEditorCustomization(mySampleIcon),
+            new RegexEditorCustomization(
+                this::highlightSampleGroup, tempFile, mySampleTextDisposable));
 
     regularExpressionTextField.setDocument(document);
     regularExpressionTextField.setDisposedWith(regexpDisposable);
@@ -164,9 +155,6 @@ public class Regex extends Operation {
             highlightSampleGroup(offset, tempFile);
           }
         });
-
-    //    setupIcon(regularExpressionTextField, myRegExpIcon);
-    //    setupIcon(inputTextField, mySampleIcon);
 
     final DocumentListener documentListener =
         new DocumentListener() {
@@ -271,11 +259,9 @@ public class Regex extends Operation {
     PsiElement element = myNewFile.findElementAt(offset);
     RegExpGroup group = null;
     while (element != null) {
-      if (element instanceof RegExpGroup g) {
-        if (g.isCapturing()) {
-          group = g;
-          break;
-        }
+      if (element instanceof RegExpGroup g && g.isCapturing()) {
+        group = g;
+        break;
       }
       element = element.getParent();
     }

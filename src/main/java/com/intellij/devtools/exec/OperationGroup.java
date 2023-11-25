@@ -1,6 +1,5 @@
 package com.intellij.devtools.exec;
 
-import com.intellij.openapi.util.IconLoader;
 import javax.swing.Icon;
 
 public enum OperationGroup implements BaseNode {
@@ -16,11 +15,6 @@ public enum OperationGroup implements BaseNode {
   OperationGroup(String groupName) {
     this.groupName = groupName;
     this.icon = null;
-  }
-
-  OperationGroup(String groupName, String path) {
-    this.groupName = groupName;
-    this.icon = IconLoader.getIcon(path, OperationGroup.class);
   }
 
   @Override

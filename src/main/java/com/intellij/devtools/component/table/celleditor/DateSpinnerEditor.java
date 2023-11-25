@@ -19,7 +19,7 @@ public class DateSpinnerEditor extends DefaultCellEditor {
   private final JSpinner spinner;
   private final TimeFormatter.TimeHolder timeHolder;
 
-  private final Map<Integer, TemporalField> TEMPORAL_FIELD_MAP =
+  private static final Map<Integer, TemporalField> TEMPORAL_FIELD_MAP =
       Map.of(
           Calendar.DAY_OF_MONTH, ChronoField.DAY_OF_MONTH,
           Calendar.MONTH, ChronoField.MONTH_OF_YEAR,
@@ -50,11 +50,12 @@ public class DateSpinnerEditor extends DefaultCellEditor {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime((Date) spinner.getValue());
 
-    ZonedDateTime newTime = timeHolder
+    ZonedDateTime newTime =
+        timeHolder
             .getZonedDateTime()
             .with(
-                    TEMPORAL_FIELD_MAP.get(model.getCalendarField()),
-                    calendar.get(model.getCalendarField()));
+                TEMPORAL_FIELD_MAP.get(model.getCalendarField()),
+                calendar.get(model.getCalendarField()));
     timeHolder.setZonedDateTime(newTime);
 
     return calendar.get(model.getCalendarField());

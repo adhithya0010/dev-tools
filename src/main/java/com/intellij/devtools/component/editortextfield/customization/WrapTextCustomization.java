@@ -5,8 +5,8 @@ import com.intellij.ui.SimpleEditorCustomization;
 import org.jetbrains.annotations.NotNull;
 
 public class WrapTextCustomization extends SimpleEditorCustomization {
-  public static WrapTextCustomization ENABLED = new WrapTextCustomization(true);
-  public static WrapTextCustomization DISABLED = new WrapTextCustomization(false);
+  public static final WrapTextCustomization ENABLED = new WrapTextCustomization(true);
+  public static final WrapTextCustomization DISABLED = new WrapTextCustomization(false);
 
   private WrapTextCustomization(boolean enabled) {
     super(enabled);

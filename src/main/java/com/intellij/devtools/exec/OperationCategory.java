@@ -1,6 +1,5 @@
 package com.intellij.devtools.exec;
 
-import com.intellij.ui.IconManager;
 import javax.swing.Icon;
 
 public enum OperationCategory implements BaseNode {
@@ -19,11 +18,6 @@ public enum OperationCategory implements BaseNode {
   OperationCategory(String categoryName) {
     this.categoryName = categoryName;
     this.icon = null;
-  }
-
-  OperationCategory(String categoryName, String iconPath) {
-    this.categoryName = categoryName;
-    this.icon = IconManager.getInstance().getIcon(iconPath, getClass().getClassLoader());
   }
 
   @Override

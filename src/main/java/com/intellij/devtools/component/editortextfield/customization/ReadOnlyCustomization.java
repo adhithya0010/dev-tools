@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReadOnlyCustomization extends SimpleEditorCustomization {
 
-  public static ReadOnlyCustomization ENABLED = new ReadOnlyCustomization(true);
-  public static ReadOnlyCustomization DISABLED = new ReadOnlyCustomization(false);
+  public static final ReadOnlyCustomization ENABLED = new ReadOnlyCustomization(true);
+  public static final ReadOnlyCustomization DISABLED = new ReadOnlyCustomization(false);
 
   private ReadOnlyCustomization(boolean enabled) {
     super(enabled);

@@ -12,6 +12,7 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBUI;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Collections;
@@ -81,6 +82,7 @@ public class CreateMockDialog extends DialogWrapper {
     this.methodComboBox.setSelectedItem(HttpMethod.GET);
     this.methodComboBox.setRenderer(
         new DefaultListCellRenderer() {
+          @Override
           public Component getListCellRendererComponent(
               JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -110,34 +112,37 @@ public class CreateMockDialog extends DialogWrapper {
 
     gridBag.nextLine();
     dialogPanel.add(
-        this.pathLabel, gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        this.pathLabel,
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.pathTextField, gridBag.next().insets(insets).weightx(1f).coverLine().fillCell());
 
     gridBag.nextLine();
     dialogPanel.add(
-        this.portLabel, gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        this.portLabel,
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.portTextField, gridBag.next().insets(insets).weightx(1f).coverLine().fillCell());
 
     gridBag.nextLine();
     dialogPanel.add(
         this.responseCodeLabel,
-        gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.responseCodeTextField,
         gridBag.next().insets(insets).weightx(1f).coverLine().fillCell());
 
     gridBag.nextLine();
     dialogPanel.add(
-        this.methodLabel, gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        this.methodLabel,
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.methodComboBox, gridBag.next().insets(insets).weightx(1f).coverLine().fillCell());
 
     gridBag.nextLine();
     dialogPanel.add(
         this.responseHeadersLabel,
-        gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.responseHeadersTextField,
         gridBag
@@ -154,7 +159,7 @@ public class CreateMockDialog extends DialogWrapper {
     gridBag.nextLine();
     dialogPanel.add(
         this.responseBodyLabel,
-        gridBag.next().insets(insets).fillCellNone().anchor(GridBag.NORTHWEST));
+        gridBag.next().insets(insets).fillCellNone().anchor(GridBagConstraints.NORTHWEST));
     dialogPanel.add(
         this.responseBodyTextField,
         gridBag
@@ -173,7 +178,7 @@ public class CreateMockDialog extends DialogWrapper {
 
   @Override
   protected ValidationInfo doValidate() {
-    Optional<ValidationInfo> validationInfo = validateStringField(this.pathTextField);
+    Optional<ValidationInfo> validationInfo;
     if ((validationInfo = validateStringField(pathTextField)).isPresent()) {
       return validationInfo.get();
     }

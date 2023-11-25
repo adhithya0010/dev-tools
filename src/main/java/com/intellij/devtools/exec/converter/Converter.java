@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 
 public abstract class Converter extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel fromPanel = new JPanel();
   private final JPanel toPanel = new JPanel();
 
@@ -71,7 +70,7 @@ public abstract class Converter extends Operation {
 
   protected abstract Language getToLanguage();
 
-  public Converter() {
+  protected Converter() {
     configureComponents();
     configureParameters(parametersPanel);
     configureLayouts();
@@ -105,6 +104,7 @@ public abstract class Converter extends Operation {
     fromTextField.setText(null);
   }
 
+  @Override
   protected void configureComponents() {
     fromTextField =
         EditorTextFieldProvider.getInstance()
@@ -138,6 +138,7 @@ public abstract class Converter extends Operation {
     toPasteButton.setName("to-paste-button");
   }
 
+  @Override
   protected void configureLayouts() {
     ComponentUtils.removeAllChildren(this);
 
@@ -195,6 +196,7 @@ public abstract class Converter extends Operation {
     parametersPanel.setLayout(new GridBagLayout());
   }
 
+  @Override
   protected void configureListeners() {
     fromTextField.addDocumentListener(
         new DocumentListener() {

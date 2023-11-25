@@ -63,19 +63,6 @@ public class HttpRequestHandler implements HttpHandler {
     invocationsModel.addRow(invocationBuilder.build());
   }
 
-  private static Map<String, List<String>> toMap(String requestHeaders) {
-    if (StringUtils.isEmpty(requestHeaders)) {
-      return Map.of();
-    }
-    String[] headerValues = requestHeaders.split("\n");
-    Map<String, List<String>> headersMap = new HashMap<>();
-    for (String header : headerValues) {
-      String[] parts = header.split(":");
-      headersMap.put(parts[0], Collections.singletonList(parts[1]));
-    }
-    return headersMap;
-  }
-
   private static String toString(Headers headers) {
     StringJoiner sj = new StringJoiner("\n");
     headers.forEach(
