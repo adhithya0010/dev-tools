@@ -5,8 +5,7 @@ plugins {
 }
 
 group = "com.intellij.devtools"
-version = "1.2"
-val channel: String = "stable"
+version = System.getenv("VERSION")
 
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -42,7 +41,6 @@ dependencies {
     implementation("pl.jalokim.propertiestojson:java-properties-to-json:5.3.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
     implementation("com.graphql-java:graphql-java:21.1")
-    implementation("com.arakelian:java-jq:1.3.0")
     implementation("net.thisptr:jackson-jq:0.0.13")
 }
 
@@ -92,7 +90,7 @@ tasks {
 
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
-        channels.set(listOf(channel))
+        channels.set(listOf(System.getenv("CHANNEL")))
     }
 
     test {
