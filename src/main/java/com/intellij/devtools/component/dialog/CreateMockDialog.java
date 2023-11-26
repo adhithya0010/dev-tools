@@ -11,6 +11,15 @@ import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.EditorTextField;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBUI;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,14 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 
 public class CreateMockDialog extends DialogWrapper {
 
@@ -102,6 +103,10 @@ public class CreateMockDialog extends DialogWrapper {
     this.responseHeadersTextField.setPlaceholder(
         "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json");
     this.responseBodyTextField.setPlaceholder("Response body data");
+
+    this.pathTextField.setOneLineMode(true);
+    this.portTextField.setOneLineMode(true);
+    this.responseCodeTextField.setOneLineMode(true);
   }
 
   private void configureLayouts() {
