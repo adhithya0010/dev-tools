@@ -10,6 +10,9 @@ import javax.swing.JButton;
 
 public class IconButton extends JButton {
 
+  // Hit detection.
+  private transient Shape shape;
+
   public IconButton(Icon icon) {
     super(icon);
 
@@ -26,6 +29,7 @@ public class IconButton extends JButton {
   }
 
   // Paint the round background and label.
+  @Override
   protected void paintComponent(Graphics g) {
     if (getModel().isArmed()) {
       // You might want to make the highlight color
@@ -42,13 +46,12 @@ public class IconButton extends JButton {
   }
 
   // Paint the border of the button using a simple stroke.
+  @Override
   protected void paintBorder(Graphics g) {
     g.setColor(getForeground());
   }
 
-  // Hit detection.
-  Shape shape;
-
+  @Override
   public boolean contains(int x, int y) {
     // If the button has changed size,
     // make a new shape object.

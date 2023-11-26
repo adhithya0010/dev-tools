@@ -5,8 +5,11 @@ import graphql.language.AstPrinter;
 import graphql.language.Document;
 import graphql.language.PrettyAstPrinter;
 import graphql.parser.Parser;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GraphqlUtils {
 
   public static String minify(String data) {
@@ -35,7 +38,7 @@ public class GraphqlUtils {
               .build();
       Parser parser = new Parser();
       Document document = parser.parseDocument(data);
-      PrettyAstPrinter.printAst(document);
+      AstPrinter.printAst(document);
       return PrettyAstPrinter.print(data, printerOptions);
     } catch (Exception e) {
       e.printStackTrace();

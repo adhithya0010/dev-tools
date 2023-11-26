@@ -10,6 +10,8 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.exec.OperationCategory;
+import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -31,7 +33,6 @@ import javax.swing.JPanel;
 
 public abstract class Converter extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel fromPanel = new JPanel();
   private final JPanel toPanel = new JPanel();
 
@@ -69,11 +70,21 @@ public abstract class Converter extends Operation {
 
   protected abstract Language getToLanguage();
 
-  public Converter() {
+  protected Converter() {
     configureComponents();
     configureParameters(parametersPanel);
     configureLayouts();
     configureListeners();
+  }
+
+  @Override
+  public OperationCategory getOperationCategory() {
+    return null;
+  }
+
+  @Override
+  public OperationGroup getOperationGroup() {
+    return null;
   }
 
   @Override
@@ -93,6 +104,7 @@ public abstract class Converter extends Operation {
     fromTextField.setText(null);
   }
 
+  @Override
   protected void configureComponents() {
     fromTextField =
         EditorTextFieldProvider.getInstance()
@@ -126,6 +138,7 @@ public abstract class Converter extends Operation {
     toPasteButton.setName("to-paste-button");
   }
 
+  @Override
   protected void configureLayouts() {
     ComponentUtils.removeAllChildren(this);
 
@@ -183,6 +196,7 @@ public abstract class Converter extends Operation {
     parametersPanel.setLayout(new GridBagLayout());
   }
 
+  @Override
   protected void configureListeners() {
     fromTextField.addDocumentListener(
         new DocumentListener() {

@@ -1,12 +1,13 @@
 package com.intellij.devtools.component.table;
 
+import com.intellij.devtools.exec.HttpRequestConfig;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 public class RunningServersModel extends DefaultTableModel {
 
-  private final List<MockMetadata> mockMetadata = new ArrayList<>();
+  private final List<HttpRequestConfig> httpRequestConfigs = new ArrayList<>();
 
   public RunningServersModel() {
     super(
@@ -20,55 +21,56 @@ public class RunningServersModel extends DefaultTableModel {
           if (source == null || e.getFirstRow() < 0 || e.getLastRow() < 0 || e.getColumn() < 0) {
             return;
           }
-          mockMetadata.get(e.getFirstRow()).isSelected =
-              (boolean) source.getValueAt(e.getFirstRow(), e.getColumn());
+          httpRequestConfigs
+              .get(e.getFirstRow())
+              .setSelected((boolean) source.getValueAt(e.getFirstRow(), e.getColumn()));
         });
   }
 
-  public void addRow(MockMetadata mockMetadata) {
-    this.mockMetadata.add(mockMetadata);
+  public void addRow(HttpRequestConfig httpRequestConfig) {
+    this.httpRequestConfigs.add(httpRequestConfig);
     addRow(
         new Object[] {
-          mockMetadata.isSelected,
-          mockMetadata.path,
-          mockMetadata.port,
-          mockMetadata.httpMethod.getValue(),
-          mockMetadata.responseCode,
-          mockMetadata.responseHeaders,
-          mockMetadata.responseBody
+          httpRequestConfig.isSelected(),
+          httpRequestConfig.getPath(),
+          httpRequestConfig.getPort(),
+          httpRequestConfig.getMethod().getValue(),
+          httpRequestConfig.getResponseCode(),
+          httpRequestConfig.getHeaders(),
+          httpRequestConfig.getResponseBody()
         });
   }
 
-  public void removeRow(MockMetadata mockMetadataToRemove) {
-    for (int i = 0; i < mockMetadata.size(); i++) {
-      MockMetadata mockMetadata = this.mockMetadata.get(i);
-      if (mockMetadata.equals(mockMetadataToRemove)) {
-        this.mockMetadata.remove(mockMetadata);
+  public void removeRow(HttpRequestConfig httpRequestConfigToRemove) {
+    for (int i = 0; i < httpRequestConfigs.size(); i++) {
+      HttpRequestConfig httpRequestConfig = this.httpRequestConfigs.get(i);
+      if (httpRequestConfig.equals(httpRequestConfigToRemove)) {
+        this.httpRequestConfigs.remove(httpRequestConfig);
         removeRow(i);
       }
     }
   }
 
   public void removeSelectedRows() {
-    for (int i = 0; i < mockMetadata.size(); i++) {
-      MockMetadata mockMetadata = this.mockMetadata.get(i);
-      if (!mockMetadata.isSelected) {
+    for (int i = 0; i < httpRequestConfigs.size(); i++) {
+      HttpRequestConfig httpRequestConfig = this.httpRequestConfigs.get(i);
+      if (!httpRequestConfig.isSelected()) {
         continue;
       }
-      this.mockMetadata.remove(mockMetadata);
+      this.httpRequestConfigs.remove(httpRequestConfig);
       removeRow(i);
     }
   }
 
-  public List<MockMetadata> getSelectedServerMetas() {
-    List<MockMetadata> selectedServers = new ArrayList<>();
-    mockMetadata.forEach(
+  public List<HttpRequestConfig> getSelectedRequestConfigs() {
+    List<HttpRequestConfig> selectedRequestConfigs = new ArrayList<>();
+    httpRequestConfigs.forEach(
         mockMetadata -> {
-          if (mockMetadata.isSelected) {
-            selectedServers.add(mockMetadata);
+          if (mockMetadata.isSelected()) {
+            selectedRequestConfigs.add(mockMetadata);
           }
         });
-    return selectedServers;
+    return selectedRequestConfigs;
   }
 
   @Override

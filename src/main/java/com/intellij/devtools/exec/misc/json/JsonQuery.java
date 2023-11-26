@@ -10,26 +10,21 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.exec.Operation;
-import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.JsonUtils;
-import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,7 +32,6 @@ import javax.swing.SwingUtilities;
 
 public class JsonQuery extends Operation {
 
-  private final JPanel parametersPanel = new JPanel();
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -45,7 +39,6 @@ public class JsonQuery extends Operation {
   private final JPanel resultHeaderPanel = new JPanel();
 
   private final JPanel dataHeaderButtonPanel = new JPanel();
-  private final JPanel resultsHeaderButtonPanel = new JPanel();
 
   private final JLabel dataLabel = new JLabel("Input");
   private final JLabel resultsLabel = new JLabel("Results");
@@ -61,8 +54,6 @@ public class JsonQuery extends Operation {
   private String dataText = null;
   private String resultText = null;
 
-  private boolean isParametersAdded = false;
-
   public JsonQuery() {
     this.configureComponents();
     this.configureLayout();
@@ -71,18 +62,10 @@ public class JsonQuery extends Operation {
 
   @Override
   public void configureComponents() {
-    queryTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(PlainTextLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
-    dataTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(JsonLanguage.INSTANCE, ProjectUtils.getProject(), List.of());
+    queryTextField = ComponentUtils.createEditorTextField(PlainTextLanguage.INSTANCE);
+    dataTextField = ComponentUtils.createEditorTextField(JsonLanguage.INSTANCE);
     resultTextField =
-        EditorTextFieldProvider.getInstance()
-            .getEditorField(
-                JsonLanguage.INSTANCE,
-                ProjectUtils.getProject(),
-                List.of(ReadOnlyCustomization.ENABLED));
+        ComponentUtils.createEditorTextField(JsonLanguage.INSTANCE, ReadOnlyCustomization.ENABLED);
 
     queryTextField.setPlaceholder("Query");
     dataTextField.setName("data-text-area");
@@ -178,16 +161,6 @@ public class JsonQuery extends Operation {
   @Override
   public String getNodeName() {
     return "Json Query";
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return OperationCategory.JSON;
   }
 
   @Override

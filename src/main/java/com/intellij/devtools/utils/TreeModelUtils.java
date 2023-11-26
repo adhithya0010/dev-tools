@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JSeparator;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TreeModelUtils {
@@ -47,7 +46,6 @@ public class TreeModelUtils {
                 groupNode.add(categoryNode);
               });
           rootNode.add(groupNode);
-          rootNode.add(new DefaultMutableTreeNode(new JSeparator()));
         });
     return rootNode;
   }
@@ -58,7 +56,8 @@ public class TreeModelUtils {
     Collections.list(rootNode.preorderEnumeration())
         .forEach(
             node -> {
-              if (((DefaultMutableTreeNode) node).getUserObject() == null) {
+              if (((DefaultMutableTreeNode) node).getUserObject() == null
+                  || ((DefaultMutableTreeNode) node).getUserObject() instanceof OperationGroup) {
                 return;
               }
               comboBoxModel.addElement((DefaultMutableTreeNode) node);

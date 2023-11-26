@@ -1,13 +1,17 @@
 package com.intellij.devtools.utils;
 
 import com.intellij.devtools.exec.Parameter;
+import com.intellij.lang.Language;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.EditorTextFieldProvider;
+import com.intellij.ui.SimpleEditorCustomization;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBScrollPane;
 import java.awt.Component;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -114,5 +118,11 @@ public class ComponentUtils {
         component = null;
     }
     return Optional.ofNullable(component);
+  }
+
+  public static EditorTextField createEditorTextField(
+      Language language, SimpleEditorCustomization... customizations) {
+    return EditorTextFieldProvider.getInstance()
+        .getEditorField(language, ProjectUtils.getProject(), List.of(customizations));
   }
 }

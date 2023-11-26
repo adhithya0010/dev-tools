@@ -1,8 +1,8 @@
 package com.intellij.devtools.component.table.celleditor;
 
 import com.intellij.devtools.exec.misc.time.TimeFormatter;
-
 import java.awt.Component;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.util.Calendar;
@@ -19,12 +19,12 @@ public class DateSpinnerEditor extends DefaultCellEditor {
   private final JSpinner spinner;
   private final TimeFormatter.TimeHolder timeHolder;
 
-  private final Map<Integer, TemporalField> TEMPORAL_FIELD_MAP =
+  private static final Map<Integer, TemporalField> TEMPORAL_FIELD_MAP =
       Map.of(
           Calendar.DAY_OF_MONTH, ChronoField.DAY_OF_MONTH,
           Calendar.MONTH, ChronoField.MONTH_OF_YEAR,
           Calendar.YEAR, ChronoField.YEAR,
-          Calendar.HOUR, ChronoField.HOUR_OF_DAY,
+          Calendar.HOUR_OF_DAY, ChronoField.HOUR_OF_DAY,
           Calendar.MINUTE, ChronoField.MINUTE_OF_HOUR,
           Calendar.SECOND, ChronoField.SECOND_OF_MINUTE,
           Calendar.MILLISECOND, ChronoField.MILLI_OF_SECOND);
@@ -50,11 +50,14 @@ public class DateSpinnerEditor extends DefaultCellEditor {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime((Date) spinner.getValue());
 
-    timeHolder
-        .getZonedDateTime()
-        .with(
-            TEMPORAL_FIELD_MAP.get(model.getCalendarField()),
-            calendar.get(model.getCalendarField()));
+    ZonedDateTime newTime =
+        timeHolder
+            .getZonedDateTime()
+            .with(
+                TEMPORAL_FIELD_MAP.get(model.getCalendarField()),
+                calendar.get(model.getCalendarField()));
+    timeHolder.setZonedDateTime(newTime);
+
     return calendar.get(model.getCalendarField());
   }
 }

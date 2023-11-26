@@ -2,8 +2,6 @@ package com.intellij.devtools.exec.generator.impl;
 
 import static com.intellij.devtools.MessageKeys.GENERATOR_UUID_NAME;
 
-import com.intellij.devtools.exec.OperationCategory;
-import com.intellij.devtools.exec.OperationGroup;
 import com.intellij.devtools.exec.generator.Generator;
 import com.intellij.devtools.locale.MessageBundle;
 import com.intellij.ui.JBIntSpinner;
@@ -14,7 +12,6 @@ import com.intellij.util.ui.JBInsets;
 import java.awt.GridBagLayout;
 import java.util.StringJoiner;
 import java.util.UUID;
-import javax.swing.Icon;
 import javax.swing.JPanel;
 
 public class UUIDGenerator extends Generator {
@@ -24,21 +21,6 @@ public class UUIDGenerator extends Generator {
   @Override
   public String getNodeName() {
     return MessageBundle.get(GENERATOR_UUID_NAME);
-  }
-
-  @Override
-  public Icon getIcon() {
-    return null;
-  }
-
-  @Override
-  public OperationCategory getOperationCategory() {
-    return null;
-  }
-
-  @Override
-  public OperationGroup getOperationGroup() {
-    return OperationGroup.GENERATOR;
   }
 
   @Override

@@ -44,10 +44,7 @@ public abstract class PrettyFormatter extends Formatter {
   @Override
   protected void configureListeners() {
     super.configureListeners();
-    indentLengthSpinner.addChangeListener(
-        evt -> {
-          updateResult();
-        });
+    indentLengthSpinner.addChangeListener(evt -> updateResult());
   }
 
   @Override
