@@ -16,8 +16,6 @@ import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
@@ -28,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +40,6 @@ public abstract class Formatter extends Operation {
 
   private final JPanel dataHeaderButtonPanel = new JPanel();
 
-  private JComponent dataScrollPane;
-  private JComponent resultScrollPane;
-
   private EditorTextField dataTextField;
   private EditorTextField resultTextField;
 
@@ -56,9 +50,7 @@ public abstract class Formatter extends Operation {
   private String dataText = null;
   private String resultText = null;
 
-  private boolean isParametersAdded;
-
-  public Formatter() {
+  protected Formatter() {
     configureComponents();
     configureParameters(parametersPanel);
     configureLayouts();
@@ -158,6 +150,7 @@ public abstract class Formatter extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
+  @Override
   protected void configureListeners() {
     dataTextField.addDocumentListener(
         new DocumentListener() {
@@ -188,11 +181,6 @@ public abstract class Formatter extends Operation {
 
   protected String getData() {
     return dataTextField.getText();
-  }
-
-  private void runInEDThread(Runnable task, EditorTextField resultTextField) {
-    ApplicationManager.getApplication()
-        .invokeLater(task, ModalityState.stateForComponent(resultTextField));
   }
 
   protected abstract String format(String rawData);

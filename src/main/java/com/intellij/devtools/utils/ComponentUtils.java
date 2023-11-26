@@ -65,14 +65,14 @@ public class ComponentUtils {
   }
 
   public static Object getValue(Component component) {
-    if (component instanceof JTextField) {
-      return ((JTextField) component).getText();
+    if (component instanceof JTextField textField) {
+      return textField.getText();
     }
-    if (component instanceof JComboBox) {
-      return ((JComboBox<?>) component).getSelectedItem();
+    if (component instanceof JComboBox<?> comboBox) {
+      return comboBox.getSelectedItem();
     }
-    if (component instanceof JSpinner) {
-      return ((Double) (((JSpinner) component).getValue())).intValue();
+    if (component instanceof JSpinner spinner) {
+      return ((Double) spinner.getValue()).intValue();
     }
     return null;
   }
@@ -81,11 +81,11 @@ public class ComponentUtils {
     if (Objects.isNull(component) || Objects.isNull(value)) {
       return;
     }
-    if (component instanceof JTextField) {
-      ((JTextField) component).setText((String) value);
+    if (component instanceof JTextField textField) {
+      textField.setText((String) value);
     }
-    if (component instanceof JComboBox) {
-      ((JComboBox<?>) component).setSelectedItem(value);
+    if (component instanceof JComboBox<?> comboBox) {
+      comboBox.setSelectedItem(value);
     }
   }
 

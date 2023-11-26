@@ -140,10 +140,7 @@ public abstract class Generator extends Operation {
   }
 
   protected void execute() {
-    SwingUtilities.invokeLater(
-        () -> {
-          resultTextField.setText(generate());
-        });
+    SwingUtilities.invokeLater(() -> resultTextField.setText(generate()));
   }
 
   protected boolean showGenerateButtons() {

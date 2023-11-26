@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.jetbrains.annotations.NotNull;
 
 public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
 
@@ -61,13 +60,12 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
 
     setBackground(bg);
     setForeground(fg);
-    customize(list, value, index, isSelected, cellHasFocus);
+    customize(value, index);
 
     return this;
   }
 
-  public void customize(
-      @NotNull JList<? extends T> list, T value, int index, boolean selected, boolean hasFocus) {
+  public void customize(T value, int index) {
     if (Objects.isNull(value)) {
       setLabelText("Select");
       setLabelIcon(null);
@@ -129,15 +127,15 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
   }
 
   private Icon getIcon(Object userObject) {
-    if (userObject instanceof BaseNode) {
-      return ((BaseNode) userObject).getIcon();
+    if (userObject instanceof BaseNode baseNode) {
+      return baseNode.getIcon();
     }
     return null;
   }
 
   private String getName(Object userObject) {
-    if (userObject instanceof BaseNode) {
-      return ((BaseNode) userObject).getNodeName();
+    if (userObject instanceof BaseNode baseNode) {
+      return baseNode.getNodeName();
     }
     return null;
   }

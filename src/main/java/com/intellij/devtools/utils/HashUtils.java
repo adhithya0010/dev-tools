@@ -1,11 +1,10 @@
 package com.intellij.devtools.utils;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HashUtils {

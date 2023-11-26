@@ -18,9 +18,7 @@ import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
 import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.JBUI;
-
 import java.util.List;
 import java.util.Optional;
 import javax.swing.JButton;

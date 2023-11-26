@@ -171,14 +171,14 @@ public class TimeFormatter extends Generator {
     ZoneId zoneId = ZoneId.systemDefault();
     Date date = new Date();
     return Map.of(
-        "Day", new DateSpinnerEditor(date, "d", timeHolder),
-        "Month", new DateSpinnerEditor(date, "M", timeHolder),
-        "Year", new DateSpinnerEditor(date, "yyyy", timeHolder),
-        "Hour", new DateSpinnerEditor(date, "H", timeHolder),
-        "Minute", new DateSpinnerEditor(date, "m", timeHolder),
-        "Second", new DateSpinnerEditor(date, "s", timeHolder),
-        "Nano", new DateSpinnerEditor(date, "SSSSSSSSS", timeHolder),
-        "Timezone", new TimezoneComboBoxEditor(zoneId, timeHolder));
+        "Day", new DateSpinnerEditor("d", timeHolder),
+        "Month", new DateSpinnerEditor("M", timeHolder),
+        "Year", new DateSpinnerEditor("yyyy", timeHolder),
+        "Hour", new DateSpinnerEditor("H", timeHolder),
+        "Minute", new DateSpinnerEditor("m", timeHolder),
+        "Second", new DateSpinnerEditor("s", timeHolder),
+        "Nano", new DateSpinnerEditor("SSSSSSSSS", timeHolder),
+        "Timezone", new TimezoneComboBoxEditor(timeHolder));
   }
 
   @Override

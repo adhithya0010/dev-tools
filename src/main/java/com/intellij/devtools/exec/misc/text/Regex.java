@@ -35,7 +35,6 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.SyntaxTraverser;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBScrollBar;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
@@ -56,9 +55,6 @@ import java.util.regex.Pattern;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import org.intellij.lang.regexp.RegExpBundle;
 import org.intellij.lang.regexp.RegExpHighlighter;
 import org.intellij.lang.regexp.RegExpLanguage;
@@ -321,20 +317,6 @@ public class Regex extends Operation {
     }
     label.setLabelFor(component);
     return label;
-  }
-
-  private static void setupIcon(EditorTextField field, JComponent icon) {
-    field.addSettingsProvider(
-        editor -> {
-          icon.setBorder(JBUI.Borders.emptyLeft(2));
-          final JScrollPane scrollPane = editor.getScrollPane();
-          scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-          scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-          final JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
-          verticalScrollBar.setBackground(editor.getBackgroundColor());
-          verticalScrollBar.add(JBScrollBar.LEADING, icon);
-          verticalScrollBar.setOpaque(true);
-        });
   }
 
   private void reportResult(RegExpMatchResult result, PsiFile myNewFile) {

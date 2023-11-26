@@ -136,14 +136,10 @@ public class LinesSort extends Operation {
             }));
 
     copyButton.addActionListener(
-        (ActionEvent evt) -> {
-          ClipboardUtils.copy(resultTextField.getText());
-        });
+        (ActionEvent evt) -> ClipboardUtils.copy(resultTextField.getText()));
 
     pasteButton.addActionListener(
-        (ActionEvent evt) -> {
-          ClipboardUtils.paste().ifPresent(dataTextField::setText);
-        });
+        (ActionEvent evt) -> ClipboardUtils.paste().ifPresent(dataTextField::setText));
     clearButton.addActionListener(evt -> reset());
   }
 

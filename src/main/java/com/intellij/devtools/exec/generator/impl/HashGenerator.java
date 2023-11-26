@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import org.apache.commons.lang3.StringUtils;
 
 public class HashGenerator extends Generator {
 
@@ -89,7 +90,7 @@ public class HashGenerator extends Generator {
   @Override
   protected String generate() {
     if (Objects.nonNull(hashTypeComboBox.getSelectedItem())
-        && Objects.nonNull(inputTextField.getText())) {
+        && StringUtils.isNotEmpty(inputTextField.getText())) {
       return HashUtils.generateHash(
           (String) hashTypeComboBox.getSelectedItem(), inputTextField.getText());
     }

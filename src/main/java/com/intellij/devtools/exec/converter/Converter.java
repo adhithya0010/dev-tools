@@ -202,14 +202,14 @@ public abstract class Converter extends Operation {
         new DocumentListener() {
           @Override
           public void documentChanged(com.intellij.openapi.editor.event.DocumentEvent event) {
-            convertTo(event);
+            convertTo();
           }
         });
     toTextField.addDocumentListener(
         new DocumentListener() {
           @Override
           public void documentChanged(com.intellij.openapi.editor.event.DocumentEvent event) {
-            convertFrom(event);
+            convertFrom();
           }
         });
 
@@ -228,7 +228,7 @@ public abstract class Converter extends Operation {
         });
   }
 
-  private Void convertFrom(com.intellij.openapi.editor.event.DocumentEvent e) {
+  private Void convertFrom() {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {
@@ -240,7 +240,7 @@ public abstract class Converter extends Operation {
     return null;
   }
 
-  private Void convertTo(com.intellij.openapi.editor.event.DocumentEvent e) {
+  private Void convertTo() {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {

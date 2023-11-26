@@ -16,7 +16,6 @@ import com.intellij.devtools.utils.TreeModelUtils;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -72,8 +71,8 @@ public class DropdownWrappedPanel extends JPanel {
         (ActionEvent evt) -> {
           if (Objects.nonNull(previousSelection.get())) {
             DefaultMutableTreeNode previousNode = previousSelection.get();
-            if (previousNode.isLeaf() && previousNode.getUserObject() instanceof Operation) {
-              Operation operation = (Operation) previousNode.getUserObject();
+            if (previousNode.isLeaf()
+                && previousNode.getUserObject() instanceof Operation operation) {
               operation.persistState();
             }
           }
@@ -81,8 +80,7 @@ public class DropdownWrappedPanel extends JPanel {
               (DefaultMutableTreeNode) operationGroupComboBox.getSelectedItem();
           if (Objects.nonNull(treeNode)
               && treeNode.isLeaf()
-              && treeNode.getUserObject() instanceof Operation) {
-            Operation operation = (Operation) treeNode.getUserObject();
+              && treeNode.getUserObject() instanceof Operation operation) {
             operation.reset();
             operation.restoreState();
 
