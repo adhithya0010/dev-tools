@@ -155,6 +155,7 @@ public class TimeFormatter extends Generator {
       }
     };
     JTable table = new JBTable(new DefaultTableModel(row, columns));
+    table.setToolTipText("Double click to edit");
     table.setRowSelectionAllowed(false);
     TableColumnModel tcm = table.getColumnModel();
     Iterator<TableColumn> iterator = tcm.getColumns().asIterator();
