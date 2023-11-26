@@ -16,7 +16,9 @@ import com.intellij.devtools.utils.GridConstraintUtils;
 import com.intellij.devtools.utils.ServerUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Diff;
+import com.intellij.ui.JBSplitter;
 import com.intellij.ui.table.JBTable;
+import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import java.util.List;
@@ -28,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 public class MockServer extends Operation {
+
+  private final JBSplitter splitter = new JBSplitter(true);
   private JPanel runningServersPanel;
   private JPanel runningServersHeaderPanel;
   private JPanel runningServersContentPanel;
@@ -107,10 +111,11 @@ public class MockServer extends Operation {
         this.historyHeadersPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 1, 0, 0));
     this.historyPanel.add(
         this.historyContentPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
-    this.setLayout(new GridLayoutManager(2, 1));
-    this.add(
-        this.runningServersPanel, GridConstraintUtils.buildGridConstraint(0, 0, 1, 1, 3, 3, 3));
-    this.add(this.historyPanel, GridConstraintUtils.buildGridConstraint(1, 0, 1, 1, 3, 3, 3));
+    this.setLayout(new GridLayoutManager(1, 1));
+    this.add(splitter, GridConstraintUtils.buildGridConstraint(0, 0, GridConstraints.FILL_BOTH));
+
+    splitter.setFirstComponent(runningServersPanel);
+    splitter.setSecondComponent(historyPanel);
   }
 
   @Override

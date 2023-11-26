@@ -12,6 +12,7 @@ import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCus
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationGroup;
+import com.intellij.devtools.exec.Orientation;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
@@ -19,6 +20,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
+import com.intellij.ui.JBSplitter;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -32,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class Formatter extends Operation {
 
+  private final JBSplitter splitter = new JBSplitter(true);
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -110,11 +113,13 @@ public abstract class Formatter extends Operation {
   @Override
   protected void configureLayouts() {
 
-    setLayout(new GridLayoutManager(3, 1));
+    setLayout(new GridLayoutManager(2, 1));
+
+    splitter.setFirstComponent(dataPanel);
+    splitter.setSecondComponent(resultsPanel);
 
     this.add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    this.add(dataPanel, buildGridConstraint(1, 0, FILL_BOTH));
-    this.add(resultsPanel, buildGridConstraint(2, 0, FILL_BOTH));
+    this.add(splitter, buildGridConstraint(1, 0, FILL_BOTH));
 
     dataHeaderButtonPanel.setLayout(new BoxLayout(dataHeaderButtonPanel, BoxLayout.X_AXIS));
     dataHeaderButtonPanel.add(clearButton);
@@ -171,6 +176,17 @@ public abstract class Formatter extends Operation {
           ClipboardUtils.paste().ifPresent(dataTextField::setText);
         });
     clearButton.addActionListener(evt -> reset());
+  }
+
+  @Override
+  public boolean isOrientationSupported() {
+    return true;
+  }
+
+  @Override
+  public void setOrientation(Orientation orientation) {
+    super.setOrientation(orientation);
+    splitter.setOrientation(Orientation.HORIZONTAL.equals(orientation));
   }
 
   protected void updateResult() {

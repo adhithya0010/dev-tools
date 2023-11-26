@@ -12,6 +12,7 @@ import com.intellij.devtools.component.editortextfield.customization.WrapTextCus
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.exec.OperationGroup;
+import com.intellij.devtools.exec.Orientation;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -20,6 +21,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
+import com.intellij.ui.JBSplitter;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.PlatformIcons;
 import java.awt.BorderLayout;
@@ -33,6 +35,7 @@ import javax.swing.JPanel;
 
 public abstract class Converter extends Operation {
 
+  private final JBSplitter splitter = new JBSplitter(true);
   private final JPanel fromPanel = new JPanel();
   private final JPanel toPanel = new JPanel();
 
@@ -142,10 +145,12 @@ public abstract class Converter extends Operation {
   protected void configureLayouts() {
     ComponentUtils.removeAllChildren(this);
 
-    setLayout(new GridLayoutManager(3, 1));
+    setLayout(new GridLayoutManager(2, 1));
     add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    add(fromPanel, buildGridConstraint(1, 0, FILL_BOTH));
-    add(toPanel, buildGridConstraint(2, 0, FILL_BOTH));
+    add(splitter, buildGridConstraint(1, 0, FILL_BOTH));
+
+    splitter.setFirstComponent(fromPanel);
+    splitter.setSecondComponent(toPanel);
 
     fromHeaderPanel.setLayout(new BorderLayout());
     fromHeaderPanel.add(new JLabel(getFromLabel()), BorderLayout.WEST);
@@ -228,7 +233,18 @@ public abstract class Converter extends Operation {
         });
   }
 
-  private Void convertFrom() {
+  @Override
+  public void setOrientation(Orientation orientation) {
+    super.setOrientation(orientation);
+    splitter.setOrientation(Orientation.HORIZONTAL.equals(orientation));
+  }
+
+  @Override
+  public boolean isOrientationSupported() {
+    return true;
+  }
+
+  private void convertFrom() {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {
@@ -237,10 +253,9 @@ public abstract class Converter extends Operation {
         isConversionInProgress.set(false);
       }
     }
-    return null;
   }
 
-  private Void convertTo() {
+  private void convertTo() {
     if (!isConversionInProgress.get()) {
       isConversionInProgress.set(true);
       try {
@@ -249,6 +264,5 @@ public abstract class Converter extends Operation {
         isConversionInProgress.set(false);
       }
     }
-    return null;
   }
 }

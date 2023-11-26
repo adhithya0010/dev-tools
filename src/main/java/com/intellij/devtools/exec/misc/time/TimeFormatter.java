@@ -12,9 +12,7 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBInsets;
-import com.intellij.util.ui.JBUI;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.net.URL;
@@ -65,12 +63,6 @@ public class TimeFormatter extends Generator {
     infoButton.setToolTipText("Documentation");
     formatCorrectnessLabel = new JBLabel();
     validatePattern();
-    // to remote the spacing between the image and button's borders
-    infoButton.setMargin(JBUI.emptyInsets());
-    infoButton.setSize(new Dimension(24, 24));
-    infoButton.setPreferredSize(new Dimension(24, 24));
-    infoButton.setMaximumSize(new Dimension(24, 24));
-    infoButton.setMinimumSize(new Dimension(24, 24));
 
     parametersPanel.setLayout(new GridBagLayout());
     gridBag.nextLine();

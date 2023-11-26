@@ -10,6 +10,7 @@ import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
 
 import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCustomization;
 import com.intellij.devtools.exec.Operation;
+import com.intellij.devtools.exec.Orientation;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.devtools.utils.ProjectUtils;
@@ -19,6 +20,7 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
+import com.intellij.ui.JBSplitter;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -33,6 +35,7 @@ import javax.swing.SwingUtilities;
 
 public class DuplicateRemover extends Operation {
 
+  private final JBSplitter splitter = new JBSplitter(true);
   private final JPanel dataPanel = new JPanel();
   private final JPanel resultsPanel = new JPanel();
 
@@ -84,8 +87,10 @@ public class DuplicateRemover extends Operation {
   protected void configureLayouts() {
     setLayout(new GridLayoutManager(2, 1));
 
-    this.add(dataPanel, buildGridConstraint(0, 0, FILL_BOTH));
-    this.add(resultsPanel, buildGridConstraint(1, 0, FILL_BOTH));
+    this.add(splitter, buildGridConstraint(0, 0, FILL_BOTH));
+
+    splitter.setFirstComponent(dataPanel);
+    splitter.setSecondComponent(resultsPanel);
 
     dataHeaderButtonPanel.setLayout(new BoxLayout(dataHeaderButtonPanel, BoxLayout.X_AXIS));
     dataHeaderButtonPanel.add(clearButton);
@@ -170,5 +175,16 @@ public class DuplicateRemover extends Operation {
   public void restoreState() {
     Optional.ofNullable(dataTextField).ifPresent(component -> component.setText(dataText));
     Optional.ofNullable(resultTextField).ifPresent(component -> component.setText(resultText));
+  }
+
+  @Override
+  public void setOrientation(Orientation orientation) {
+    super.setOrientation(orientation);
+    splitter.setOrientation(Orientation.HORIZONTAL.equals(orientation));
+  }
+
+  @Override
+  public boolean isOrientationSupported() {
+    return true;
   }
 }
