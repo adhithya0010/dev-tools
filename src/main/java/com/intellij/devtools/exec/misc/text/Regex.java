@@ -189,6 +189,11 @@ public class Regex extends Operation {
     add(new Spacer(), gridBag.nextLine().next().coverLine().fillCell().weightx(1f).weighty(1f));
   }
 
+  @Override
+  public boolean isOrientationSupported() {
+    return false;
+  }
+
   private void update(PsiFile myNewFile) {
     final RegExpMatchResult result =
         isMatchingText(myNewFile, regularExpressionTextField.getText(), inputTextField.getText());
