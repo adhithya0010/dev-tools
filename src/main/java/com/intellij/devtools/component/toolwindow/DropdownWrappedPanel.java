@@ -107,6 +107,7 @@ public class DropdownWrappedPanel extends JPanel {
 
             if (operation.isOrientationSupported()) {
               orientationButton.setEnabled(true);
+              currentOrientation = operation.getOrientation();
               if (Orientation.HORIZONTAL.equals(operation.getOrientation())) {
                 orientationButton.setIcon(SPLIT_RIGHT);
                 orientationButton.setToolTipText("Click to split right");
@@ -129,6 +130,9 @@ public class DropdownWrappedPanel extends JPanel {
           if (Objects.nonNull(selectedItem)
               && selectedItem.isLeaf()
               && selectedItem.getUserObject() instanceof Operation operation) {
+
+            System.out.printf("Current orientation: %s", currentOrientation);
+
             if (Orientation.HORIZONTAL.equals(currentOrientation)) {
               operation.setOrientation(currentOrientation = Orientation.VERTICAL);
               orientationButton.setIcon(SPLIT_BOTTOM);
