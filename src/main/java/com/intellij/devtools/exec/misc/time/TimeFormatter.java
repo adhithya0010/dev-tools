@@ -180,8 +180,8 @@ public class TimeFormatter extends Generator {
 
       Map<String, String> values = new LinkedHashMap<>();
       values.put("Formatted Time", timeHolder.getZonedDateTime().format(timeFormat));
-      values.put("Millis", timeHolder.getZonedDateTime().toInstant().toEpochMilli() + "");
-      System.out.println(formatResult(values));
+      values.put("Epoch millis", timeHolder.getZonedDateTime().toInstant().toEpochMilli() + "");
+      values.put("Epoch seconds", timeHolder.getZonedDateTime().toInstant().getEpochSecond() + "");
       return formatResult(values);
     } catch (Exception e) {
       e.printStackTrace();
