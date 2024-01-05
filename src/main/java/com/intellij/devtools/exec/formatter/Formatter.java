@@ -21,6 +21,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.JBSplitter;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -35,13 +36,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Formatter extends Operation {
 
   private final JBSplitter splitter = new JBSplitter(true);
-  private final JPanel dataPanel = new JPanel();
-  private final JPanel resultsPanel = new JPanel();
+  private final JPanel dataPanel = new JBPanel<>();
+  private final JPanel resultsPanel = new JBPanel<>();
 
-  private final JPanel dataHeaderPanel = new JPanel();
-  private final JPanel resultHeaderPanel = new JPanel();
+  private final JPanel dataHeaderPanel = new JBPanel<>();
+  private final JPanel resultHeaderPanel = new JBPanel<>();
 
-  private final JPanel dataHeaderButtonPanel = new JPanel();
+  private final JPanel dataHeaderButtonPanel = new JBPanel<>();
 
   private EditorTextField dataTextField;
   private EditorTextField resultTextField;
@@ -129,7 +130,7 @@ public abstract class Formatter extends Operation {
     dataHeaderPanel.add(new JLabel("Data"), BorderLayout.WEST);
     dataHeaderPanel.add(dataHeaderButtonPanel, BorderLayout.EAST);
 
-    JPanel dataContentPanel = new JPanel();
+    JPanel dataContentPanel = new JBPanel<>();
     dataContentPanel.setLayout(new GridLayoutManager(2, 1));
     dataContentPanel.add(
         dataHeaderPanel,
@@ -141,7 +142,7 @@ public abstract class Formatter extends Operation {
     resultHeaderPanel.add(new JLabel("Result"), BorderLayout.WEST);
     resultHeaderPanel.add(copyButton, BorderLayout.EAST);
 
-    JPanel resultContentPanel = new JPanel();
+    JPanel resultContentPanel = new JBPanel<>();
     resultContentPanel.setLayout(new GridLayoutManager(2, 1));
     resultContentPanel.add(
         resultHeaderPanel,

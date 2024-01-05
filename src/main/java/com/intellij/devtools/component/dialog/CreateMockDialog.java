@@ -11,15 +11,6 @@ import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.EditorTextField;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBUI;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,6 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class CreateMockDialog extends DialogWrapper {
 

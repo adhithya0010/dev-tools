@@ -21,6 +21,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.GridBagLayout;
@@ -33,9 +34,9 @@ import javax.swing.SwingUtilities;
 
 public abstract class Generator extends Operation {
 
-  private final JPanel headerPanel = new JPanel();
-  private final JPanel buttonsPanel = new JPanel();
-  private final JPanel resultsPanel = new JPanel();
+  private final JPanel headerPanel = new JBPanel<>();
+  private final JPanel buttonsPanel = new JBPanel<>();
+  private final JPanel resultsPanel = new JBPanel<>();
 
   private EditorTextField resultTextField;
 

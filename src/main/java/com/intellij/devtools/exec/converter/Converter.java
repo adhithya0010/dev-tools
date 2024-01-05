@@ -22,6 +22,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.JBSplitter;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.PlatformIcons;
 import java.awt.BorderLayout;
@@ -36,14 +37,14 @@ import javax.swing.JPanel;
 public abstract class Converter extends Operation {
 
   private final JBSplitter splitter = new JBSplitter(true);
-  private final JPanel fromPanel = new JPanel();
-  private final JPanel toPanel = new JPanel();
+  private final JPanel fromPanel = new JBPanel<>();
+  private final JPanel toPanel = new JBPanel<>();
 
-  private final JPanel fromHeaderPanel = new JPanel();
-  private final JPanel fromButtonPanel = new JPanel();
+  private final JPanel fromHeaderPanel = new JBPanel<>();
+  private final JPanel fromButtonPanel = new JBPanel<>();
 
-  private final JPanel toHeaderPanel = new JPanel();
-  private final JPanel toButtonPanel = new JPanel();
+  private final JPanel toHeaderPanel = new JBPanel<>();
+  private final JPanel toButtonPanel = new JBPanel<>();
 
   private EditorTextField fromTextField;
   private EditorTextField toTextField;
@@ -169,8 +170,8 @@ public abstract class Converter extends Operation {
     toHeaderPanel.add(new JLabel(getToLabel()), BorderLayout.WEST);
     toHeaderPanel.add(toButtonPanel, BorderLayout.EAST);
 
-    JPanel fromContentPanel = new JPanel();
-    JPanel toContentPanel = new JPanel();
+    JPanel fromContentPanel = new JBPanel<>();
+    JPanel toContentPanel = new JBPanel<>();
 
     fromContentPanel.setLayout(new GridLayoutManager(2, 1));
     fromContentPanel.add(

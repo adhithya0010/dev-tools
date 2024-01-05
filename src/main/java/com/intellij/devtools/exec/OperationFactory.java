@@ -73,7 +73,7 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllTextOperations() {
-    return List.of(new TextDiff(), new DuplicateRemover(), new Regex(), new LinesSort());
+    return List.of(new DuplicateRemover(), new LinesSort());
   }
 
   public List<Operation> getAllTimeOperations() {

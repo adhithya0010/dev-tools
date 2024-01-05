@@ -5,6 +5,7 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.render.RenderingUtil;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -22,7 +23,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
+public class TreeCellRenderer<T> extends JBPanel<TreeCellRenderer<T>>
+    implements ListCellRenderer<T> {
 
   protected final JBLabel label = new JBLabel("Select");
 
@@ -88,7 +90,7 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
         configureLabel(userObject);
       }
       if (node.getLevel() == 1 || node.getLevel() == 2) {
-        JPanel container = new JPanel();
+        JPanel container = new JBPanel<>();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.add(label);
         add(container);
