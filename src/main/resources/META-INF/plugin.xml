@@ -31,7 +31,6 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.properties</depends>
   <depends>org.jetbrains.plugins.yaml</depends>
-  <depends>com.intellij.lang.jsgraphql</depends>
 
   <!-- Extension points defined by the plugin.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
