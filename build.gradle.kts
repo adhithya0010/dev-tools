@@ -1,33 +1,42 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
+
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.15.0"
+    id("org.jetbrains.intellij.platform") version "2.1.0"
     id("com.diffplug.spotless") version "6.15.0"
 }
 
 group = "com.intellij.devtools"
 version = System.getenv("VERSION")
 
+
 repositories {
+
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
     gradlePluginPortal()
     mavenCentral()
-}
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set("2023.2")
-    type.set("IC") // Target IDE Platform
-    plugins.set(listOf(
-            "com.intellij.properties",
-            "org.jetbrains.plugins.yaml",
-            "com.intellij.lang.jsgraphql:4.0.1"
-    ))
+    intellijPlatform {
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
+        gradlePluginPortal()
+        mavenCentral()
+        defaultRepositories()
+    }
 }
 
 dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
+}
+
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity("2024.2.3")
+        bundledPlugins( "com.intellij.properties", "org.jetbrains.plugins.yaml")
+        instrumentationTools()
+    }
 }
 
 dependencies {
@@ -64,9 +73,32 @@ tasks {
         targetCompatibility = "17"
     }
 
-    initializeIntelliJPlugin {
-        enabled = false
-    }
+//    initializeIntelliJPlugin {
+//        enabled = false
+//    }
+//
+//    runIdeForUiTests {
+////        systemProperty("robot-server.port", "8082") // default port 8580
+//        systemProperty("ide.test.execution", "true");
+//    }
+
+//    val runIdeForUiTests by intellijPlatformTesting.runIde.registering {
+//        task {
+//            jvmArgumentProviders += CommandLineArgumentProvider {
+//                listOf(
+//                        "-Drobot-server.port=8082",
+//                        "-Dide.test.execution=true",
+//                        "-Dide.mac.message.dialogs.as.sheets=false",
+//                        "-Djb.privacy.policy.text=<!--999.999-->",
+//                        "-Djb.consents.confirmation.enabled=false",
+//                )
+//            }
+//        }
+//
+//        plugins {
+//            robotServerPlugin()
+//        }
+//    }
 
     spotless {
         java {
@@ -75,11 +107,6 @@ tasks {
             googleJavaFormat("1.17.0")
             formatAnnotations()
         }
-    }
-
-    runIdeForUiTests {
-//        systemProperty("robot-server.port", "8082") // default port 8580
-        systemProperty("ide.test.execution", "true");
     }
 
     signPlugin {

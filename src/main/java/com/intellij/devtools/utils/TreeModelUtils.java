@@ -40,9 +40,7 @@ public class TreeModelUtils {
               (categoryType, operationsByCategory) -> {
                 DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(categoryType);
                 operationsByCategory.forEach(
-                    operation -> {
-                      categoryNode.add(new DefaultMutableTreeNode(operation));
-                    });
+                    operation -> categoryNode.add(new DefaultMutableTreeNode(operation)));
                 groupNode.add(categoryNode);
               });
           rootNode.add(groupNode);

@@ -6,8 +6,6 @@ import com.intellij.devtools.exec.converter.impl.JsonYamlConverter;
 import com.intellij.devtools.exec.converter.impl.TextEscaper;
 import com.intellij.devtools.exec.converter.impl.UrlEncoder;
 import com.intellij.devtools.exec.converter.impl.YamlPropertiesConverter;
-import com.intellij.devtools.exec.formatter.impl.graphql.GraphqlMinifier;
-import com.intellij.devtools.exec.formatter.impl.graphql.GraphqlPrettifier;
 import com.intellij.devtools.exec.formatter.impl.json.JsonMinifier;
 import com.intellij.devtools.exec.formatter.impl.json.JsonPrettifier;
 import com.intellij.devtools.exec.formatter.impl.xml.XmlMinifier;
@@ -63,9 +61,7 @@ public class OperationFactory {
         new JsonPrettifier(),
         new JsonMinifier(),
         new XmlPrettifier(),
-        new XmlMinifier(),
-        new GraphqlPrettifier(),
-        new GraphqlMinifier());
+        new XmlMinifier());
   }
 
   public List<Operation> getAllGenerators() {
@@ -73,7 +69,7 @@ public class OperationFactory {
   }
 
   public List<Operation> getAllTextOperations() {
-    return List.of(new TextDiff(), new DuplicateRemover(), new Regex(), new LinesSort());
+    return List.of(new DuplicateRemover(), new LinesSort());
   }
 
   public List<Operation> getAllTimeOperations() {

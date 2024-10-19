@@ -16,16 +16,22 @@ public class IconButton extends JButton {
   public IconButton(Icon icon) {
     super(icon);
 
+    // This call causes the JButton not to paint
+    // the background.
+    // This allows us to paint a round background.
+    setContentAreaFilled(false);
+
+    setMargin(JBUI.emptyInsets());
+    setSize(new Dimension(24, 24));
+    setPreferredSize(new Dimension(24, 24));
+    setMaximumSize(new Dimension(24, 24));
+    setMinimumSize(new Dimension(24, 24));
+
     // These statements enlarge the button so that it
     // becomes a circle rather than an oval.
     Dimension size = getPreferredSize();
     size.width = size.height = Math.max(size.width, size.height);
     setPreferredSize(size);
-
-    // This call causes the JButton not to paint
-    // the background.
-    // This allows us to paint a round background.
-    setContentAreaFilled(false);
   }
 
   // Paint the round background and label.

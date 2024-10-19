@@ -17,19 +17,21 @@ public class TimezoneComboBoxEditor extends DefaultCellEditor {
   private final JComboBox<Object> comboBox;
   private final TimeFormatter.TimeHolder timeHolder;
 
-  public TimezoneComboBoxEditor(ZoneId zoneId, TimeFormatter.TimeHolder timeHolder) {
+  public TimezoneComboBoxEditor(TimeFormatter.TimeHolder timeHolder) {
     super(new JTextField());
     this.timeHolder = timeHolder;
     comboBox = new ComboBox<>(ZoneId.getAvailableZoneIds().stream().sorted().toArray());
     AutoCompleteDecorator.decorate(comboBox);
   }
 
+  @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
     comboBox.setSelectedItem(value);
     return comboBox;
   }
 
+  @Override
   public Object getCellEditorValue() {
     if (Objects.nonNull(comboBox.getSelectedItem())) {
       ZonedDateTime zonedDateTime = timeHolder.getZonedDateTime();

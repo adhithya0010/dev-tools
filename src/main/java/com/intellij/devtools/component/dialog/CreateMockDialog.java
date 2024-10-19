@@ -102,6 +102,10 @@ public class CreateMockDialog extends DialogWrapper {
     this.responseHeadersTextField.setPlaceholder(
         "Rows are separated by lines\nKeys and values are separated by :\neg:\nContent-Type:application/json");
     this.responseBodyTextField.setPlaceholder("Response body data");
+
+    this.pathTextField.setOneLineMode(true);
+    this.portTextField.setOneLineMode(true);
+    this.responseCodeTextField.setOneLineMode(true);
   }
 
   private void configureLayouts() {

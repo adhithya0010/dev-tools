@@ -12,9 +12,7 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.JBInsets;
-import com.intellij.util.ui.JBUI;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.net.URL;
@@ -65,12 +63,6 @@ public class TimeFormatter extends Generator {
     infoButton.setToolTipText("Documentation");
     formatCorrectnessLabel = new JBLabel();
     validatePattern();
-    // to remote the spacing between the image and button's borders
-    infoButton.setMargin(JBUI.emptyInsets());
-    infoButton.setSize(new Dimension(24, 24));
-    infoButton.setPreferredSize(new Dimension(24, 24));
-    infoButton.setMaximumSize(new Dimension(24, 24));
-    infoButton.setMinimumSize(new Dimension(24, 24));
 
     parametersPanel.setLayout(new GridBagLayout());
     gridBag.nextLine();
@@ -171,14 +163,14 @@ public class TimeFormatter extends Generator {
     ZoneId zoneId = ZoneId.systemDefault();
     Date date = new Date();
     return Map.of(
-        "Day", new DateSpinnerEditor(date, "d", timeHolder),
-        "Month", new DateSpinnerEditor(date, "M", timeHolder),
-        "Year", new DateSpinnerEditor(date, "yyyy", timeHolder),
-        "Hour", new DateSpinnerEditor(date, "H", timeHolder),
-        "Minute", new DateSpinnerEditor(date, "m", timeHolder),
-        "Second", new DateSpinnerEditor(date, "s", timeHolder),
-        "Nano", new DateSpinnerEditor(date, "SSSSSSSSS", timeHolder),
-        "Timezone", new TimezoneComboBoxEditor(zoneId, timeHolder));
+        "Day", new DateSpinnerEditor("d", timeHolder),
+        "Month", new DateSpinnerEditor("M", timeHolder),
+        "Year", new DateSpinnerEditor("yyyy", timeHolder),
+        "Hour", new DateSpinnerEditor("H", timeHolder),
+        "Minute", new DateSpinnerEditor("m", timeHolder),
+        "Second", new DateSpinnerEditor("s", timeHolder),
+        "Nano", new DateSpinnerEditor("SSSSSSSSS", timeHolder),
+        "Timezone", new TimezoneComboBoxEditor(timeHolder));
   }
 
   @Override
@@ -188,8 +180,8 @@ public class TimeFormatter extends Generator {
 
       Map<String, String> values = new LinkedHashMap<>();
       values.put("Formatted Time", timeHolder.getZonedDateTime().format(timeFormat));
-      values.put("Millis", timeHolder.getZonedDateTime().toInstant().toEpochMilli() + "");
-      System.out.println(formatResult(values));
+      values.put("Epoch millis", timeHolder.getZonedDateTime().toInstant().toEpochMilli() + "");
+      values.put("Epoch seconds", timeHolder.getZonedDateTime().toInstant().getEpochSecond() + "");
       return formatResult(values);
     } catch (Exception e) {
       e.printStackTrace();

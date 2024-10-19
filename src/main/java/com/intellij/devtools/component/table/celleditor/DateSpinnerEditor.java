@@ -29,7 +29,7 @@ public class DateSpinnerEditor extends DefaultCellEditor {
           Calendar.SECOND, ChronoField.SECOND_OF_MINUTE,
           Calendar.MILLISECOND, ChronoField.MILLI_OF_SECOND);
 
-  public DateSpinnerEditor(Date date, String dateFormat, TimeFormatter.TimeHolder timeHolder) {
+  public DateSpinnerEditor(String dateFormat, TimeFormatter.TimeHolder timeHolder) {
     super(new JTextField());
     this.timeHolder = timeHolder;
     spinner = new JSpinner();
@@ -37,6 +37,7 @@ public class DateSpinnerEditor extends DefaultCellEditor {
     spinner.setEditor(new JSpinner.DateEditor(spinner, dateFormat));
   }
 
+  @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
     SpinnerDateModel model = (SpinnerDateModel) spinner.getModel();
@@ -44,6 +45,7 @@ public class DateSpinnerEditor extends DefaultCellEditor {
     return spinner;
   }
 
+  @Override
   public Object getCellEditorValue() {
     SpinnerDateModel model = (SpinnerDateModel) spinner.getModel();
 

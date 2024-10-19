@@ -5,6 +5,7 @@ import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationCategory;
 import com.intellij.devtools.utils.ComponentUtils;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.render.RenderingUtil;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -21,9 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.jetbrains.annotations.NotNull;
 
-public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
+public class TreeCellRenderer<T> extends JBPanel<TreeCellRenderer<T>>
+    implements ListCellRenderer<T> {
 
   protected final JBLabel label = new JBLabel("Select");
 
@@ -61,13 +62,12 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
 
     setBackground(bg);
     setForeground(fg);
-    customize(list, value, index, isSelected, cellHasFocus);
+    customize(value, index);
 
     return this;
   }
 
-  public void customize(
-      @NotNull JList<? extends T> list, T value, int index, boolean selected, boolean hasFocus) {
+  public void customize(T value, int index) {
     if (Objects.isNull(value)) {
       setLabelText("Select");
       setLabelIcon(null);
@@ -90,7 +90,7 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
         configureLabel(userObject);
       }
       if (node.getLevel() == 1 || node.getLevel() == 2) {
-        JPanel container = new JPanel();
+        JPanel container = new JBPanel<>();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.add(label);
         add(container);
@@ -129,15 +129,15 @@ public class TreeCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
   }
 
   private Icon getIcon(Object userObject) {
-    if (userObject instanceof BaseNode) {
-      return ((BaseNode) userObject).getIcon();
+    if (userObject instanceof BaseNode baseNode) {
+      return baseNode.getIcon();
     }
     return null;
   }
 
   private String getName(Object userObject) {
-    if (userObject instanceof BaseNode) {
-      return ((BaseNode) userObject).getNodeName();
+    if (userObject instanceof BaseNode baseNode) {
+      return baseNode.getNodeName();
     }
     return null;
   }

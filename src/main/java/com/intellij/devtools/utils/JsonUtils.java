@@ -30,7 +30,7 @@ public class JsonUtils {
 
   private JsonUtils() {}
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
   private static final DefaultPrettyPrinter PRETTY_PRINTER = new DefaultPrettyPrinter();
 

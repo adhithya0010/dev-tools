@@ -12,15 +12,16 @@ import com.intellij.devtools.component.editortextfield.customization.ReadOnlyCus
 import com.intellij.devtools.component.editortextfield.customization.WrapTextCustomization;
 import com.intellij.devtools.exec.Operation;
 import com.intellij.devtools.exec.OperationGroup;
+import com.intellij.devtools.exec.Orientation;
 import com.intellij.devtools.utils.ClipboardUtils;
 import com.intellij.devtools.utils.ProjectUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
+import com.intellij.ui.JBSplitter;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -28,23 +29,20 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Formatter extends Operation {
 
-  private final JPanel dataPanel = new JPanel();
-  private final JPanel resultsPanel = new JPanel();
+  private final JBSplitter splitter = new JBSplitter(true);
+  private final JPanel dataPanel = new JBPanel<>();
+  private final JPanel resultsPanel = new JBPanel<>();
 
-  private final JPanel dataHeaderPanel = new JPanel();
-  private final JPanel resultHeaderPanel = new JPanel();
+  private final JPanel dataHeaderPanel = new JBPanel<>();
+  private final JPanel resultHeaderPanel = new JBPanel<>();
 
-  private final JPanel dataHeaderButtonPanel = new JPanel();
-
-  private JComponent dataScrollPane;
-  private JComponent resultScrollPane;
+  private final JPanel dataHeaderButtonPanel = new JBPanel<>();
 
   private EditorTextField dataTextField;
   private EditorTextField resultTextField;
@@ -56,9 +54,7 @@ public abstract class Formatter extends Operation {
   private String dataText = null;
   private String resultText = null;
 
-  private boolean isParametersAdded;
-
-  public Formatter() {
+  protected Formatter() {
     configureComponents();
     configureParameters(parametersPanel);
     configureLayouts();
@@ -118,11 +114,13 @@ public abstract class Formatter extends Operation {
   @Override
   protected void configureLayouts() {
 
-    setLayout(new GridLayoutManager(3, 1));
+    setLayout(new GridLayoutManager(2, 1));
+
+    splitter.setFirstComponent(dataPanel);
+    splitter.setSecondComponent(resultsPanel);
 
     this.add(parametersPanel, buildGridConstraint(0, 0, 1, 1, FILL_HORIZONTAL, SIZEPOLICY_FIXED));
-    this.add(dataPanel, buildGridConstraint(1, 0, FILL_BOTH));
-    this.add(resultsPanel, buildGridConstraint(2, 0, FILL_BOTH));
+    this.add(splitter, buildGridConstraint(1, 0, FILL_BOTH));
 
     dataHeaderButtonPanel.setLayout(new BoxLayout(dataHeaderButtonPanel, BoxLayout.X_AXIS));
     dataHeaderButtonPanel.add(clearButton);
@@ -132,7 +130,7 @@ public abstract class Formatter extends Operation {
     dataHeaderPanel.add(new JLabel("Data"), BorderLayout.WEST);
     dataHeaderPanel.add(dataHeaderButtonPanel, BorderLayout.EAST);
 
-    JPanel dataContentPanel = new JPanel();
+    JPanel dataContentPanel = new JBPanel<>();
     dataContentPanel.setLayout(new GridLayoutManager(2, 1));
     dataContentPanel.add(
         dataHeaderPanel,
@@ -144,7 +142,7 @@ public abstract class Formatter extends Operation {
     resultHeaderPanel.add(new JLabel("Result"), BorderLayout.WEST);
     resultHeaderPanel.add(copyButton, BorderLayout.EAST);
 
-    JPanel resultContentPanel = new JPanel();
+    JPanel resultContentPanel = new JBPanel<>();
     resultContentPanel.setLayout(new GridLayoutManager(2, 1));
     resultContentPanel.add(
         resultHeaderPanel,
@@ -158,6 +156,7 @@ public abstract class Formatter extends Operation {
     resultsPanel.add(resultContentPanel, buildGridBagConstraint(1, 0, 1.0, 1.0, 1));
   }
 
+  @Override
   protected void configureListeners() {
     dataTextField.addDocumentListener(
         new DocumentListener() {
@@ -180,6 +179,17 @@ public abstract class Formatter extends Operation {
     clearButton.addActionListener(evt -> reset());
   }
 
+  @Override
+  public boolean isOrientationSupported() {
+    return true;
+  }
+
+  @Override
+  public void setOrientation(Orientation orientation) {
+    super.setOrientation(orientation);
+    splitter.setOrientation(Orientation.HORIZONTAL.equals(orientation));
+  }
+
   protected void updateResult() {
     resultTextField.setText(null);
     String formattedData = format(getData());
@@ -188,11 +198,6 @@ public abstract class Formatter extends Operation {
 
   protected String getData() {
     return dataTextField.getText();
-  }
-
-  private void runInEDThread(Runnable task, EditorTextField resultTextField) {
-    ApplicationManager.getApplication()
-        .invokeLater(task, ModalityState.stateForComponent(resultTextField));
   }
 
   protected abstract String format(String rawData);
